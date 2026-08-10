@@ -1,0 +1,21 @@
+{
+  "heading": "Thicc. Glowing. Authentic.",
+  "intro": "We build every print to actually feel like something, not just look like something on a screen.",
+  "items": [
+    {
+      "icon": "layers",
+      "title": "Real thickness",
+      "body": "We use a special medium that builds a genuine, dimensional thickness you can see and feel, just like oil painting."
+    },
+    {
+      "icon": "droplet",
+      "title": "Oil-based ink",
+      "body": "We print with oil ink instead of standard pigment. That's what gives it the painterly finish."
+    },
+    {
+      "icon": "texture",
+      "title": "Loose Belgian linen",
+      "body": "Every piece prints on loose Belgian linen. Frame and hang it as-is or stretch it yourself. Your call."
+    }
+  ]
+}

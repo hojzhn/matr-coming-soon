@@ -1,0 +1,15 @@
+# Reference-only projects — not part of this build
+/matr-company/
+/matr-front/
+
+node_modules/
+.svelte-kit/
+/build/
+/.vercel/
+
+.env
+.env.*
+!.env.example
+
+.DS_Store
+Thumbs.db

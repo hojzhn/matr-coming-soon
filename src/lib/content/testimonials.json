@@ -1,0 +1,83 @@
+{
+  "postsLabel": "From the gallery floor",
+  "posts": [
+    {
+      "platform": "instagram",
+      "href": "https://www.instagram.com/p/DKhdf90sXWX/"
+    },
+    {
+      "platform": "instagram",
+      "href": "https://www.instagram.com/p/C3gf_jyxE0E/"
+    },
+    {
+      "platform": "instagram",
+      "href": "https://www.instagram.com/p/Cqls_wGLSgr/?img_index=1"
+    },
+
+    {
+      "platform": "instagram",
+      "href": "https://www.instagram.com/p/DRabKtsEv9S/"
+    },
+    {
+      "platform": "instagram",
+      "href": "https://www.instagram.com/p/DUADLA4Dext/"
+    },
+    {
+      "platform": "twitter",
+      "href": "https://x.com/kev_esh/status/1942610251166974436"
+    },
+    {
+      "platform": "twitter",
+      "href": "https://x.com/ClownVamp/status/1915405957367996822"
+    },
+    {
+      "platform": "twitter",
+      "href": "https://x.com/palekirill/status/1931784596204454201"
+    },
+    {
+      "platform": "twitter",
+      "href": "https://x.com/artBoffin/status/1887875314195304617"
+    },
+    {
+      "platform": "twitter",
+      "href": "https://x.com/JonaiGallery/status/1852164921758486663"
+    },
+    {
+      "platform": "twitter",
+      "href": "https://x.com/henrydaubrez/status/1838268026975850757"
+    },
+    {
+      "platform": "twitter",
+      "href": "https://x.com/justinaversano/status/1834003402231063035"
+    },
+    {
+      "platform": "twitter",
+      "href": "https://x.com/CoffeeGuyMatt/status/1798482688950559131"
+    }
+  ],
+  "artistsLabel": "Some of the artists we've worked with",
+  "artists": [
+    "Alpha Centauri Kid",
+    "Ayla el-Moussa",
+    "ClownVamp",
+    "Danny Cole",
+    "Erick Calderon",
+    "Gretchen Andrew",
+    "Henry Daubrez",
+    "Ira Greenberg",
+    "Jenni Pasanen",
+    "Justin Aversano",
+    "Kenny Schachter",
+    "Kevin Esherick",
+    "Kirill Semenovich",
+    "Lars Wander",
+    "Lilyillo",
+    "Maria Kreyn",
+    "Matthew Richie",
+    "Matthew Stone",
+    "Tyler Hobbs",
+    "Zancan"
+  ],
+  "pressLabel": "As mentioned in",
+  "press": ["Artnet", "Vice", "Every.to"]
+}

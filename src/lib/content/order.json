@@ -1,0 +1,43 @@
+{
+  "form": {
+    "formHeading": "...so tell us about your work.",
+    "formDesc": "We'll see what we can do.",
+    "formHeadingProjectTemplate": "Ordering “{name}”",
+    "projectNameLabel": "Project name",
+    "projectNamePlaceholder": "e.g. Sunset Study #3",
+    "sizeLabel": "Size",
+    "customSizeLabel": "Custom",
+    "finishLabel": "Finish",
+    "quantityLabel": "Quantity",
+    "uploadLabel": "Click to upload artwork",
+    "uploadHint": "JPG, PNG, or PDF, up to 50MB",
+    "uploadDpiNote": "300 DPI or higher recommended for best print quality.",
+    "uploadChangeLabel": "Change file",
+    "uploadRemoveLabel": "Remove",
+    "submitLabel": "Proceed to checkout",
+    "submitLoadingLabel": "Setting up checkout...",
+    "totalLabel": "Estimated total",
+    "finePrint": [
+      {
+        "icon": "calendar",
+        "text": "Ships within 5–7 business days after production."
+      },
+      {
+        "icon": "truck",
+        "text": "Shipping, taxes, and any customs fees are calculated at checkout."
+      },
+      {
+        "icon": "palette",
+        "text": "Screen colors may differ slightly from the printed piece."
+      },
+      {
+        "icon": "ban",
+        "text": "Custom prints are final sale and not eligible for return."
+      }
+    ],
+    "errorGeneric": "Something broke on our end. Try again?",
+    "errorInvalidSize": "Add a width and height first.",
+    "errorMaxSize": "45 in is the largest side we can print.",
+    "errorInvalidFile": "That file's too big or not a supported type."
+  }
+}

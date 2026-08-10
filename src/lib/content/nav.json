@@ -1,0 +1,7 @@
+{
+	"items": [
+		{ "label": "Top", "href": "#top" },
+		{ "label": "Order", "href": "#order" },
+		{ "label": "Contact", "href": "#contact" }
+	]
+}

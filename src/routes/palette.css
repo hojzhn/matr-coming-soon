@@ -1,0 +1,27 @@
+@theme {
+	--color-brand: #0bf159;
+	--color-brand-soft: #5cfb8c;
+	--color-brand-accent: #00c94f;
+	--color-brand-ring: #4ade80;
+	--color-brand-edge: #86efac;
+
+	--color-success: #34d399;
+	--color-success-deep: #14b8a6;
+	--color-danger: #f43f5e;
+
+	--color-canvas-from: #0a0a0f;
+
+	--color-surface: #ffffff;
+	--color-shade: #000000;
+	--color-ink: #0f172a;
+	--color-ink-strong: #334155;
+	--color-ink-body: #475569;
+	--color-ink-muted: #64748b;
+	--color-ink-faint: #94a3b8;
+	--color-ink-dim: #cbd5e1;
+	--color-line: #e2e8f0;
+	--color-fill: #f1f5f9;
+	--color-fill-soft: #f8fafc;
+
+	--color-scroll: #787882;
+}

@@ -1,0 +1,66 @@
+@import 'tailwindcss';
+@import './palette.css';
+@import '@fontsource-variable/geist/wght.css';
+
+@theme {
+	--font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+	--text-xs: 0.75rem;
+	--text-sm: 0.875rem;
+	--text-base: 1rem;
+	--text-md: 1.125rem;
+	--text-lg: 1.5rem;
+	--text-xl: 2.25rem;
+	--text-2xl: clamp(2.5rem, 5vw, 3.75rem);
+	--text-hero: clamp(3rem, 8vw, 7rem);
+
+	--leading-none: 0.85;
+	--leading-tighter: 1;
+	--leading-tight: 1.1;
+	--leading-snug: 1.3;
+	--leading-normal: 1.6;
+	--leading-relaxed: 1.8;
+
+	--tracking-tighter: -0.06em;
+	--tracking-tight: -0.045em;
+	--tracking-normal: -0.03em;
+	--tracking-wide: 0.15em;
+
+	--font-weight-normal: 400;
+	--font-weight-medium: 500;
+	--font-weight-semibold: 600;
+	--font-weight-bold: 700;
+
+	--radius-sm: 6px;
+	--radius-md: 12px;
+	--radius-lg: 24px;
+
+	--spacing-section: clamp(4rem, 2vw, 9rem);
+	--spacing-container: clamp(2rem, 8vw, 8rem);
+
+	--container-max: 100rem;
+}
+
+html {
+	color-scheme: light;
+	scroll-behavior: smooth;
+}
+
+body {
+	font-family: var(--font-sans);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+[id] {
+	scroll-margin-top: 4.5rem;
+}
+
+.no-scrollbar {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
+}
