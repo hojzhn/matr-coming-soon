@@ -26,6 +26,17 @@ export interface BrandsContent {
 	items: BrandLogo[];
 }
 
+export interface GalleryItem {
+	src: string;
+	alt: string;
+	caption: string;
+}
+export interface GalleryContent {
+	eyebrow: string;
+	heading: string;
+	items: GalleryItem[];
+}
+
 export interface FinePrintItem {
 	icon: string;
 	text: string;
@@ -95,6 +106,30 @@ export interface NewsletterContent {
 	submitLabel: string;
 	successMessage: string;
 	errorGeneric: string;
+}
+
+export interface ContactFormContent {
+	nameLabel: string;
+	namePlaceholder: string;
+	emailLabel: string;
+	emailPlaceholder: string;
+	messageLabel: string;
+	messagePlaceholder: string;
+	submitLabel: string;
+	submitLoadingLabel: string;
+	copyEmailLabel: string;
+	copiedLabel: string;
+	successMessage: string;
+	errorGeneric: string;
+	errorInvalidEmail: string;
+}
+export interface ContactContent {
+	eyebrow: string;
+	heading: string;
+	headingWithName: string;
+	headingWithEmail: string;
+	intro: string;
+	form: ContactFormContent;
 }
 
 export interface FooterContent {

@@ -3,7 +3,6 @@
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import Logo from '$lib/components/ui/Logo.svelte';
 	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
-	import Field from '$lib/components/ui/Field.svelte';
 	import FooterColumn from './FooterColumn.svelte';
 	import { navContent, siteContent, footerContent, newsletterContent } from '$lib/content';
 
@@ -93,7 +92,7 @@
 			</FooterColumn>
 
 			<FooterColumn heading={footerContent.headings.sayHello}>
-				<div id="contact" class="space-y-2">
+				<div class="space-y-2">
 					<ArrowLink
 						href={`mailto:${siteContent.email}`}
 						label={siteContent.email}
@@ -140,7 +139,7 @@
 				</Heading>
 			</div>
 
-			<div class="w-full sm:max-w-sm sm:justify-self-end">
+			<div class="w-full  sm:justify-self-end">
 				{#if success}
 					<Heading level={4} size="sm" tone="brand">{newsletterContent.successMessage}</Heading>
 				{:else}
@@ -155,12 +154,25 @@
 							aria-hidden="true"
 						/>
 						<div class="flex-1">
-							<Field
-								label={newsletterContent.heading}
-								type="email"
-								placeholder={newsletterContent.emailPlaceholder}
-								bind:value={email}
-							/>
+							<label class=" block">
+								<Heading
+									level={4}
+									tag="span"
+									size="sm"
+									sizeMd="lg"
+									weight="medium"
+									balance={false}
+									class="mb-1.5 block"
+								>
+									{newsletterContent.heading}
+								</Heading>
+								<input
+									type="email"
+									placeholder={newsletterContent.emailPlaceholder}
+									bind:value={email}
+									class="w-full border-b-2 border-ink bg-transparent px-0 py-2.5 text-base font-medium text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
+								/>
+							</label>
 						</div>
 						<ArrowLink type="submit" label={newsletterContent.submitLabel} arrow={false} {loading} disabled={loading} class="mb-0.5" />
 					</form>

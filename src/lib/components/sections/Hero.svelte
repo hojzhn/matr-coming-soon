@@ -23,7 +23,7 @@
 				<img
 					src={brand.src}
 					alt={brand.name}
-					class="h-6 w-auto shrink-0 opacity-60 brightness-0 invert transition-opacity hover:opacity-100"
+					class="h-4 md:h-6 w-auto shrink-0 opacity-60 brightness-0 invert transition-opacity hover:opacity-100"
 				/>
 			{/each}
 		</div>

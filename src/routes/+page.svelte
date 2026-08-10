@@ -5,7 +5,9 @@
 	import Hero from '$lib/components/sections/Hero.svelte';
 	import Relaunch from '$lib/components/sections/Relaunch.svelte';
 	import OrderSection from '$lib/components/sections/OrderSection.svelte';
+	import Gallery from '$lib/components/sections/Gallery.svelte';
 	import Testimonials from '$lib/components/sections/Testimonials.svelte';
+	import Contact from '$lib/components/sections/Contact.svelte';
 
 	let { data } = $props();
 </script>
@@ -16,8 +18,13 @@
 <main>
 	<Hero />
 	<Relaunch />
+	<div class="w-full bg-brand h-16 flex items-center justify-center">(dashed line)</div>
 	<OrderSection formToken={data.formToken} />
+		<div class="w-full bg-brand h-16 flex items-center justify-center">(dashed line)</div>
+	<Gallery />
+	<div class="w-full h-screen bg-gray-400"></div>
 	<Testimonials />
+	<!-- <Contact formToken={data.formToken} /> -->
 </main>
 
 <Footer formToken={data.formToken} />

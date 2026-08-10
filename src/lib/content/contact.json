@@ -1,0 +1,22 @@
+{
+  "eyebrow": "Get in touch",
+  "heading": "Let's talk.",
+  "headingWithName": "Hi, {name}!",
+  "headingWithEmail": "Can't wait.",
+  "intro": "Got a project in mind?\nBusiness propositions? \nTell us about it! \nWe'll get back to you as soon as we can.",
+  "form": {
+    "nameLabel": "Name",
+    "namePlaceholder": "Jane Doe",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Tell us about your project...",
+    "submitLabel": "Send message",
+    "submitLoadingLabel": "Sending...",
+    "copyEmailLabel": "Copy email",
+    "copiedLabel": "Copied!",
+    "successMessage": "Thanks. We'll be in touch soon.",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errorInvalidEmail": "That email doesn't look right!"
+  }
+}

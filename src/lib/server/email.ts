@@ -85,6 +85,26 @@ export function sendOrderNotification(args: OrderNotificationArgs) {
 	});
 }
 
+export function sendContactNotification(args: { name: string; email: string; message: string }) {
+	const to = env.ORDER_NOTIFICATION_EMAIL;
+	if (!to) {
+		console.error('ORDER_NOTIFICATION_EMAIL is not set.');
+		return Promise.resolve({ ok: false, error: 'ORDER_NOTIFICATION_EMAIL is not set.' });
+	}
+
+	const table =
+		row('Name', escapeHtml(args.name)) +
+		row('Email', `<a href="mailto:${escapeHtml(args.email)}" style="color:#0b8a3f">${escapeHtml(args.email)}</a>`) +
+		row('Message', escapeHtml(args.message).replace(/\n/g, '<br>'));
+
+	return send({
+		to,
+		replyTo: args.email,
+		subject: `New message from ${args.name}`,
+		html: wrap('New contact message', 'A new message came in through the matr labs contact form.', table)
+	});
+}
+
 export function sendNewsletterNotification(args: { email: string }) {
 	const to = env.ORDER_NOTIFICATION_EMAIL;
 	if (!to) {

@@ -11,7 +11,7 @@
     "quantityLabel": "Quantity",
     "uploadLabel": "Click to upload artwork",
     "uploadHint": "JPG, PNG, or PDF, up to 50MB",
-    "uploadDpiNote": "300 DPI or higher recommended for best print quality.",
+    "uploadDpiNote": "150 DPI or higher recommended for best print quality.",
     "uploadChangeLabel": "Change file",
     "uploadRemoveLabel": "Remove",
     "submitLabel": "Proceed to checkout",

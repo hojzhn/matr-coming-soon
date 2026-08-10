@@ -22,12 +22,8 @@
 	});
 </script>
 
-<Section id="testimonials" tone="canvas" contained={false} fullHeight>
-	<Container class="mb-6">
-		<Heading level={5} tag="p" eyebrow uppercase>
-			{testimonialsContent.postsLabel}
-		</Heading>
-	</Container>
+<Section id="testimonials" tone="canvas" contained={false}>
+
 
 	<div class="no-scrollbar flex snap-x snap-proximity gap-4 overflow-x-auto px-container pb-2">
 		{#each testimonialsContent.posts as post, i (i)}
