@@ -1,17 +1,17 @@
 {
-	"headings": {
-		"connect": "Connect",
-		"sayHello": "Say hello",
-		"localTime": "Local time",
-		"index": "Index"
-	},
-	"social": [
-		{ "label": "Instagram", "href": "https://instagram.com/" },
-		{ "label": "X / Twitter", "href": "https://twitter.com/" },
-		{ "label": "LinkedIn", "href": "https://www.linkedin.com/company/" }
-	],
-	"contactEmail": "hello@matrlabs.com",
-	"address": { "city": "Brooklyn", "region": "NY" },
-	"localTime": { "timeZone": "America/New_York" },
-	"legal": { "rights": "All rights reserved" }
+  "headings": {
+    "connect": "Connect",
+    "sayHello": "Say hello",
+    "localTime": "Local time",
+    "index": "Index"
+  },
+  "social": [
+    { "label": "Instagram", "href": "https://instagram.com/" },
+    { "label": "X / Twitter", "href": "https://twitter.com/" },
+    { "label": "LinkedIn", "href": "https://www.linkedin.com/company/" }
+  ],
+  "contactEmail": "hello@matr.art",
+  "address": { "city": "Brooklyn", "region": "NY" },
+  "localTime": { "timeZone": "America/New_York" },
+  "legal": { "rights": "All rights reserved" }
 }
