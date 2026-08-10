@@ -14,7 +14,7 @@
 	</Container>
 
 	<Container>
-	<div class="relative my-16 aspect-square md:aspect-video w-full bg-fill-soft md:my-24">
+	<div class="relative my-16 aspect-square md:aspect-video w-full bg-gray-400 md:my-24">
 		<div class="absolute inset-0 flex items-center justify-center">
 			<Heading level={5} tag="p" eyebrow uppercase>
 				Image placeholder

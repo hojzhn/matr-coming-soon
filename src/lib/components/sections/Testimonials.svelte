@@ -66,23 +66,5 @@
 		{/each}
 	</div>
 
-	<Container>
-		<div class="mt-12">
-			<Heading level={5} tag="p" eyebrow uppercase>
-				{testimonialsContent.artistsLabel}
-			</Heading>
-			<p class="mt-3 text-sm leading-relaxed text-ink-muted">
-				{testimonialsContent.artists.join(', ')}
-			</p>
-		</div>
 
-		<div class="mt-8">
-			<Heading level={5} tag="p" eyebrow uppercase>
-				{testimonialsContent.pressLabel}
-			</Heading>
-			<p class="mt-3 text-sm text-ink-muted">
-				{testimonialsContent.press.join(' · ')}
-			</p>
-		</div>
-	</Container>
 </Section>

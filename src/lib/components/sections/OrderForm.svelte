@@ -152,18 +152,7 @@
 </script>
 
 <div>
-	<Heading level={2} size="2xl" leading="tight">{formHeading}</Heading>
-	<Heading
-			level={4}
-			tag="p"
-			size="base"
-			sizeMd="lg"
-			weight="medium"
-			tracking="tight"
-			tone="ink"
-			class="md:max-w-2xl mt-4 mb-16"
-		>{orderContent.form.formDesc}</Heading>
-
+	
 	<form class="mt-8 grid gap-10 md:grid-cols-2" {onsubmit}>
 		<input
 			type="text"
