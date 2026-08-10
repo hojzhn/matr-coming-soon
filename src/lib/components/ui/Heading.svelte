@@ -24,6 +24,7 @@
 		tone,
 		eyebrow = false,
 		uppercase = false,
+		balance = true,
 		class: className,
 		children
 	}: {
@@ -38,6 +39,7 @@
 		tone?: HeadingTone;
 		eyebrow?: boolean;
 		uppercase?: boolean;
+		balance?: boolean;
 		class?: string;
 		children: Snippet;
 	} = $props();
@@ -115,7 +117,8 @@
 <svelte:element
 	this={Tag}
 	class={cn(
-		'font-sans text-balance',
+		'font-sans whitespace-pre-line',
+		balance && 'text-balance',
 		sizes[resolvedSize],
 		sizeMd && mdSizes[sizeMd],
 		weights[resolvedWeight],

@@ -165,7 +165,7 @@
 		/>
 
 		<div>
-			<Heading level={5} tag="p" eyebrow uppercase class="mb-1.5">Artwork</Heading>
+			<Heading level={5} tag="p" eyebrow uppercase class="mb-4">Artwork</Heading>
 			<div class="relative aspect-square w-full overflow-hidden bg-fill-soft/60">
 				<button
 					type="button"
@@ -237,8 +237,7 @@
 				bind:value={projectName}
 			/>
 
-			<div>
-				<Heading level={5} tag="p" eyebrow class="mb-1.5">{orderContent.form.sizeLabel}</Heading>
+			<Field label={orderContent.form.sizeLabel}>
 				<div class="grid grid-cols-2 gap-2">
 					{#each sizePresets as preset, i (preset.label)}
 						{@const active = !useCustomSize && selectedPreset === i}
@@ -285,10 +284,9 @@
 						{orderContent.form.errorMaxSize}
 					</Heading>
 				{/if}
-			</div>
+			</Field>
 
-			<div>
-				<Heading level={5} tag="span" eyebrow uppercase class="mb-1.5 block">{orderContent.form.finishLabel}</Heading>
+			<Field label={orderContent.form.finishLabel}>
 				<select
 					bind:value={finishId}
 					class="w-full border-b-2 border-ink bg-transparent px-0 py-2.5 text-base font-medium text-ink outline-none transition-colors focus:border-brand"
@@ -297,10 +295,9 @@
 						<option value={opt.id}>{opt.label} +{formatPrice(opt.priceDeltaCents)}</option>
 					{/each}
 				</select>
-			</div>
+			</Field>
 
-			<div>
-				<Heading level={5} tag="span" eyebrow uppercase class="mb-1.5 block">{orderContent.form.quantityLabel}</Heading>
+			<Field label={orderContent.form.quantityLabel}>
 				<input
 					type="number"
 					min="1"
@@ -308,7 +305,7 @@
 					bind:value={quantity}
 					class="w-full border-b-2 border-ink bg-transparent px-0 py-2.5 text-base font-medium text-ink outline-none transition-colors [appearance:textfield] focus:border-brand [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
 				/>
-			</div>
+			</Field>
 
 			<div class="border-t border-line pt-4">
 				<div class="flex items-center justify-between">

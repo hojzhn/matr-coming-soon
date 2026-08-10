@@ -9,7 +9,7 @@
 		<Heading level={1} size="hero" tone="surface" align="center">
 			{heroContent.headline}
 		</Heading>
-		<Heading level={2} tag="p" size="sm" sizeMd="md" weight="normal" tone="muted" align="center" class="mt-6 max-w-xl">
+		<Heading level={2} tag="p" size="sm" sizeMd="md" weight="medium" tone="muted" align="center" class="mt-6 max-w-xl">
 			{heroContent.subheadline}
 		</Heading>
 	</div>

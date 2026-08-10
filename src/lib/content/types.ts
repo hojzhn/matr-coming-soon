@@ -66,6 +66,10 @@ export interface StrengthsContent {
 	heading: string;
 	intro: string;
 	items: Strength[];
+	process: {
+		heading: string;
+		body: string;
+	};
 }
 
 export interface SocialPost {

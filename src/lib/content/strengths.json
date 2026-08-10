@@ -1,21 +1,25 @@
 {
   "heading": "Thicc. Glowing. Authentic.",
-  "intro": "We build every print to actually feel like something, not just look like something on a screen.",
+  "intro": "Meet our fat, glossy, oil-slick print, rendered on real linen with real oil medium. It sure hits different in person than it does on your feed.",
   "items": [
     {
       "icon": "layers",
-      "title": "Real thickness",
-      "body": "We use a special medium that builds a genuine, dimensional thickness you can see and feel, just like oil painting."
+      "title": "Real depth",
+      "body": "Every print is done on wet surface. We use the medium that's used for traditional oil paint, giving each print that same buttery glow."
     },
     {
       "icon": "droplet",
       "title": "Oil-based ink",
-      "body": "We print with oil ink instead of standard pigment. That's what gives it the painterly finish."
+      "body": "We print with oil ink used for high-end giclée instead of standard pigment. That's what gives it the deep, painterly finish."
     },
     {
       "icon": "texture",
       "title": "Loose Belgian linen",
-      "body": "Every piece prints on loose Belgian linen. Frame and hang it as-is or stretch it yourself. Your call."
+      "body": "Every piece prints on loose Belgian linen. Frame and hang it as-is or stretch it yourself. Your call! (Or, we can do it for you as well.)"
     }
-  ]
+  ],
+  "process": {
+    "heading": "Fabulously handcrafted.",
+    "body": "We come out of art production, where we've been builing robotics and machines for artists. Starting from the old-school printing technology, we ended up with something fresh and we'd like to share it with you guys. \n\nWe built the machine ourselves in our own shop, and we run it by hand. We cut every piece of linen, apply the medium and finish each surface to decide when it is done. There is no automated line here and no catalog part we could have ordered. What we have is a machine we assembled, a process we worked out through failed prints, and hands that know what the linen should feel like at each stage.\n\n Every piece is handmade for you; a special gift from our studio."
+  }
 }

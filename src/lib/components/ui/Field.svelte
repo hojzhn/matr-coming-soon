@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 	import Heading from './Heading.svelte';
 
@@ -10,7 +11,8 @@
 		required = false,
 		autocomplete,
 		error = '',
-		onblur
+		onblur,
+		children
 	}: {
 		label: string;
 		value?: string;
@@ -20,22 +22,27 @@
 		autocomplete?: HTMLInputAttributes['autocomplete'];
 		error?: string;
 		onblur?: (e: FocusEvent) => void;
+		children?: Snippet;
 	} = $props();
 </script>
 
-<label class="block">
+<svelte:element this={children ? 'div' : 'label'} class="block">
 	<Heading level={5} tag="span" eyebrow uppercase class="mb-1.5 block">{label}</Heading>
-	<input
-		{type}
-		{placeholder}
-		{required}
-		{autocomplete}
-		{value}
-		oninput={(e) => (value = e.currentTarget.value)}
-		{onblur}
-		class="w-full border-b-2 border-ink bg-transparent px-0 py-2.5 text-base font-medium text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
-	/>
+	{#if children}
+		{@render children()}
+	{:else}
+		<input
+			{type}
+			{placeholder}
+			{required}
+			{autocomplete}
+			{value}
+			oninput={(e) => (value = e.currentTarget.value)}
+			{onblur}
+			class="w-full border-b-2 border-ink bg-transparent px-0 py-2.5 text-base font-medium text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
+		/>
+	{/if}
 	{#if error}
 		<span class="mt-1 block text-xs text-danger">{error}</span>
 	{/if}
-</label>
+</svelte:element>
