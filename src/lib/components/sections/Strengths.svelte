@@ -91,7 +91,7 @@
 </Container>
 		<div class="mt-3 grid grid-cols-2 gap-1 md:mt-0 md:block md:gap-0">
 			<div
-				class="relative aspect-4/5 w-full border border-line bg-gray-300 md:absolute md:left-12 md:top-[10%] md:w-[50%] md:max-w-120"
+				class="relative aspect-4/5 w-full border border-line bg-gray-300 md:absolute md:left-12 md:top-[10%] md:w-[24%] md:max-w-120"
 		
 			>
 				<div class="absolute inset-0 flex items-center justify-center">
@@ -110,7 +110,7 @@
 			</div>
 
 			<div
-				class="relative aspect-2/3 w-full border border-line bg-gray-300 md:absolute md:right-[12vw] md:bottom-0 md:w-[20%] md:max-w-64"
+				class="relative aspect-2/3 w-full border border-line bg-gray-300 md:absolute md:right-[5vw] md:-bottom-4 md:w-[18%] md:max-w-64"
 			
 			>
 				<div class="absolute inset-0 flex items-center justify-center">
@@ -133,8 +133,8 @@
 	<Container>
 <div class="mt-4">
 	<Heading level={2} size="2xl">{strengthsContent.process.heading}</Heading>
-	<div class="flex flex-col items-start md:items-end gap-8 mt-16 md:flex-row md:ml-50">
-	<div class="aspect-2/3 w-40 shrink-0 bg-gray-400 sm:w-56 md:w-100"></div>
+	<div class="flex flex-col items-start lg:items-end gap-8 mt-16 lg:flex-row xl:ml-50">
+	<div class="aspect-2/3 w-60 shrink-0 bg-gray-400 sm:w-56 lg:w-100"></div>
 
 	<Heading level={2} tag="p" size="sm" sizeMd="lg" weight="medium" balance={false} >
 		{strengthsContent.process.body}

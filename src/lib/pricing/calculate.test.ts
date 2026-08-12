@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { calculateOrderTotal, calculatePriceCents, cmToInches, findFinish, toInches } from './calculate';
-import type { FinishOption, PricingConfig } from './config';
+import { calculateOrderTotal, calculatePriceCents, cmToInches, resolveAddOns, toInches } from './calculate';
+import { pricingConfig } from './config';
+import type { AddOnOption, PricingConfig } from './config';
 
 const cfg: PricingConfig = {
 	minWidthIn: 8,
@@ -14,9 +15,9 @@ const cfg: PricingConfig = {
 	]
 };
 
-const finishes: FinishOption[] = [
-	{ id: 'matte', label: 'Matte', priceDeltaCents: 0 },
-	{ id: 'glossy', label: 'Glossy', priceDeltaCents: 1500 }
+const options: AddOnOption[] = [
+	{ id: 'varnish', label: 'Varnish', priceDeltaCents: 1500 },
+	{ id: 'stretched', label: 'Stretched', priceDeltaCents: 0 }
 ];
 
 describe('calculatePriceCents', () => {
@@ -60,37 +61,79 @@ describe('calculatePriceCents', () => {
 	});
 });
 
-describe('findFinish', () => {
-	it('finds a finish by id', () => {
-		expect(findFinish('glossy', finishes)).toEqual(finishes[1]);
+describe('resolveAddOns', () => {
+	it('resolves known ids to their option objects', () => {
+		expect(resolveAddOns(['varnish'], options)).toEqual([options[0]]);
 	});
 
-	it('falls back to the first option for an unknown id', () => {
-		expect(findFinish('nonexistent', finishes)).toEqual(finishes[0]);
+	it('ignores unknown ids', () => {
+		expect(resolveAddOns(['nonexistent'], options)).toEqual([]);
+	});
+
+	it('dedupes repeated ids', () => {
+		expect(resolveAddOns(['varnish', 'varnish'], options)).toEqual([options[0]]);
+	});
+
+	it('resolves multiple ids in order, skipping duplicates and unknowns', () => {
+		expect(resolveAddOns(['stretched', 'nonexistent', 'varnish'], options)).toEqual([
+			options[1],
+			options[0]
+		]);
 	});
 });
 
 describe('calculateOrderTotal', () => {
-	it('adds the finish delta to the base price for the unit price', () => {
-		const result = calculateOrderTotal(8, 10, 'glossy', 1, cfg, finishes);
+	it('adds selected add-on deltas to the base price for the unit price', () => {
+		const result = calculateOrderTotal(8, 10, ['varnish'], 1, cfg, options);
 		expect(result.basePriceCents).toBe(12900);
+		expect(result.unitPriceCents).toBe(12900 + 1500);
+		expect(result.options).toEqual([options[0]]);
+	});
+
+	it('has no price impact from a zero-delta add-on', () => {
+		const result = calculateOrderTotal(8, 10, ['stretched'], 1, cfg, options);
+		expect(result.unitPriceCents).toBe(12900);
+	});
+
+	it('sums multiple add-on deltas', () => {
+		const result = calculateOrderTotal(8, 10, ['varnish', 'stretched'], 1, cfg, options);
 		expect(result.unitPriceCents).toBe(12900 + 1500);
 	});
 
+	it('has an empty options list and unchanged price when none are selected', () => {
+		const result = calculateOrderTotal(8, 10, [], 1, cfg, options);
+		expect(result.options).toEqual([]);
+		expect(result.unitPriceCents).toBe(12900);
+	});
+
 	it('multiplies the unit price by quantity for the total', () => {
-		const result = calculateOrderTotal(8, 10, 'matte', 3, cfg, finishes);
+		const result = calculateOrderTotal(8, 10, [], 3, cfg, options);
 		expect(result.quantity).toBe(3);
 		expect(result.totalPriceCents).toBe(12900 * 3);
 	});
 
 	it('clamps quantity below 1 up to 1', () => {
-		const result = calculateOrderTotal(8, 10, 'matte', 0, cfg, finishes);
+		const result = calculateOrderTotal(8, 10, [], 0, cfg, options);
 		expect(result.quantity).toBe(1);
 	});
 
 	it('rounds a fractional quantity', () => {
-		const result = calculateOrderTotal(8, 10, 'matte', 2.4, cfg, finishes);
+		const result = calculateOrderTotal(8, 10, [], 2.4, cfg, options);
 		expect(result.quantity).toBe(2);
+	});
+});
+
+describe('pricingConfig checkpoint prices', () => {
+	it('prices 12x12 at $39', () => {
+		expect(calculatePriceCents(12, 12, pricingConfig).priceCents).toBe(3900);
+	});
+
+	it('prices 24x24 at $109', () => {
+		expect(calculatePriceCents(24, 24, pricingConfig).priceCents).toBe(10900);
+	});
+
+	it('prices 36x36 at $189', () => {
+		expect(calculatePriceCents(36, 36, pricingConfig).priceCents).toBe(18900);
 	});
 });
 

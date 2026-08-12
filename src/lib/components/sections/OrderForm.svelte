@@ -4,9 +4,17 @@
 	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import Icon, { type IconName } from '$lib/components/ui/Icon.svelte';
+	import StretchDiagram from '$lib/components/ui/StretchDiagram.svelte';
 	import { orderContent } from '$lib/content';
-	import { sizePresets, finishOptions, MAX_PRINT_SIDE_IN } from '$lib/pricing/config';
-	import { calculateOrderTotal, calculatePriceCents, formatPrice, toInches } from '$lib/pricing/calculate';
+	import {
+		addOnOptions,
+		sizingModes,
+		NORMAL_SIZING_MODE,
+		TO_STRETCH_SIZING_MODE,
+		STRETCH_SERVICE_OPTION_ID,
+		MAX_PRINT_SIDE_IN
+	} from '$lib/pricing/config';
+	import { calculateOrderTotal, resolveAddOns, formatPrice, toInches } from '$lib/pricing/calculate';
 	import { cart } from '$lib/cart/cart.svelte';
 	import { cn } from '$lib/cn';
 
@@ -16,29 +24,26 @@
 	let projectName = $state('');
 	let error = $state('');
 
-	let selectedPreset = $state(0);
-	let useCustomSize = $state(false);
 	let customWidth = $state('');
 	let customHeight = $state('');
 	let customUnit = $state<'in' | 'cm'>('in');
-	let finishId = $state(finishOptions[0].id);
+	let selectedOptionIds = $state<string[]>([]);
+	let pendingOptionId = $state('');
+	let sizingMode = $state(NORMAL_SIZING_MODE);
 	let quantity = $state('1');
 
 	let fileInput = $state<HTMLInputElement>();
 	let file = $state<File | null>(null);
 	let previewUrl = $state<string | null>(null);
+	let imageAspect = $state<number | null>(null);
 	let fileError = $state('');
 	let dragOver = $state(false);
 
 	const activeSize = $derived.by(() => {
-		if (useCustomSize) {
-			const w = Number(customWidth);
-			const h = Number(customHeight);
-			if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) return null;
-			return { widthIn: toInches(w, customUnit), heightIn: toInches(h, customUnit) };
-		}
-		const preset = sizePresets[selectedPreset];
-		return { widthIn: preset.widthIn, heightIn: preset.heightIn };
+		const w = Number(customWidth);
+		const h = Number(customHeight);
+		if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) return null;
+		return { widthIn: toInches(w, customUnit), heightIn: toInches(h, customUnit) };
 	});
 
 	const exceedsMaxSize = $derived(
@@ -47,16 +52,30 @@
 			: false
 	);
 
+	const availableOptions = $derived(addOnOptions.filter((o) => !selectedOptionIds.includes(o.id)));
+	const selectedOptions = $derived(resolveAddOns(selectedOptionIds));
+
 	const total = $derived.by(() => {
 		if (!activeSize || exceedsMaxSize) return null;
-		return calculateOrderTotal(activeSize.widthIn, activeSize.heightIn, finishId, Number(quantity) || 1);
+		return calculateOrderTotal(activeSize.widthIn, activeSize.heightIn, selectedOptionIds, Number(quantity) || 1);
 	});
 
 	const boundingBoxStyle = $derived.by(() => {
 		if (!activeSize) return 'width:100%;height:100%;';
 		const { widthIn: w, heightIn: h } = activeSize;
-		const ratio = `aspect-ratio:${w}/${h};`;
-		return w >= h ? `width:100%;${ratio}` : `height:100%;${ratio}`;
+		const printAspect = w / h;
+
+		if (!imageAspect) {
+			const ratio = `aspect-ratio:${w}/${h};`;
+			return printAspect >= 1 ? `width:100%;${ratio}` : `height:100%;${ratio}`;
+		}
+
+		const imgW = imageAspect >= 1 ? 100 : 100 * imageAspect;
+		const imgH = imageAspect >= 1 ? 100 / imageAspect : 100;
+		const boxW = printAspect >= imageAspect ? imgW : imgH * printAspect;
+		const boxH = printAspect >= imageAspect ? imgW / printAspect : imgH;
+
+		return `width:${boxW}%;height:${boxH}%;`;
 	});
 
 	const formHeading = $derived(
@@ -65,18 +84,30 @@
 			: orderContent.form.formHeading
 	);
 
-	function presetPrice(widthIn: number, heightIn: number): number {
-		return calculatePriceCents(widthIn, heightIn).priceCents;
+	function addOption() {
+		if (!pendingOptionId || selectedOptionIds.includes(pendingOptionId)) return;
+		selectedOptionIds = [...selectedOptionIds, pendingOptionId];
+		if (pendingOptionId === STRETCH_SERVICE_OPTION_ID) {
+			sizingMode = TO_STRETCH_SIZING_MODE;
+		}
+		pendingOptionId = '';
 	}
 
-	function selectPreset(i: number) {
-		selectedPreset = i;
-		useCustomSize = false;
+	function removeOption(id: string) {
+		selectedOptionIds = selectedOptionIds.filter((optionId) => optionId !== id);
+	}
+
+	function selectSizingMode(id: string) {
+		sizingMode = id;
+		if (id !== TO_STRETCH_SIZING_MODE) {
+			selectedOptionIds = selectedOptionIds.filter((optionId) => optionId !== STRETCH_SERVICE_OPTION_ID);
+		}
 	}
 
 	function setFile(next: File | null) {
 		if (previewUrl) URL.revokeObjectURL(previewUrl);
 		previewUrl = null;
+		imageAspect = null;
 		fileError = '';
 		file = null;
 		if (!next) return;
@@ -88,6 +119,11 @@
 
 		file = next;
 		if (next.type.startsWith('image/')) previewUrl = URL.createObjectURL(next);
+	}
+
+	function onPreviewLoad(e: Event) {
+		const img = e.currentTarget as HTMLImageElement;
+		imageAspect = img.naturalWidth / img.naturalHeight;
 	}
 
 	function onFileChange(e: Event) {
@@ -107,12 +143,12 @@
 
 	function resetForm() {
 		projectName = '';
-		selectedPreset = 0;
-		useCustomSize = false;
 		customWidth = '';
 		customHeight = '';
 		customUnit = 'in';
-		finishId = finishOptions[0].id;
+		selectedOptionIds = [];
+		pendingOptionId = '';
+		sizingMode = NORMAL_SIZING_MODE;
 		quantity = '1';
 		file = null;
 		previewUrl = null;
@@ -136,12 +172,13 @@
 
 		const result = cart.add({
 			projectName,
-			rawWidth: useCustomSize ? Number(customWidth) : sizePresets[selectedPreset].widthIn,
-			rawHeight: useCustomSize ? Number(customHeight) : sizePresets[selectedPreset].heightIn,
-			rawUnit: useCustomSize ? customUnit : 'in',
+			rawWidth: Number(customWidth),
+			rawHeight: Number(customHeight),
+			rawUnit: customUnit,
 			widthIn: activeSize.widthIn,
 			heightIn: activeSize.heightIn,
-			finishId,
+			optionIds: selectedOptionIds,
+			sizingMode,
 			quantity: Number(quantity) || 1,
 			fileName: file?.name ?? null,
 			previewUrl
@@ -178,7 +215,12 @@
 					)}
 				>
 					{#if previewUrl}
-						<img src={previewUrl} alt="" class="absolute inset-0 h-full w-full object-cover" />
+						<img
+							src={previewUrl}
+							alt=""
+							onload={onPreviewLoad}
+							class="absolute inset-0 h-full w-full object-contain"
+						/>
 					{:else if file}
 						<Icon name="file" class="h-8 w-8 text-ink-muted" />
 						<Heading level={5} tag="span" size="xs" tone="muted" class="max-w-[80%] truncate">
@@ -233,46 +275,7 @@
 			/>
 
 			<Field label={orderContent.form.sizeLabel}>
-				<div class="grid grid-cols-2 gap-2">
-					{#each sizePresets as preset, i (preset.label)}
-						{@const active = !useCustomSize && selectedPreset === i}
-						<button
-							type="button"
-							onclick={() => selectPreset(i)}
-							aria-pressed={active}
-							class={cn(
-								'border px-3 py-2 text-left transition-colors',
-								active ? 'border-ink bg-ink' : 'border-line hover:border-ink'
-							)}
-						>
-							<Heading level={4} tag="span" size="sm" weight="medium" tone={active ? 'surface' : 'ink'} class="block">
-								{preset.label}
-							</Heading>
-							<Heading level={5} tag="span" size="xs" tone={active ? 'surface' : 'muted'} class="block">
-								{formatPrice(presetPrice(preset.widthIn, preset.heightIn))}
-							</Heading>
-						</button>
-					{/each}
-					<button
-						type="button"
-						onclick={() => (useCustomSize = true)}
-						aria-pressed={useCustomSize}
-						class={cn(
-							'col-span-2 border px-3 py-2 text-left transition-colors',
-							useCustomSize ? 'border-ink bg-ink' : 'border-line hover:border-ink'
-						)}
-					>
-						<Heading level={4} tag="span" size="sm" weight="medium" tone={useCustomSize ? 'surface' : 'ink'}>
-							{orderContent.form.customSizeLabel}
-						</Heading>
-					</button>
-				</div>
-
-				{#if useCustomSize}
-					<div class="mt-3">
-						<SizeInput bind:width={customWidth} bind:height={customHeight} bind:unit={customUnit} />
-					</div>
-				{/if}
+				<SizeInput bind:width={customWidth} bind:height={customHeight} bind:unit={customUnit} />
 
 				{#if exceedsMaxSize}
 					<Heading level={5} tag="p" size="xs" class="mt-1.5 text-danger">
@@ -281,15 +284,64 @@
 				{/if}
 			</Field>
 
-			<Field label={orderContent.form.finishLabel}>
+			<Field label={orderContent.form.sizingModeLabel}>
+				<div class="grid grid-cols-2 gap-2">
+					{#each sizingModes as mode (mode.id)}
+						{@const active = sizingMode === mode.id}
+						<button
+							type="button"
+							onclick={() => selectSizingMode(mode.id)}
+							aria-pressed={active}
+							class={cn(
+								'border px-3 py-2 text-left transition-colors',
+								active ? 'border-ink bg-ink' : 'border-line hover:border-ink'
+							)}
+						>
+							<Heading level={4} tag="span" size="sm" weight="medium" tone={active ? 'surface' : 'ink'}>
+								{mode.label}
+							</Heading>
+						</button>
+					{/each}
+				</div>
+
+				{#if sizingMode === TO_STRETCH_SIZING_MODE}
+					<StretchDiagram />
+				{/if}
+			</Field>
+
+			<Field label={orderContent.form.optionsLabel}>
 				<select
-					bind:value={finishId}
+					bind:value={pendingOptionId}
+					onchange={addOption}
 					class="w-full border-b-2 border-ink bg-transparent px-0 py-2.5 text-base font-medium text-ink outline-none transition-colors focus:border-brand"
 				>
-					{#each finishOptions as opt (opt.id)}
-						<option value={opt.id}>{opt.label} +{formatPrice(opt.priceDeltaCents)}</option>
+					<option value="" disabled>{orderContent.form.optionsPlaceholder}</option>
+					{#each availableOptions as opt (opt.id)}
+						<option value={opt.id}>
+							{opt.label}{opt.priceDeltaCents ? ` +${formatPrice(opt.priceDeltaCents)}` : ''}
+						</option>
 					{/each}
 				</select>
+
+				{#if selectedOptions.length}
+					<div class="mt-2 flex flex-col gap-1.5">
+						{#each selectedOptions as opt (opt.id)}
+							<div class="flex items-center justify-between gap-2">
+								<Heading level={5} tag="span" size="xs">
+									{opt.label} ({formatPrice(opt.priceDeltaCents)})
+								</Heading>
+								<button
+									type="button"
+									onclick={() => removeOption(opt.id)}
+									aria-label={orderContent.form.optionsRemoveLabel}
+									class="shrink-0 text-ink-faint transition-colors hover:text-ink"
+								>
+									<Icon name="close" class="h-3.5 w-3.5" />
+								</button>
+							</div>
+						{/each}
+					</div>
+				{/if}
 			</Field>
 
 			<Field label={orderContent.form.quantityLabel}>
@@ -311,8 +363,13 @@
 				</div>
 				{#if total}
 					<Heading level={5} tag="p" size="xs" tone="muted" class="mt-1">
-						{total.quantity} x print ({formatPrice(total.unitPriceCents)}, {total.finish.label})
+						{total.quantity} x {projectName.trim() || orderContent.form.untitledLabel} ({formatPrice(total.basePriceCents)})
 					</Heading>
+					{#each total.options as opt (opt.id)}
+						<Heading level={5} tag="p" size="xs" tone="muted" class="ml-3">
+							- {opt.label} ({formatPrice(opt.priceDeltaCents)})
+						</Heading>
+					{/each}
 				{/if}
 			</div>
 

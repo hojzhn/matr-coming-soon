@@ -2,9 +2,17 @@ import { json, type RequestHandler } from '@sveltejs/kit';
 import { getSupabaseAdmin, PRINT_ORDERS_TABLE } from '$lib/server/supabase';
 import { verifySession, MIN_SUBMIT_MS } from '$lib/server/security';
 import { calculateOrderTotal, toInches, type OrderTotal } from '$lib/pricing/calculate';
-import { finishOptions, MAX_PRINT_SIDE_IN, MAX_CART_ITEMS, MAX_ITEM_QUANTITY } from '$lib/pricing/config';
+import {
+	addOnOptions,
+	sizingModes,
+	NORMAL_SIZING_MODE,
+	TO_STRETCH_SIZING_MODE,
+	STRETCH_SERVICE_OPTION_ID,
+	MAX_PRINT_SIDE_IN,
+	MAX_CART_ITEMS,
+	MAX_ITEM_QUANTITY
+} from '$lib/pricing/config';
 import { createDraftOrder } from '$lib/server/shopify';
-import { sendOrderNotification } from '$lib/server/email';
 
 function fail(error: string, status = 400) {
 	return json({ ok: false, error }, { status });
@@ -12,6 +20,7 @@ function fail(error: string, status = 400) {
 
 interface ValidatedItem {
 	projectName: string;
+	sizingMode: string;
 	total: OrderTotal;
 }
 
@@ -41,13 +50,22 @@ export const POST: RequestHandler = async ({ request }) => {
 		const rawWidth = Number(raw?.rawWidth);
 		const rawHeight = Number(raw?.rawHeight);
 		const rawUnit = raw?.rawUnit === 'cm' ? 'cm' : 'in';
-		const finishId = String(raw?.finishId ?? finishOptions[0].id);
+		const optionIds: string[] = Array.isArray(raw?.optionIds) ? raw.optionIds.map((id: unknown) => String(id)) : [];
+		const sizingMode = String(raw?.sizingMode ?? NORMAL_SIZING_MODE);
 		const quantity = Math.min(MAX_ITEM_QUANTITY, Math.max(1, Math.round(Number(raw?.quantity) || 1)));
 
 		if (!Number.isFinite(rawWidth) || !Number.isFinite(rawHeight) || rawWidth <= 0 || rawHeight <= 0) {
 			return fail('Please provide a valid size.');
 		}
-		if (!finishOptions.some((f) => f.id === finishId)) return fail('Please choose a valid finish.');
+		if (!optionIds.every((id) => addOnOptions.some((o) => o.id === id))) {
+			return fail('Please choose valid options.');
+		}
+		if (!sizingModes.some((m) => m.id === sizingMode)) {
+			return fail('Please choose a valid print size option.');
+		}
+		if (optionIds.includes(STRETCH_SERVICE_OPTION_ID) && sizingMode !== TO_STRETCH_SIZING_MODE) {
+			return fail('The Stretched add-on requires the To Stretch print size.');
+		}
 
 		const widthIn = toInches(rawWidth, rawUnit);
 		const heightIn = toInches(rawHeight, rawUnit);
@@ -56,7 +74,11 @@ export const POST: RequestHandler = async ({ request }) => {
 			return fail(`${MAX_PRINT_SIDE_IN} in is the largest side we can print.`);
 		}
 
-		validated.push({ projectName, total: calculateOrderTotal(widthIn, heightIn, finishId, quantity) });
+		validated.push({
+			projectName,
+			sizingMode,
+			total: calculateOrderTotal(widthIn, heightIn, optionIds, quantity)
+		});
 	}
 
 	const totalPriceCents = validated.reduce((sum, v) => sum + v.total.totalPriceCents, 0);
@@ -77,7 +99,9 @@ export const POST: RequestHandler = async ({ request }) => {
 				width_in: v.total.billableWidthIn,
 				height_in: v.total.billableHeightIn,
 				sq_in: v.total.sqIn,
-				finish: v.total.finish.id,
+				base_price_cents: v.total.basePriceCents,
+				options: v.total.options,
+				sizing_mode: v.sizingMode,
 				quantity: v.total.quantity,
 				unit_price_cents: v.total.unitPriceCents,
 				total_price_cents: v.total.totalPriceCents
@@ -99,7 +123,8 @@ export const POST: RequestHandler = async ({ request }) => {
 				projectName: v.projectName,
 				widthIn: v.total.billableWidthIn,
 				heightIn: v.total.billableHeightIn,
-				finishLabel: v.total.finish.label,
+				options: v.total.options,
+				sizingMode: v.sizingMode,
 				quantity: v.total.quantity,
 				unitPriceCents: v.total.unitPriceCents
 			}))
@@ -113,20 +138,6 @@ export const POST: RequestHandler = async ({ request }) => {
 				shopify_invoice_url: draft.invoiceUrl
 			})
 			.eq('id', inserted.id);
-
-		sendOrderNotification({
-			items: validated.map((v) => ({
-				projectName: v.projectName,
-				widthIn: v.total.billableWidthIn,
-				heightIn: v.total.billableHeightIn,
-				finishLabel: v.total.finish.label,
-				quantity: v.total.quantity,
-				unitPriceCents: v.total.unitPriceCents,
-				totalPriceCents: v.total.totalPriceCents
-			})),
-			totalPriceCents,
-			invoiceUrl: draft.invoiceUrl
-		}).catch((err) => console.error('Order notification failed:', err));
 
 		return json({ ok: true, invoiceUrl: draft.invoiceUrl });
 	} catch (err) {

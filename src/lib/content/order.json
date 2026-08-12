@@ -6,8 +6,13 @@
     "projectNameLabel": "Project name",
     "projectNamePlaceholder": "e.g. Sunset Study #3",
     "sizeLabel": "Size",
-    "customSizeLabel": "Custom",
-    "finishLabel": "Finish",
+    "sizingModeLabel": "How to size the print",
+    "optionsLabel": "Options",
+    "optionsPlaceholder": "Add an option...",
+    "optionsRemoveLabel": "Remove option",
+    "stretchDiagramArtworkLabel": "Artwork",
+    "stretchDiagramOutpaintLabel": "0.5in outpaint; wraps the stretcher edge to avoid a hairline gap",
+    "stretchDiagramMarginLabel": "3in margin; extra canvas stapled to the back",
     "quantityLabel": "Quantity",
     "uploadLabel": "Click to upload artwork",
     "uploadHint": "JPG, PNG, or PDF, up to 50MB",
@@ -16,6 +21,7 @@
     "uploadRemoveLabel": "Remove",
     "addToCartLabel": "Add to cart",
     "totalLabel": "Estimated total",
+    "untitledLabel": "Untitled print",
     "finePrint": [
       {
         "icon": "calendar",

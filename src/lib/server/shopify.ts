@@ -1,4 +1,5 @@
 import { env } from '$env/dynamic/private';
+import { TO_STRETCH_SIZING_MODE } from '$lib/pricing/config';
 
 const MUTATION = `
 	mutation DraftOrderCreate($input: DraftOrderInput!) {
@@ -9,13 +10,24 @@ const MUTATION = `
 	}
 `;
 
+export interface DraftOrderLineItemOption {
+	id: string;
+	label: string;
+	priceDeltaCents: number;
+}
+
 export interface DraftOrderLineItem {
 	projectName?: string;
 	widthIn: number;
 	heightIn: number;
-	finishLabel: string;
+	options: DraftOrderLineItemOption[];
+	sizingMode: string;
 	quantity: number;
 	unitPriceCents: number;
+}
+
+function stretchSpecLabel(sizingMode: string): string {
+	return sizingMode === TO_STRETCH_SIZING_MODE ? 'To Stretch (0.5in outpaint, 3in margin)' : 'Normal';
 }
 
 export interface DraftOrderArgs {
@@ -37,7 +49,8 @@ export async function createDraftOrder(args: DraftOrderArgs): Promise<DraftOrder
 	if (!domain || !token) throw new Error('Shopify is not configured.');
 
 	const lineItems = args.items.map((item) => {
-		const title = `Custom Oil Print - ${item.widthIn} x ${item.heightIn} in, ${item.finishLabel}`;
+		const optionsPart = item.options.length ? ` (${item.options.map((o) => o.label).join(', ')})` : '';
+		const title = `Custom Oil Print - ${item.widthIn} x ${item.heightIn} in${optionsPart}`;
 		return {
 			title,
 			quantity: item.quantity,
@@ -51,7 +64,8 @@ export async function createDraftOrder(args: DraftOrderArgs): Promise<DraftOrder
 		args.note ??
 		args.items
 			.map((item) => {
-				const base = `Custom Oil Print - ${item.widthIn} x ${item.heightIn} in, ${item.finishLabel}, Qty: ${item.quantity}`;
+				const optionsPart = item.options.length ? ` (${item.options.map((o) => o.label).join(', ')})` : '';
+				const base = `Custom Oil Print - ${item.widthIn} x ${item.heightIn} in${optionsPart}, Qty: ${item.quantity}, Sizing: ${stretchSpecLabel(item.sizingMode)}`;
 				return item.projectName ? `${base} — ${item.projectName}` : base;
 			})
 			.join('; ');

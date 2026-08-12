@@ -40,9 +40,9 @@
 </script>
 
 <Section tone="surface" width="full" class="py-10 md:py-12">
-	<div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between relative md:-mt-120">
-	<div class="flex flex-col md:flex-row md:items-end gap-12">
-	<div class="relative aspect-square overflow-hidden md:aspect-4/5 md:h-160">
+	<div class="flex flex-col gap-6 xl:flex-row xl:items-end lg:justify-between relative xl:-mt-120">
+	<div class="flex flex-col xl:flex-row xl:items-end gap-12">
+	<div class="relative aspect-video overflow-hidden xl:aspect-4/5 xl:h-160">
 		<canvas
 			bind:this={canvasEl}
 			class="absolute inset-0 h-full w-full text-ink-faint [image-rendering:pixelated]"

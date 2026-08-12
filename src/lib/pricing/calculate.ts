@@ -1,4 +1,4 @@
-import { pricingConfig, finishOptions, type PricingConfig, type FinishOption } from './config';
+import { pricingConfig, addOnOptions, type PricingConfig, type AddOnOption } from './config';
 
 export interface PriceResult {
 	billableWidthIn: number;
@@ -11,8 +11,8 @@ export interface OrderTotal {
 	billableWidthIn: number;
 	billableHeightIn: number;
 	sqIn: number;
-	finish: FinishOption;
 	basePriceCents: number;
+	options: AddOnOption[];
 	unitPriceCents: number;
 	quantity: number;
 	totalPriceCents: number;
@@ -53,29 +53,39 @@ export function formatPrice(cents: number, currency = 'USD'): string {
 	return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(cents / 100);
 }
 
-export function findFinish(finishId: string, options: FinishOption[] = finishOptions): FinishOption {
-	return options.find((f) => f.id === finishId) ?? options[0];
+export function resolveAddOns(optionIds: string[], options: AddOnOption[] = addOnOptions): AddOnOption[] {
+	const seen = new Set<string>();
+	const resolved: AddOnOption[] = [];
+	for (const id of optionIds) {
+		if (seen.has(id)) continue;
+		const match = options.find((o) => o.id === id);
+		if (!match) continue;
+		seen.add(id);
+		resolved.push(match);
+	}
+	return resolved;
 }
 
 export function calculateOrderTotal(
 	widthIn: number,
 	heightIn: number,
-	finishId: string,
+	optionIds: string[],
 	quantity: number,
 	cfg: PricingConfig = pricingConfig,
-	options: FinishOption[] = finishOptions
+	options: AddOnOption[] = addOnOptions
 ): OrderTotal {
 	const base = calculatePriceCents(widthIn, heightIn, cfg);
-	const finish = findFinish(finishId, options);
-	const unitPriceCents = base.priceCents + finish.priceDeltaCents;
+	const selected = resolveAddOns(optionIds, options);
+	const addOnsCents = selected.reduce((sum, o) => sum + o.priceDeltaCents, 0);
+	const unitPriceCents = base.priceCents + addOnsCents;
 	const qty = Math.max(1, Math.round(quantity));
 
 	return {
 		billableWidthIn: base.billableWidthIn,
 		billableHeightIn: base.billableHeightIn,
 		sqIn: base.sqIn,
-		finish,
 		basePriceCents: base.priceCents,
+		options: selected,
 		unitPriceCents,
 		quantity: qty,
 		totalPriceCents: unitPriceCents * qty

@@ -45,8 +45,13 @@ export interface OrderFormContent {
 	projectNameLabel: string;
 	projectNamePlaceholder: string;
 	sizeLabel: string;
-	customSizeLabel: string;
-	finishLabel: string;
+	sizingModeLabel: string;
+	optionsLabel: string;
+	optionsPlaceholder: string;
+	optionsRemoveLabel: string;
+	stretchDiagramArtworkLabel: string;
+	stretchDiagramOutpaintLabel: string;
+	stretchDiagramMarginLabel: string;
 	quantityLabel: string;
 	uploadLabel: string;
 	uploadHint: string;
@@ -55,6 +60,7 @@ export interface OrderFormContent {
 	uploadRemoveLabel: string;
 	addToCartLabel: string;
 	totalLabel: string;
+	untitledLabel: string;
 	finePrint: FinePrintItem[];
 	formHeading: string;
 	formHeadingProjectTemplate: string;

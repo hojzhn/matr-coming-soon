@@ -9,7 +9,8 @@ function makeInput(overrides: Partial<AddCartItemInput> = {}): AddCartItemInput 
 		rawUnit: 'in',
 		widthIn: 8,
 		heightIn: 10,
-		finishId: 'matte',
+		optionIds: [],
+		sizingMode: 'normal',
 		quantity: 1,
 		fileName: null,
 		previewUrl: null,
@@ -28,8 +29,15 @@ describe('CartStore.add', () => {
 
 	it('computes pricing via calculateOrderTotal for the item', () => {
 		const store = new CartStore();
-		store.add(makeInput({ widthIn: 8, heightIn: 10, finishId: 'matte' }));
-		expect(store.items[0].unitPriceCents).toBe(12900);
+		store.add(makeInput({ widthIn: 8, heightIn: 10, optionIds: [] }));
+		expect(store.items[0].unitPriceCents).toBe(3900);
+	});
+
+	it('resolves selected add-ons onto the item', () => {
+		const store = new CartStore();
+		store.add(makeInput({ widthIn: 8, heightIn: 10, optionIds: ['varnish'] }));
+		expect(store.items[0].unitPriceCents).toBe(3900 + 1500);
+		expect(store.items[0].options.map((o) => o.id)).toEqual(['varnish']);
 	});
 
 	it('rejects adding beyond MAX_CART_ITEMS', () => {
@@ -84,9 +92,9 @@ describe('CartStore.updateQuantity', () => {
 describe('CartStore.subtotalCents', () => {
 	it('sums unit price times quantity across items', () => {
 		const store = new CartStore();
-		store.add(makeInput({ widthIn: 8, heightIn: 10, finishId: 'matte', quantity: 2 }));
-		store.add(makeInput({ widthIn: 8, heightIn: 10, finishId: 'glossy', quantity: 1 }));
-		expect(store.subtotalCents).toBe(12900 * 2 + (12900 + 1500));
+		store.add(makeInput({ widthIn: 8, heightIn: 10, optionIds: [], quantity: 2 }));
+		store.add(makeInput({ widthIn: 8, heightIn: 10, optionIds: ['varnish'], quantity: 1 }));
+		expect(store.subtotalCents).toBe(3900 * 2 + (3900 + 1500));
 	});
 
 	it('is zero for an empty cart', () => {

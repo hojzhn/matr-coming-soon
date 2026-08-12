@@ -4,7 +4,7 @@
 	import Icon from '$lib/components/ui/Icon.svelte';
 	import { orderContent } from '$lib/content';
 	import { cart } from '$lib/cart/cart.svelte';
-	import { MAX_ITEM_QUANTITY } from '$lib/pricing/config';
+	import { MAX_ITEM_QUANTITY, sizingModes, TO_STRETCH_SIZING_MODE } from '$lib/pricing/config';
 	import { formatPrice } from '$lib/pricing/calculate';
 
 	let { formToken }: { formToken: string } = $props();
@@ -32,7 +32,8 @@
 						rawWidth: item.rawWidth,
 						rawHeight: item.rawHeight,
 						rawUnit: item.rawUnit,
-						finishId: item.finishId,
+						optionIds: item.options.map((o) => o.id),
+						sizingMode: item.sizingMode,
 						quantity: item.quantity
 					})),
 					company,
@@ -78,11 +79,19 @@
 
 					<div class="min-w-0 flex-1">
 						<Heading level={4} tag="p" size="sm" weight="medium" class="truncate">
-							{item.projectName || 'Untitled print'}
+							{item.quantity} x {item.projectName || orderContent.form.untitledLabel} ({formatPrice(item.basePriceCents)})
 						</Heading>
 						<Heading level={5} tag="p" size="xs" tone="muted" class="mt-0.5">
-							{item.widthIn} x {item.heightIn} in · {item.finishLabel}
+							{item.widthIn} x {item.heightIn} in
+							{#if item.sizingMode === TO_STRETCH_SIZING_MODE}
+								· {sizingModes.find((m) => m.id === TO_STRETCH_SIZING_MODE)?.label}
+							{/if}
 						</Heading>
+						{#each item.options as opt (opt.id)}
+							<Heading level={5} tag="p" size="xs" tone="muted" class="ml-3">
+								- {opt.label} ({formatPrice(opt.priceDeltaCents)})
+							</Heading>
+						{/each}
 					</div>
 
 					<label class="flex flex-col items-start gap-1">

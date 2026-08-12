@@ -1,5 +1,5 @@
 import { calculateOrderTotal } from '$lib/pricing/calculate';
-import { MAX_CART_ITEMS, MAX_ITEM_QUANTITY } from '$lib/pricing/config';
+import { MAX_CART_ITEMS, MAX_ITEM_QUANTITY, type AddOnOption } from '$lib/pricing/config';
 
 export interface CartItem {
 	id: string;
@@ -9,8 +9,9 @@ export interface CartItem {
 	rawUnit: 'in' | 'cm';
 	widthIn: number;
 	heightIn: number;
-	finishId: string;
-	finishLabel: string;
+	basePriceCents: number;
+	options: AddOnOption[];
+	sizingMode: string;
 	quantity: number;
 	unitPriceCents: number;
 	fileName: string | null;
@@ -24,7 +25,8 @@ export interface AddCartItemInput {
 	rawUnit: 'in' | 'cm';
 	widthIn: number;
 	heightIn: number;
-	finishId: string;
+	optionIds: string[];
+	sizingMode: string;
 	quantity: number;
 	fileName: string | null;
 	previewUrl: string | null;
@@ -50,7 +52,7 @@ export class CartStore {
 	add(input: AddCartItemInput): AddCartItemResult {
 		if (this.isFull) return { ok: false, error: 'max-items' };
 
-		const total = calculateOrderTotal(input.widthIn, input.heightIn, input.finishId, input.quantity);
+		const total = calculateOrderTotal(input.widthIn, input.heightIn, input.optionIds, input.quantity);
 		const id = crypto.randomUUID();
 
 		this.items.push({
@@ -61,8 +63,9 @@ export class CartStore {
 			rawUnit: input.rawUnit,
 			widthIn: total.billableWidthIn,
 			heightIn: total.billableHeightIn,
-			finishId: total.finish.id,
-			finishLabel: total.finish.label,
+			basePriceCents: total.basePriceCents,
+			options: total.options,
+			sizingMode: input.sizingMode,
 			quantity: total.quantity,
 			unitPriceCents: total.unitPriceCents,
 			fileName: input.fileName,

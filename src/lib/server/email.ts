@@ -1,6 +1,7 @@
 import { Resend } from 'resend';
 import { env } from '$env/dynamic/private';
 import { formatPrice } from '$lib/pricing/calculate';
+import { TO_STRETCH_SIZING_MODE } from '$lib/pricing/config';
 
 function escapeHtml(value: string): string {
 	return value
@@ -51,11 +52,19 @@ async function send({ to, replyTo, subject, html }: SendArgs): Promise<{ ok: boo
 	}
 }
 
+export interface OrderNotificationLineItemOption {
+	id: string;
+	label: string;
+	priceDeltaCents: number;
+}
+
 export interface OrderNotificationLineItem {
 	projectName?: string;
 	widthIn: number;
 	heightIn: number;
-	finishLabel: string;
+	basePriceCents: number;
+	options: OrderNotificationLineItemOption[];
+	sizingMode: string;
 	quantity: number;
 	unitPriceCents: number;
 	totalPriceCents: number;
@@ -65,6 +74,10 @@ export interface OrderNotificationArgs {
 	items: OrderNotificationLineItem[];
 	totalPriceCents: number;
 	invoiceUrl: string;
+}
+
+function stretchSpecLabel(sizingMode: string): string {
+	return sizingMode === TO_STRETCH_SIZING_MODE ? 'To Stretch (0.5in outpaint, 3in margin)' : 'Normal';
 }
 
 export function sendOrderNotification(args: OrderNotificationArgs) {
@@ -78,9 +91,12 @@ export function sendOrderNotification(args: OrderNotificationArgs) {
 		args.items
 			.map((item, i) => {
 				const projectPart = item.projectName ? ` — ${escapeHtml(item.projectName)}` : '';
+				const optionsPart = item.options.length
+					? `, Options: ${item.options.map((o) => `${escapeHtml(o.label)} (${formatPrice(o.priceDeltaCents)})`).join(', ')}`
+					: '';
 				return row(
 					`Item ${i + 1}`,
-					`${item.widthIn} x ${item.heightIn} in, ${escapeHtml(item.finishLabel)}${projectPart} · Qty ${item.quantity} · ${formatPrice(item.unitPriceCents)} ea · ${formatPrice(item.totalPriceCents)}`
+					`${item.widthIn} x ${item.heightIn} in (${formatPrice(item.basePriceCents)} base)${optionsPart}${projectPart} · Qty ${item.quantity} · Sizing: ${stretchSpecLabel(item.sizingMode)} · ${formatPrice(item.unitPriceCents)} ea · ${formatPrice(item.totalPriceCents)}`
 				);
 			})
 			.join('') +

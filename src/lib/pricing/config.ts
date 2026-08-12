@@ -10,27 +10,29 @@ export interface PricingConfig {
 	zones: PricingZone[];
 }
 
-export interface SizePreset {
-	label: string;
-	widthIn: number;
-	heightIn: number;
-}
-
-export interface FinishOption {
+export interface AddOnOption {
 	id: string;
 	label: string;
 	priceDeltaCents: number;
 }
 
+export interface SizingMode {
+	id: string;
+	label: string;
+}
+
+// Bracket boundaries/rates are calibrated to hit exact checkpoint prices:
+// 12x12 (144 sqin) = $39, 24x24 (576 sqin) = $109, 36x36 (1296 sqin) = $189.
+// Each bracket's rate is the exact ($/sqin) needed to bridge one checkpoint to the next.
 export const pricingConfig: PricingConfig = {
 	minWidthIn: 8,
 	minHeightIn: 10,
-	minPrice: 129,
+	minPrice: 39,
 	zones: [
-		{ upToSqIn: 80, ratePerSqIn: 0 },
-		{ upToSqIn: 300, ratePerSqIn: 0.9 },
-		{ upToSqIn: 800, ratePerSqIn: 0.65 },
-		{ upToSqIn: Infinity, ratePerSqIn: 0.5 }
+		{ upToSqIn: 144, ratePerSqIn: 0 },
+		{ upToSqIn: 576, ratePerSqIn: 70 / 432 },
+		{ upToSqIn: 1296, ratePerSqIn: 80 / 720 },
+		{ upToSqIn: Infinity, ratePerSqIn: 1 / 12 }
 	]
 };
 
@@ -38,15 +40,22 @@ export const MAX_PRINT_SIDE_IN = 45;
 export const MAX_CART_ITEMS = 20;
 export const MAX_ITEM_QUANTITY = 50;
 
-export const sizePresets: SizePreset[] = [
-	{ label: '8 x 10 in', widthIn: 8, heightIn: 10 },
-	{ label: '12 x 16 in', widthIn: 12, heightIn: 16 },
-	{ label: '18 x 24 in', widthIn: 18, heightIn: 24 },
-	{ label: '24 x 36 in', widthIn: 24, heightIn: 36 }
+// "How to size the print" is a radio choice, not an add-on: "To Stretch" flags the print for
+// the "To Stretch" production spec (0.5in outpaint + 3in margin) instead of "Normal", with no
+// price difference either way — see shopify.ts/email.ts. "Stretched" (below) is a separate
+// add-on for us performing the actual stretching, and only makes sense alongside "To Stretch"
+// sizing (enforced in OrderForm.svelte's option picker).
+export const NORMAL_SIZING_MODE = 'normal';
+export const TO_STRETCH_SIZING_MODE = 'to-stretch';
+
+export const sizingModes: SizingMode[] = [
+	{ id: NORMAL_SIZING_MODE, label: 'Normal' },
+	{ id: TO_STRETCH_SIZING_MODE, label: 'To Stretch' }
 ];
 
-export const finishOptions: FinishOption[] = [
-	{ id: 'matte', label: 'Matte', priceDeltaCents: 0 },
-	{ id: 'glossy', label: 'Glossy', priceDeltaCents: 1500 },
-	{ id: 'canvas', label: 'Canvas', priceDeltaCents: 3500 }
+export const STRETCH_SERVICE_OPTION_ID = 'stretch-service';
+
+export const addOnOptions: AddOnOption[] = [
+	{ id: 'varnish', label: 'Varnish', priceDeltaCents: 1500 },
+	{ id: STRETCH_SERVICE_OPTION_ID, label: 'Stretched', priceDeltaCents: 3000 }
 ];
