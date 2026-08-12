@@ -18,9 +18,17 @@
 <main>
 	<Hero />
 	<Relaunch />
-	<div class="w-full bg-brand h-16 flex items-center justify-center">(dashed line)</div>
+	<img
+		src="/images/dividers/brush-divider-1.png"
+		alt=""
+		class="h-10 w-full object-cover md:h-16"
+	/>
 	<OrderSection formToken={data.formToken} />
-		<div class="w-full bg-brand h-16 flex items-center justify-center">(dashed line)</div>
+	<img
+		src="/images/dividers/brush-divider-2.png"
+		alt=""
+		class="h-10 w-full object-cover md:h-16"
+	/>
 	<Gallery />
 	<div class="w-full h-screen bg-gray-400"></div>
 	<Testimonials />

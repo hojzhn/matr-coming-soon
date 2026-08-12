@@ -134,12 +134,12 @@
 	});
 </script>
 
-<Section id="gallery" tone="canvas" contained={false} class="my-40">
+<Section id="gallery" tone="bg-surface" contained={false} class="my-20">
 	<div bind:this={galleryEl} class="gallery-grid">
 		<div class="flex gap-3 md:gap-4">
 			{#each columns as column, col (col)}
 				<div
-					class="h-[100dvh] md:h-[150dvh] flex-1 overflow-hidden"
+					class="h-screen md:h-[150vh] flex-1 overflow-hidden"
 					style="transform: translateY({columnBase(col) +
 						(scrollProgress - 0.5) * columnParallaxSpeed(col)}px)"
 				>

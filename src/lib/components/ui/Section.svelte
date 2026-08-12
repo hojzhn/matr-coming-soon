@@ -40,7 +40,7 @@
 	class={cn(
 		'py-section',
 		tones[tone],
-		fullHeight && 'flex min-h-dvh flex-col justify-center',
+		fullHeight && 'flex min-h-screen flex-col justify-center',
 		className
 	)}
 >
