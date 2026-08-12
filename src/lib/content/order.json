@@ -14,8 +14,7 @@
     "uploadDpiNote": "150 DPI or higher recommended for best print quality.",
     "uploadChangeLabel": "Change file",
     "uploadRemoveLabel": "Remove",
-    "submitLabel": "Proceed to checkout",
-    "submitLoadingLabel": "Setting up checkout...",
+    "addToCartLabel": "Add to cart",
     "totalLabel": "Estimated total",
     "finePrint": [
       {
@@ -35,9 +34,21 @@
         "text": "Custom prints are final sale and not eligible for return."
       }
     ],
-    "errorGeneric": "Something broke on our end. Try again?",
     "errorInvalidSize": "Add a width and height first.",
     "errorMaxSize": "45 in is the largest side we can print.",
-    "errorInvalidFile": "That file's too big or not a supported type."
+    "errorInvalidFile": "That file's too big or not a supported type.",
+    "errorCartFull": "Your cart is full. Remove an item to add another."
+  },
+  "cart": {
+    "heading": "Your cart",
+    "emptyLabel": "No prints added yet.",
+    "emptyHint": "Configure a print above and add it to your cart.",
+    "removeLabel": "Remove",
+    "quantityAriaLabel": "Quantity",
+    "subtotalLabel": "Subtotal",
+    "checkoutLabel": "Proceed to checkout",
+    "checkoutLoadingLabel": "Setting up checkout...",
+    "errorEmpty": "Add at least one print before checking out.",
+    "errorGeneric": "Something broke on our end. Try again?"
   }
 }

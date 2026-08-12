@@ -1,15 +1,18 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { getSupabaseAdmin, PRINT_ORDERS_TABLE } from '$lib/server/supabase';
 import { verifySession, MIN_SUBMIT_MS } from '$lib/server/security';
-import { calculateOrderTotal, toInches } from '$lib/pricing/calculate';
-import { finishOptions, MAX_PRINT_SIDE_IN } from '$lib/pricing/config';
+import { calculateOrderTotal, toInches, type OrderTotal } from '$lib/pricing/calculate';
+import { finishOptions, MAX_PRINT_SIDE_IN, MAX_CART_ITEMS, MAX_ITEM_QUANTITY } from '$lib/pricing/config';
 import { createDraftOrder } from '$lib/server/shopify';
 import { sendOrderNotification } from '$lib/server/email';
 
-const MAX_QUANTITY = 50;
-
 function fail(error: string, status = 400) {
 	return json({ ok: false, error }, { status });
+}
+
+interface ValidatedItem {
+	projectName: string;
+	total: OrderTotal;
 }
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -25,26 +28,38 @@ export const POST: RequestHandler = async ({ request }) => {
 		return fail('Unable to process request.');
 	}
 
-	const projectName = String(body.projectName ?? '').trim();
-	const rawWidth = Number(body.rawWidth);
-	const rawHeight = Number(body.rawHeight);
-	const rawUnit = body.rawUnit === 'cm' ? 'cm' : 'in';
-	const finishId = String(body.finishId ?? finishOptions[0].id);
-	const quantity = Math.min(MAX_QUANTITY, Math.max(1, Math.round(Number(body.quantity) || 1)));
-
-	if (!Number.isFinite(rawWidth) || !Number.isFinite(rawHeight) || rawWidth <= 0 || rawHeight <= 0) {
-		return fail('Please provide a valid size.');
+	if (!Array.isArray(body.items) || body.items.length === 0) {
+		return fail('Add at least one print before checking out.');
 	}
-	if (!finishOptions.some((f) => f.id === finishId)) return fail('Please choose a valid finish.');
-
-	const widthIn = toInches(rawWidth, rawUnit);
-	const heightIn = toInches(rawHeight, rawUnit);
-
-	if (widthIn > MAX_PRINT_SIDE_IN || heightIn > MAX_PRINT_SIDE_IN) {
-		return fail(`${MAX_PRINT_SIDE_IN} in is the largest side we can print.`);
+	if (body.items.length > MAX_CART_ITEMS) {
+		return fail(`You can order up to ${MAX_CART_ITEMS} prints at a time.`);
 	}
 
-	const total = calculateOrderTotal(widthIn, heightIn, finishId, quantity);
+	const validated: ValidatedItem[] = [];
+	for (const raw of body.items) {
+		const projectName = String(raw?.projectName ?? '').trim();
+		const rawWidth = Number(raw?.rawWidth);
+		const rawHeight = Number(raw?.rawHeight);
+		const rawUnit = raw?.rawUnit === 'cm' ? 'cm' : 'in';
+		const finishId = String(raw?.finishId ?? finishOptions[0].id);
+		const quantity = Math.min(MAX_ITEM_QUANTITY, Math.max(1, Math.round(Number(raw?.quantity) || 1)));
+
+		if (!Number.isFinite(rawWidth) || !Number.isFinite(rawHeight) || rawWidth <= 0 || rawHeight <= 0) {
+			return fail('Please provide a valid size.');
+		}
+		if (!finishOptions.some((f) => f.id === finishId)) return fail('Please choose a valid finish.');
+
+		const widthIn = toInches(rawWidth, rawUnit);
+		const heightIn = toInches(rawHeight, rawUnit);
+
+		if (widthIn > MAX_PRINT_SIDE_IN || heightIn > MAX_PRINT_SIDE_IN) {
+			return fail(`${MAX_PRINT_SIDE_IN} in is the largest side we can print.`);
+		}
+
+		validated.push({ projectName, total: calculateOrderTotal(widthIn, heightIn, finishId, quantity) });
+	}
+
+	const totalPriceCents = validated.reduce((sum, v) => sum + v.total.totalPriceCents, 0);
 
 	let supabase;
 	try {
@@ -57,17 +72,17 @@ export const POST: RequestHandler = async ({ request }) => {
 	const { data: inserted, error: insertError } = await supabase
 		.from(PRINT_ORDERS_TABLE)
 		.insert({
-			project_name: projectName || null,
-			raw_width: rawWidth,
-			raw_height: rawHeight,
-			raw_unit: rawUnit,
-			width_in: total.billableWidthIn,
-			height_in: total.billableHeightIn,
-			sq_in: total.sqIn,
-			finish: total.finish.id,
-			quantity: total.quantity,
-			price_cents: total.unitPriceCents,
-			total_price_cents: total.totalPriceCents,
+			items: validated.map((v) => ({
+				project_name: v.projectName || null,
+				width_in: v.total.billableWidthIn,
+				height_in: v.total.billableHeightIn,
+				sq_in: v.total.sqIn,
+				finish: v.total.finish.id,
+				quantity: v.total.quantity,
+				unit_price_cents: v.total.unitPriceCents,
+				total_price_cents: v.total.totalPriceCents
+			})),
+			total_price_cents: totalPriceCents,
 			status: 'pending'
 		})
 		.select('id')
@@ -80,12 +95,14 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	try {
 		const draft = await createDraftOrder({
-			projectName,
-			widthIn: total.billableWidthIn,
-			heightIn: total.billableHeightIn,
-			finishLabel: total.finish.label,
-			quantity: total.quantity,
-			unitPriceCents: total.unitPriceCents
+			items: validated.map((v) => ({
+				projectName: v.projectName,
+				widthIn: v.total.billableWidthIn,
+				heightIn: v.total.billableHeightIn,
+				finishLabel: v.total.finish.label,
+				quantity: v.total.quantity,
+				unitPriceCents: v.total.unitPriceCents
+			}))
 		});
 
 		await supabase
@@ -98,13 +115,16 @@ export const POST: RequestHandler = async ({ request }) => {
 			.eq('id', inserted.id);
 
 		sendOrderNotification({
-			projectName,
-			widthIn: total.billableWidthIn,
-			heightIn: total.billableHeightIn,
-			finishLabel: total.finish.label,
-			quantity: total.quantity,
-			unitPriceCents: total.unitPriceCents,
-			totalPriceCents: total.totalPriceCents,
+			items: validated.map((v) => ({
+				projectName: v.projectName,
+				widthIn: v.total.billableWidthIn,
+				heightIn: v.total.billableHeightIn,
+				finishLabel: v.total.finish.label,
+				quantity: v.total.quantity,
+				unitPriceCents: v.total.unitPriceCents,
+				totalPriceCents: v.total.totalPriceCents
+			})),
+			totalPriceCents,
 			invoiceUrl: draft.invoiceUrl
 		}).catch((err) => console.error('Order notification failed:', err));
 

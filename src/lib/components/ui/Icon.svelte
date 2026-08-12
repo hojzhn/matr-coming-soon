@@ -15,7 +15,8 @@
 		| 'truck'
 		| 'palette'
 		| 'ban'
-		| 'calendar';
+		| 'calendar'
+		| 'cart';
 
 	type IconDef = { body: string; fill?: boolean; strokeWidth?: number };
 
@@ -60,6 +61,11 @@
 		calendar: {
 			strokeWidth: 1.75,
 			body: '<rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 10h18" />'
+		},
+		cart: {
+			strokeWidth: 1.75,
+			body:
+				'<path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.8h8.2a2 2 0 0 0 2-1.8L21 8H6" /><circle cx="9" cy="20" r="1.4" fill="currentColor" stroke="none" /><circle cx="17" cy="20" r="1.4" fill="currentColor" stroke="none" />'
 		}
 	};
 </script>

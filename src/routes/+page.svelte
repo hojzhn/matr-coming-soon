@@ -21,13 +21,13 @@
 	<img
 		src="/images/dividers/brush-divider-1.png"
 		alt=""
-		class="h-10 w-full object-cover md:h-16"
+		class="h-10 w-full object-cover md:object-contain md:h-18 md:my-12"
 	/>
 	<OrderSection formToken={data.formToken} />
 	<img
 		src="/images/dividers/brush-divider-2.png"
 		alt=""
-		class="h-10 w-full object-cover md:h-16"
+		class="h-10 w-full object-cover  md:object-contain md:h-18 md:my-12"
 	/>
 	<Gallery />
 	<div class="w-full h-screen bg-gray-400"></div>

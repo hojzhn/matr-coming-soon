@@ -7,16 +7,13 @@
 	import { orderContent } from '$lib/content';
 	import { sizePresets, finishOptions, MAX_PRINT_SIDE_IN } from '$lib/pricing/config';
 	import { calculateOrderTotal, calculatePriceCents, formatPrice, toInches } from '$lib/pricing/calculate';
+	import { cart } from '$lib/cart/cart.svelte';
 	import { cn } from '$lib/cn';
-
-	let { formToken }: { formToken: string } = $props();
 
 	const MAX_FILE_BYTES = 50 * 1024 * 1024;
 	const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
 
 	let projectName = $state('');
-	let company = $state('');
-	let loading = $state(false);
 	let error = $state('');
 
 	let selectedPreset = $state(0);
@@ -108,7 +105,23 @@
 		if (fileInput) fileInput.value = '';
 	}
 
-	async function onsubmit(e: SubmitEvent) {
+	function resetForm() {
+		projectName = '';
+		selectedPreset = 0;
+		useCustomSize = false;
+		customWidth = '';
+		customHeight = '';
+		customUnit = 'in';
+		finishId = finishOptions[0].id;
+		quantity = '1';
+		file = null;
+		previewUrl = null;
+		fileError = '';
+		dragOver = false;
+		if (fileInput) fileInput.value = '';
+	}
+
+	function onsubmit(e: SubmitEvent) {
 		e.preventDefault();
 		error = '';
 
@@ -121,49 +134,31 @@
 			return;
 		}
 
-		loading = true;
-		try {
-			const res = await fetch('/api/order', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					projectName,
-					rawWidth: useCustomSize ? Number(customWidth) : sizePresets[selectedPreset].widthIn,
-					rawHeight: useCustomSize ? Number(customHeight) : sizePresets[selectedPreset].heightIn,
-					rawUnit: useCustomSize ? customUnit : 'in',
-					finishId,
-					quantity: Number(quantity) || 1,
-					company,
-					formToken
-				})
-			});
-			const data = await res.json();
-			if (data.ok && data.invoiceUrl) {
-				window.location.href = data.invoiceUrl;
-				return;
-			}
-			error = data.error || orderContent.form.errorGeneric;
-		} catch {
-			error = orderContent.form.errorGeneric;
-		} finally {
-			loading = false;
+		const result = cart.add({
+			projectName,
+			rawWidth: useCustomSize ? Number(customWidth) : sizePresets[selectedPreset].widthIn,
+			rawHeight: useCustomSize ? Number(customHeight) : sizePresets[selectedPreset].heightIn,
+			rawUnit: useCustomSize ? customUnit : 'in',
+			widthIn: activeSize.widthIn,
+			heightIn: activeSize.heightIn,
+			finishId,
+			quantity: Number(quantity) || 1,
+			fileName: file?.name ?? null,
+			previewUrl
+		});
+
+		if (!result.ok) {
+			error = orderContent.form.errorCartFull;
+			return;
 		}
+
+		resetForm();
 	}
 </script>
 
 <div>
 	
 	<form class="mt-8 grid gap-10 md:grid-cols-2" {onsubmit}>
-		<input
-			type="text"
-			name="company"
-			bind:value={company}
-			tabindex="-1"
-			autocomplete="off"
-			class="hidden"
-			aria-hidden="true"
-		/>
-
 		<div>
 			<Heading level={5} tag="p" eyebrow uppercase class="mb-4">Artwork</Heading>
 			<div class="relative aspect-square w-full overflow-hidden bg-fill-soft/60">
@@ -325,14 +320,7 @@
 				<Heading level={4} tag="p" size="xs" class="text-danger">{error}</Heading>
 			{/if}
 
-			<ArrowLink
-				type="submit"
-				variant="button"
-				label={loading ? orderContent.form.submitLoadingLabel : orderContent.form.submitLabel}
-				{loading}
-				disabled={loading}
-				class="w-full"
-			/>
+			<ArrowLink type="submit" variant="button" label={orderContent.form.addToCartLabel} class="w-full" />
 
 			<div class="flex flex-col gap-2">
 				{#each orderContent.form.finePrint as item (item.text)}

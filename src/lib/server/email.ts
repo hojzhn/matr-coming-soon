@@ -51,13 +51,18 @@ async function send({ to, replyTo, subject, html }: SendArgs): Promise<{ ok: boo
 	}
 }
 
-export interface OrderNotificationArgs {
+export interface OrderNotificationLineItem {
 	projectName?: string;
 	widthIn: number;
 	heightIn: number;
 	finishLabel: string;
 	quantity: number;
 	unitPriceCents: number;
+	totalPriceCents: number;
+}
+
+export interface OrderNotificationArgs {
+	items: OrderNotificationLineItem[];
 	totalPriceCents: number;
 	invoiceUrl: string;
 }
@@ -70,17 +75,21 @@ export function sendOrderNotification(args: OrderNotificationArgs) {
 	}
 
 	const table =
-		(args.projectName ? row('Project', escapeHtml(args.projectName)) : '') +
-		row('Size', `${args.widthIn} x ${args.heightIn} in`) +
-		row('Finish', escapeHtml(args.finishLabel)) +
-		row('Quantity', String(args.quantity)) +
-		row('Unit price', formatPrice(args.unitPriceCents)) +
-		row('Total', formatPrice(args.totalPriceCents)) +
+		args.items
+			.map((item, i) => {
+				const projectPart = item.projectName ? ` — ${escapeHtml(item.projectName)}` : '';
+				return row(
+					`Item ${i + 1}`,
+					`${item.widthIn} x ${item.heightIn} in, ${escapeHtml(item.finishLabel)}${projectPart} · Qty ${item.quantity} · ${formatPrice(item.unitPriceCents)} ea · ${formatPrice(item.totalPriceCents)}`
+				);
+			})
+			.join('') +
+		row('Grand total', formatPrice(args.totalPriceCents)) +
 		row('Invoice', `<a href="${escapeHtml(args.invoiceUrl)}" style="color:#0b8a3f">${escapeHtml(args.invoiceUrl)}</a>`);
 
 	return send({
 		to,
-		subject: `New print order - ${args.widthIn} x ${args.heightIn} in`,
+		subject: `New print order - ${args.items.length} item${args.items.length === 1 ? '' : 's'}`,
 		html: wrap('New print order', `A new oil print order came in on matr labs.`, table)
 	});
 }

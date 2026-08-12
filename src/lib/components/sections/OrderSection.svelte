@@ -3,6 +3,7 @@
 	import Container from '$lib/components/ui/Container.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import OrderForm from './OrderForm.svelte';
+	import CartPanel from './CartPanel.svelte';
 	import Strengths from './Strengths.svelte';
 
 	let { formToken }: { formToken: string } = $props();
@@ -10,11 +11,10 @@
 
 <Section id="order" tone="surface" contained={false} fullHeight>
 	<Container>
-		<OrderForm {formToken} />
+		<OrderForm />
+		<CartPanel {formToken} />
 	</Container>
 
 
-	<Container>
 		<Strengths />
-	</Container>
 </Section>

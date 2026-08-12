@@ -51,6 +51,7 @@
 </script>
 
 
+<Container>
 	<div class="relative my-16 aspect-square md:aspect-video w-full bg-gray-400 md:my-24">
 		<div class="absolute inset-0 flex items-center justify-center">
 			<Heading level={5} tag="p" eyebrow uppercase>
@@ -75,8 +76,11 @@
 		</div>
 	{/each}
 </div>
+</Container>
+
 
 	<div bind:this={processImageEl} class="relative my-16 md:my-24">
+	<Container>
 		<div class="relative aspect-square w-full bg-gray-400 md:aspect-video">
 			<div class="absolute inset-0 flex items-center justify-center">
 				<Heading level={5} tag="p" eyebrow uppercase>
@@ -84,13 +88,11 @@
 				</Heading>
 			</div>
 		</div>
-
+</Container>
 		<div class="mt-3 grid grid-cols-2 gap-1 md:mt-0 md:block md:gap-0">
 			<div
-				class="relative aspect-square w-full border border-line bg-gray-300 shadow-lg md:absolute md:left-0 md:top-[38%] md:w-[50%] md:max-w-120"
-				style={isDesktop
-					? `transform: translate(-75%, calc(-50% + ${(processImageProgress - 0.5) * -110}px))`
-					: ''}
+				class="relative aspect-4/5 w-full border border-line bg-gray-300 md:absolute md:left-12 md:top-[10%] md:w-[50%] md:max-w-120"
+		
 			>
 				<div class="absolute inset-0 flex items-center justify-center">
 					<Heading
@@ -108,10 +110,8 @@
 			</div>
 
 			<div
-				class="relative aspect-2/3 w-full border border-line bg-gray-300 shadow-lg md:absolute md:right-0 md:bottom-0 md:w-[20%] md:max-w-64"
-				style={isDesktop
-					? `transform: translate(50%, calc(50% + ${(processImageProgress - 0.5) * 110}px))`
-					: ''}
+				class="relative aspect-2/3 w-full border border-line bg-gray-300 md:absolute md:right-[12vw] md:bottom-0 md:w-[20%] md:max-w-64"
+			
 			>
 				<div class="absolute inset-0 flex items-center justify-center">
 					<Heading
@@ -130,6 +130,7 @@
 		</div>
 	</div>
 
+	<Container>
 <div class="mt-4">
 	<Heading level={2} size="2xl">{strengthsContent.process.heading}</Heading>
 	<div class="flex flex-col items-start md:items-end gap-8 mt-16 md:flex-row md:ml-50">
@@ -140,3 +141,4 @@
 	</Heading>
 		</div>
 </div>
+</Container>

@@ -9,13 +9,17 @@ const MUTATION = `
 	}
 `;
 
-export interface DraftOrderArgs {
+export interface DraftOrderLineItem {
 	projectName?: string;
 	widthIn: number;
 	heightIn: number;
 	finishLabel: string;
 	quantity: number;
 	unitPriceCents: number;
+}
+
+export interface DraftOrderArgs {
+	items: DraftOrderLineItem[];
 	note?: string;
 }
 
@@ -25,15 +29,32 @@ export interface DraftOrderResult {
 }
 
 export async function createDraftOrder(args: DraftOrderArgs): Promise<DraftOrderResult> {
+	if (args.items.length === 0) throw new Error('No items to order.');
+
 	const domain = env.SHOPIFY_STORE_DOMAIN;
 	const token = env.SHOPIFY_ADMIN_API_ACCESS_TOKEN;
 	const version = env.SHOPIFY_API_VERSION || '2025-01';
 	if (!domain || !token) throw new Error('Shopify is not configured.');
 
-	const title = `Custom Oil Print - ${args.widthIn} x ${args.heightIn} in, ${args.finishLabel}`;
-	const originalUnitPrice = (args.unitPriceCents / 100).toFixed(2);
-	const noteBase = `${title}, Qty: ${args.quantity}`;
-	const note = args.note ?? (args.projectName ? `${noteBase} — ${args.projectName}` : noteBase);
+	const lineItems = args.items.map((item) => {
+		const title = `Custom Oil Print - ${item.widthIn} x ${item.heightIn} in, ${item.finishLabel}`;
+		return {
+			title,
+			quantity: item.quantity,
+			requiresShipping: true,
+			taxable: true,
+			originalUnitPrice: (item.unitPriceCents / 100).toFixed(2)
+		};
+	});
+
+	const note =
+		args.note ??
+		args.items
+			.map((item) => {
+				const base = `Custom Oil Print - ${item.widthIn} x ${item.heightIn} in, ${item.finishLabel}, Qty: ${item.quantity}`;
+				return item.projectName ? `${base} — ${item.projectName}` : base;
+			})
+			.join('; ');
 
 	const res = await fetch(`https://${domain}/admin/api/${version}/graphql.json`, {
 		method: 'POST',
@@ -45,15 +66,7 @@ export async function createDraftOrder(args: DraftOrderArgs): Promise<DraftOrder
 					note,
 					tags: ['coming-soon-site'],
 					useCustomerDefaultAddress: false,
-					lineItems: [
-						{
-							title,
-							quantity: args.quantity,
-							requiresShipping: true,
-							taxable: true,
-							originalUnitPrice
-						}
-					]
+					lineItems
 				}
 			}
 		})

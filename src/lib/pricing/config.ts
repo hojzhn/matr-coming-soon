@@ -35,6 +35,8 @@ export const pricingConfig: PricingConfig = {
 };
 
 export const MAX_PRINT_SIDE_IN = 45;
+export const MAX_CART_ITEMS = 20;
+export const MAX_ITEM_QUANTITY = 50;
 
 export const sizePresets: SizePreset[] = [
 	{ label: '8 x 10 in', widthIn: 8, heightIn: 10 },

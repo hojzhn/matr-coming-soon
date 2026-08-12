@@ -53,19 +53,31 @@ export interface OrderFormContent {
 	uploadDpiNote: string;
 	uploadChangeLabel: string;
 	uploadRemoveLabel: string;
-	submitLabel: string;
-	submitLoadingLabel: string;
+	addToCartLabel: string;
 	totalLabel: string;
 	finePrint: FinePrintItem[];
 	formHeading: string;
 	formHeadingProjectTemplate: string;
-	errorGeneric: string;
 	errorInvalidSize: string;
 	errorMaxSize: string;
 	errorInvalidFile: string;
+	errorCartFull: string;
+}
+export interface OrderCartContent {
+	heading: string;
+	emptyLabel: string;
+	emptyHint: string;
+	removeLabel: string;
+	quantityAriaLabel: string;
+	subtotalLabel: string;
+	checkoutLabel: string;
+	checkoutLoadingLabel: string;
+	errorEmpty: string;
+	errorGeneric: string;
 }
 export interface OrderContent {
 	form: OrderFormContent;
+	cart: OrderCartContent;
 }
 
 export interface Strength {

@@ -4,6 +4,7 @@
 	import Icon from '$lib/components/ui/Icon.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import { navContent } from '$lib/content';
+	import { cart } from '$lib/cart/cart.svelte';
 	import { cn } from '$lib/cn';
 
 	let open = $state(false);
@@ -37,29 +38,47 @@
 				<Logo class={cn('h-7 w-auto transition-colors duration-300', inkClass)} />
 			</a>
 
-			<nav class="hidden items-center gap-8 md:flex">
-				{#each navContent.items as item (item.href)}
-					<a
-						href={item.href}
-						class={cn(
-							'text-sm font-medium transition-colors duration-300 hover:opacity-70',
-							inkClass
-						)}
-					>
-						{item.label}
-					</a>
-				{/each}
-			</nav>
+			<div class="flex items-center gap-4 md:gap-8">
+				<nav class="hidden items-center gap-8 md:flex">
+					{#each navContent.items as item (item.href)}
+						<a
+							href={item.href}
+							class={cn(
+								'text-sm font-medium transition-colors duration-300 hover:opacity-70',
+								inkClass
+							)}
+						>
+							{item.label}
+						</a>
+					{/each}
+				</nav>
 
-			<button
-				type="button"
-				class="flex h-10 w-10 items-center justify-center md:hidden"
-				aria-label={open ? 'Close menu' : 'Open menu'}
-				aria-expanded={open}
-				onclick={() => (open = !open)}
-			>
-				<Icon name={open ? 'close' : 'menu'} class={cn('h-6 w-6 transition-colors duration-300', inkClass)} />
-			</button>
+				<a
+					href="#order"
+					class="relative flex h-10 w-10 items-center justify-center"
+					aria-label={cart.count > 0 ? `Cart, ${cart.count} item${cart.count === 1 ? '' : 's'}` : 'Cart'}
+					onclick={close}
+				>
+					<Icon name="cart" class={cn('h-5 w-5 transition-colors duration-300', inkClass)} />
+					{#if cart.count > 0}
+						<span
+							class="absolute top-1.5 right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-semibold text-ink"
+						>
+							{cart.count}
+						</span>
+					{/if}
+				</a>
+
+				<button
+					type="button"
+					class="flex h-10 w-10 items-center justify-center md:hidden"
+					aria-label={open ? 'Close menu' : 'Open menu'}
+					aria-expanded={open}
+					onclick={() => (open = !open)}
+				>
+					<Icon name={open ? 'close' : 'menu'} class={cn('h-6 w-6 transition-colors duration-300', inkClass)} />
+				</button>
+			</div>
 		</div>
 	</Container>
 </header>
