@@ -22,7 +22,7 @@
 	});
 </script>
 
-<Section id="testimonials" tone="canvas" contained={false}>
+<Section id="testimonials" tone="surface" contained={false}>
 
 
 	<div class="no-scrollbar flex snap-x snap-proximity gap-4 overflow-x-auto px-container pb-2">

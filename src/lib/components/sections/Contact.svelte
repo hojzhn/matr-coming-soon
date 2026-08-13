@@ -1,11 +1,12 @@
 <script lang="ts">
 	import Section from '$lib/components/ui/Section.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
-	import Field from '$lib/components/ui/Field.svelte';
 	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
-	import { contactContent, siteContent } from '$lib/content';
+	import { contactContent } from '$lib/content';
 
 	let { formToken }: { formToken: string } = $props();
+
+	const contactVideoSrc = '/videos/contact.mp4';
 
 	let name = $state('');
 	let email = $state('');
@@ -14,29 +15,6 @@
 	let loading = $state(false);
 	let error = $state('');
 	let success = $state(false);
-
-	let committedName = $state('');
-	let committedEmail = $state('');
-
-	const headline = $derived(
-		committedEmail.trim()
-			? contactContent.headingWithEmail
-			: committedName.trim()
-				? contactContent.headingWithName.replace('{name}', committedName.trim())
-				: contactContent.heading
-	);
-
-	let copyLabel = $state(contactContent.form.copyEmailLabel);
-
-	async function copyEmail() {
-		try {
-			await navigator.clipboard.writeText(siteContent.email);
-			copyLabel = contactContent.form.copiedLabel;
-			setTimeout(() => (copyLabel = contactContent.form.copyEmailLabel), 1500);
-		} catch {
-			/* clipboard unavailable */
-		}
-	}
 
 	async function onsubmit(e: SubmitEvent) {
 		e.preventDefault();
@@ -68,24 +46,23 @@
 	}
 </script>
 
-<Section id="contact" tone="surface">
-	<div class="grid w-full gap-12 md:grid-cols-2 md:items-start">
-		<div class="flex h-full flex-col gap-8">
-		
-			{#key headline}
-				<Heading level={2} size="2xl">{headline}</Heading>
-			{/key}
-		<Heading level={2} tag="p" size="sm" sizeMd="lg" weight="medium" balance={false} >
-				{contactContent.intro}
-			</Heading>
-		</div>
+<Section id="contact" tone="surface" fullHeight>
+	<div class="flex w-full flex-col gap-12 py-0 h-full md:pb-20">
+		<video
+			src={contactVideoSrc}
+			autoplay
+			muted
+			loop
+			playsinline
+			class="w-full shrink-0 object-contain contrast-110 brightness-140"
+		></video>
 
 		{#if success}
-			<Heading level={2} size="lg" tone="brand" class="self-center">
+			<Heading level={2} size="lg" tone="brand" class="flex flex-1 min-h-0 items-center">
 				{contactContent.form.successMessage}
 			</Heading>
 		{:else}
-			<form class="grid gap-8" {onsubmit}>
+			<form class="flex flex-1 min-h-0 flex-col justify-center gap-8" {onsubmit}>
 				<input
 					type="text"
 					name="company"
@@ -96,48 +73,73 @@
 					aria-hidden="true"
 				/>
 
-				<Field
-					label={contactContent.form.nameLabel}
-					placeholder={contactContent.form.namePlaceholder}
-					bind:value={name}
-					required
-					autocomplete="name"
-					onblur={() => (committedName = name)}
-				/>
-
-				<Field
-					label={contactContent.form.emailLabel}
-					type="email"
-					placeholder={contactContent.form.emailPlaceholder}
-					bind:value={email}
-					required
-					autocomplete="email"
-					onblur={() => (committedEmail = email)}
-				/>
-
-				<Field label={contactContent.form.messageLabel}>
+				<Heading
+					level={2}
+					tag="p"
+					size="xl"
+					sizeMd="2xl"
+					weight="semibold"
+					tracking="tight"
+					balance={false}
+					class="flex flex-wrap items-baseline gap-x-3 gap-y-2"
+				>
+					<span>{contactContent.form.madlibGreeting}</span>
+					<input
+						type="text"
+						bind:value={name}
+						placeholder={contactContent.form.namePlaceholder}
+						required
+						autocomplete="name"
+						class="min-w-20 max-w-70 field-sizing-content border-b-2 border-ink bg-transparent px-0 pb-1 outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
+					/>
+					<span>,</span>
+					</Heading>
 					<textarea
 						bind:value={message}
 						placeholder={contactContent.form.messagePlaceholder}
 						required
 						rows={4}
-						class="w-full resize-none border-b-2 border-ink bg-transparent px-0 py-2.5 text-base font-medium text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
+						class="w-full leading-tight resize-none bg-transparent px-0 py-1 text-md font-medium tracking-tight text-ink outline-none placeholder:text-ink-faint md:text-lg"
 					></textarea>
-				</Field>
+
+					
 
 				{#if error}
 					<Heading level={4} tag="p" size="xs" class="text-danger">{error}</Heading>
 				{/if}
 
-				<div class="flex flex-wrap items-center gap-6">
-					<ArrowLink
-						type="submit"
-						variant="button"
-						label={loading ? contactContent.form.submitLoadingLabel : contactContent.form.submitLabel}
-						{loading}
-						disabled={loading}
+				<div class="flex flex-col gap-y-4 md:flex-row md:items-center md:justify-between">
+				<div class="flex flex-row items-baseline">
+				<Heading
+			level={4}
+			tag="p"
+			size="base"
+			sizeMd="lg"
+			weight="medium"
+			tracking="tight"
+			tone="ink"
+			class="md:max-w-2xl"
+		>
+					<span>{contactContent.form.madlibClosing}</span>
+					<input
+						type="email"
+						bind:value={email}
+						placeholder={contactContent.form.emailPlaceholder}
+						required
+						autocomplete="email"
+						class="w-56 border-b-2 border-ink bg-transparent px-0 md:ml-2 pb-1 outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
 					/>
-					<ArrowLink label={copyLabel} arrow={false} onclick={copyEmail} />
+					<span>.</span>
+					</Heading>
+				</div>
+
+				<ArrowLink
+					type="submit"
+					variant="button"
+					label={loading ? contactContent.form.submitLoadingLabel : contactContent.form.submitLabel}
+					{loading}
+					disabled={loading}
+				/>
 				</div>
 			</form>
 		{/if}

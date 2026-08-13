@@ -21,18 +21,25 @@
 	<img
 		src="/images/dividers/brush-divider-1.png"
 		alt=""
-		class="h-10 w-full object-cover md:object-contain md:h-18 md:my-12"
+		class="h-10 w-full object-cover md:object-contain md:h-20 md:my-12"
 	/>
 	<OrderSection formToken={data.formToken} />
 	<img
 		src="/images/dividers/brush-divider-2.png"
 		alt=""
-		class="h-10 w-full object-cover  md:object-contain md:h-18 md:my-12"
+		class="h-10 w-full object-cover  md:object-contain md:h-22 md:my-12"
 	/>
 	<Gallery />
-	<div class="w-full h-screen bg-gray-400"></div>
+	<video
+		src="/videos/paint-area.mp4"
+		autoplay
+		muted
+		loop
+		playsinline
+		class="h-screen w-full object-cover md:my-20 contrast-130 brightness-110"
+	></video>
 	<Testimonials />
-	<!-- <Contact formToken={data.formToken} /> -->
+	<Contact formToken={data.formToken} />
 </main>
 
 <Footer formToken={data.formToken} />

@@ -2,19 +2,38 @@
 	import Section from '$lib/components/ui/Section.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import { heroContent, brandsContent } from '$lib/content';
+
+	const carouselImages = Array.from({ length: 10 }, (_, i) => `/images/hero/carousel_${i + 1}.png`);
+
+	let activeIndex = $state(0);
+
+	$effect(() => {
+		carouselImages.forEach((src) => {
+			const img = new Image();
+			img.src = src;
+		});
+	});
+
+	$effect(() => {
+		const id = setInterval(() => {
+			activeIndex = (activeIndex + 1) % carouselImages.length;
+		}, 500);
+		return () => clearInterval(id);
+	});
 </script>
 
 <Section id="top" tone="ink" fullHeight contained={false} class="justify-between py-0">
-	<div class="flex flex-1 flex-col items-center justify-center px-container text-center">
-		<Heading level={1} size="hero" tone="surface" align="center">
-			{heroContent.headline}
-		</Heading>
-		<Heading level={2} tag="p" size="sm" sizeMd="md" weight="medium" tone="muted" align="center" class="mt-6 max-w-xl">
-			{heroContent.subheadline}
-		</Heading>
-	</div>
+	
+	
+		<div class="relative mb-20 w-full flex-1 min-h-0">
+			<img
+				src={carouselImages[activeIndex]}
+				alt=""
+				class="absolute inset-0 h-full w-full object-contain"
+			/>
+		</div>
 
-	<div class="px-container pb-12">
+	<div class="mb-12 shrink-0">
 		<Heading level={3} tag="p" eyebrow uppercase align="center">
 			{heroContent.logosLabel}
 		</Heading>

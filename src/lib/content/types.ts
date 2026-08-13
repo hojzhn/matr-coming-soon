@@ -127,6 +127,8 @@ export interface NewsletterContent {
 }
 
 export interface ContactFormContent {
+	madlibGreeting: string;
+	madlibClosing: string;
 	nameLabel: string;
 	namePlaceholder: string;
 	emailLabel: string;

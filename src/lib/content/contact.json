@@ -5,6 +5,8 @@
   "headingWithEmail": "Can't wait.",
   "intro": "Got a project in mind?\nBusiness propositions? \nTell us about it! \nWe'll get back to you as soon as we can.",
   "form": {
+    "madlibGreeting": "Hi",
+    "madlibClosing": "We'll get you back at",
     "nameLabel": "Name",
     "namePlaceholder": "Jane Doe",
     "emailLabel": "Email",
