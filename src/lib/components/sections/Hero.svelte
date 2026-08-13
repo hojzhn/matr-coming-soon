@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Section from '$lib/components/ui/Section.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
+	import LazyImage from '$lib/components/ui/LazyImage.svelte';
 	import { heroContent, brandsContent } from '$lib/content';
 
 	const carouselImages = Array.from({ length: 10 }, (_, i) => `/images/hero/carousel_${i + 1}.png`);
@@ -29,6 +30,8 @@
 			<img
 				src={carouselImages[activeIndex]}
 				alt=""
+				loading="eager"
+				decoding="sync"
 				class="absolute inset-0 h-full w-full object-contain"
 			/>
 		</div>
@@ -39,7 +42,7 @@
 		</Heading>
 		<div class="mt-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
 			{#each brandsContent.items as brand (brand.src)}
-				<img
+				<LazyImage
 					src={brand.src}
 					alt={brand.name}
 					class="h-4 md:h-6 w-auto shrink-0 opacity-60 brightness-0 invert transition-opacity hover:opacity-100"

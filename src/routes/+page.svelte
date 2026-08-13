@@ -8,6 +8,7 @@
 	import Gallery from '$lib/components/sections/Gallery.svelte';
 	import Testimonials from '$lib/components/sections/Testimonials.svelte';
 	import Contact from '$lib/components/sections/Contact.svelte';
+	import LazyImage from '$lib/components/ui/LazyImage.svelte';
 
 	let { data } = $props();
 </script>
@@ -18,13 +19,13 @@
 <main>
 	<Hero />
 	<Relaunch />
-	<img
+	<LazyImage
 		src="/images/dividers/brush-divider-1.png"
 		alt=""
 		class="h-10 w-full object-cover md:object-contain md:h-20 md:my-12"
 	/>
 	<OrderSection formToken={data.formToken} />
-	<img
+	<LazyImage
 		src="/images/dividers/brush-divider-2.png"
 		alt=""
 		class="h-10 w-full object-cover  md:object-contain md:h-22 md:my-12"

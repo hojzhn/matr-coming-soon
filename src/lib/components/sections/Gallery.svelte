@@ -181,7 +181,7 @@
 {#if openIndex !== null}
 	{@const item = galleryContent.items[openIndex]}
 	<div
-		class="fixed inset-0 z-[100] flex flex-col bg-ink/95 p-4 md:p-10"
+		class="fixed inset-0 z-[100] flex flex-col bg-surface p-4 md:p-10"
 		role="dialog"
 		aria-modal="true"
 		aria-label={item.caption || item.alt}
@@ -198,7 +198,7 @@
 				close();
 			}}
 			aria-label="Close"
-			class="absolute right-4 top-4 text-surface transition-colors hover:text-ink-faint md:right-8 md:top-8"
+			class="absolute right-4 top-4 text-ink transition-colors hover:text-ink-faint md:right-8 md:top-8"
 		>
 			<Icon name="close" class="h-7 w-7" />
 		</button>
@@ -211,7 +211,7 @@
 					prev();
 				}}
 				aria-label="Previous image"
-				class="absolute left-2 top-1/2 -translate-y-1/2 text-surface transition-colors hover:text-ink-faint md:left-6"
+				class="absolute left-2 top-1/2 -translate-y-1/2 text-ink transition-colors hover:text-ink-faint md:left-6"
 			>
 				<Icon name="arrow-right" class="h-8 w-8 rotate-180" />
 			</button>
@@ -222,7 +222,7 @@
 					next();
 				}}
 				aria-label="Next image"
-				class="absolute right-2 top-1/2 -translate-y-1/2 text-surface transition-colors hover:text-ink-faint md:right-6"
+				class="absolute right-2 top-1/2 -translate-y-1/2 text-ink transition-colors hover:text-ink-faint md:right-6"
 			>
 				<Icon name="arrow-right" class="h-8 w-8" />
 			</button>
@@ -250,7 +250,7 @@
 		</div>
 
 		{#if item.caption}
-			<Heading level={5} tag="p" size="sm" tone="surface" align="center" class="mt-4 shrink-0">
+			<Heading level={5} tag="p" size="sm"  align="center" class="mt-4 shrink-0">
 				{item.caption}
 			</Heading>
 		{/if}

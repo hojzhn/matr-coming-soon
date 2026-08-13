@@ -78,14 +78,14 @@
 	}
 </script>
 
-<footer class="border-t border-line bg-surface text-ink">
+<footer class="border-t border-line bg-shade text-surface">
 	<Container width="full" class="py-16">
 		<div class="grid grid-cols-2 gap-x-8 gap-y-12 md:grid-cols-4">
 			<FooterColumn heading={footerContent.headings.connect}>
 				<ul class="flex flex-col gap-1">
 					{#each footerContent.social as link (link.href)}
 						<li>
-							<ArrowLink href={link.href} label={link.label} external size="sm" sizeMd="lg" class="-ml-3" />
+							<ArrowLink href={link.href} label={link.label} external fill="surface" size="sm" sizeMd="lg" class="-ml-3" />
 						</li>
 					{/each}
 				</ul>
@@ -96,6 +96,7 @@
 					<ArrowLink
 						href={`mailto:${siteContent.email}`}
 						label={siteContent.email}
+						fill="surface"
 						size="sm"
 						sizeMd="lg"
 						class="-ml-3"
@@ -117,29 +118,18 @@
 				<ul class="flex flex-col gap-2">
 					{#each navContent.items as item (item.href)}
 						<li>
-							<ArrowLink href={item.href} label={item.label} samepage arrow={false} size="sm" sizeMd="lg" class="-ml-3" />
+							<ArrowLink href={item.href} label={item.label} samepage arrow={false} fill="surface" size="sm" sizeMd="lg" class="-ml-3" />
 						</li>
 					{/each}
 				</ul>
 			</FooterColumn>
 		</div>
 
-		<hr class="my-12 border-0 border-t border-line" />
+		<hr class="my-12 border-0 border-t border-line opacity-50" />
 
 		<div class="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:items-end">
-			<div>
-				<div class="flex items-end gap-4 sm:gap-6">
-					<Logo class="h-[clamp(2rem,4vw,4.25rem)] w-auto text-ink" />
-					<Heading level={2} size="2xl" weight="bold" tracking="tight" leading="none">
-						{siteContent.name}
-					</Heading>
-				</div>
-				<Heading level={3} size="xs" weight="medium" tone="muted" class="mt-4">
-					© {year} {siteContent.name}. {footerContent.legal.rights}.
-				</Heading>
-			</div>
 
-			<div class="w-full  sm:justify-self-end">
+			<div class="w-full sm:order-2 sm:justify-self-end">
 				{#if success}
 					<Heading level={4} size="sm" tone="brand">{newsletterContent.successMessage}</Heading>
 				{:else}
@@ -170,17 +160,33 @@
 									type="email"
 									placeholder={newsletterContent.emailPlaceholder}
 									bind:value={email}
-									class="w-full border-b-2 border-ink bg-transparent px-0 py-2.5 text-base font-medium text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
+									class="w-full border-b-2 border-surface bg-transparent px-0 py-2.5 text-base font-medium text-surface outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
 								/>
 							</label>
 						</div>
-						<ArrowLink type="submit" label={newsletterContent.submitLabel} arrow={false} {loading} disabled={loading} class="mb-0.5" />
+						<ArrowLink type="submit" label={newsletterContent.submitLabel} arrow={false} fill="surface" {loading} disabled={loading} class="mb-0.5" />
 					</form>
 					{#if error}
 						<Heading level={4} size="xs" class="mt-2 text-danger">{error}</Heading>
 					{/if}
 				{/if}
 			</div>
+
+			<hr class="border-0 border-t border-line sm:hidden opacity-50" />
+
+			<div class="sm:order-1">
+				<div class="flex items-end gap-4 sm:gap-6">
+					<Logo class="h-[clamp(2rem,4vw,4.25rem)] w-auto text-surface" />
+					<Heading level={2} size="2xl" weight="bold" tracking="tight" leading="none">
+						{siteContent.name}
+					</Heading>
+				</div>
+				<Heading level={3} size="xs" weight="medium" tone="muted" class="mt-4">
+					© {year} {siteContent.name}. {footerContent.legal.rights}.
+				</Heading>
+			</div>
+
+
 		</div>
 	</Container>
 </footer>

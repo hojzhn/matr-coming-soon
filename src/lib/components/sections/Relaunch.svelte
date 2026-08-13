@@ -2,6 +2,7 @@
 	import Section from '$lib/components/ui/Section.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import Icon, { type IconName } from '$lib/components/ui/Icon.svelte';
+	import LazyImage from '$lib/components/ui/LazyImage.svelte';
 	import { relaunchContent, siteContent } from '$lib/content';
 
 	const links: { icon: IconName; href: string; label: string; external: boolean }[] = [
@@ -33,10 +34,10 @@
 				? 'translate-y-0 opacity-100'
 				: 'translate-y-8 opacity-0'}"
 		>
-			<img
+			<LazyImage
 				src={subheroSrc}
 				alt=""
-				class="absolute left-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 object-cover "
+				class="absolute left-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 object-cover"
 			/>
 		</div>
 	</div>
