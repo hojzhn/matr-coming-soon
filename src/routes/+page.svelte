@@ -9,12 +9,14 @@
 	import Testimonials from '$lib/components/sections/Testimonials.svelte';
 	import Contact from '$lib/components/sections/Contact.svelte';
 	import LazyImage from '$lib/components/ui/LazyImage.svelte';
+	import Toast from '$lib/components/ui/Toast.svelte';
 
 	let { data } = $props();
 </script>
 
-<Header />
+<Header formToken={data.formToken} />
 <FloatingOrderCta />
+<Toast />
 
 <main>
 	<Hero />

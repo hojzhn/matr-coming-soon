@@ -45,8 +45,10 @@ export interface OrderFormContent {
 	projectNameLabel: string;
 	projectNamePlaceholder: string;
 	sizeLabel: string;
-	sizingModeLabel: string;
+	marginLabel: string;
+	marginDescription: string;
 	optionsLabel: string;
+	optionsDescription: string;
 	optionsPlaceholder: string;
 	optionsRemoveLabel: string;
 	stretchDiagramArtworkLabel: string;
@@ -59,6 +61,9 @@ export interface OrderFormContent {
 	uploadChangeLabel: string;
 	uploadRemoveLabel: string;
 	addToCartLabel: string;
+	checkoutNowLabel: string;
+	addedToCartToast: string;
+	addedToCartConfirmation: string;
 	totalLabel: string;
 	untitledLabel: string;
 	finePrint: FinePrintItem[];
@@ -68,9 +73,12 @@ export interface OrderFormContent {
 	errorMaxSize: string;
 	errorInvalidFile: string;
 	errorCartFull: string;
+	errorProjectNameRequired: string;
+	errorFileRequired: string;
 }
 export interface OrderCartContent {
 	heading: string;
+	menuLabel: string;
 	emptyLabel: string;
 	emptyHint: string;
 	removeLabel: string;

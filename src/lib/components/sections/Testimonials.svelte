@@ -54,7 +54,7 @@
 						name={platform}
 						class="h-8 w-8 text-ink-muted transition-colors group-hover:text-brand"
 					/>
-					<Heading level={5} tag="span" eyebrow uppercase>
+					<Heading level={5} tag="span" tone="muted">
 						View on {platformLabel[platform]}
 					</Heading>
 				</a>

@@ -129,7 +129,7 @@
 
 		<div class="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:items-end">
 
-			<div class="w-full sm:order-2 sm:justify-self-end">
+			<div class="w-full max-w-[400px] sm:order-2 sm:justify-self-end">
 				{#if success}
 					<Heading level={4} size="sm" tone="brand">{newsletterContent.successMessage}</Heading>
 				{:else}

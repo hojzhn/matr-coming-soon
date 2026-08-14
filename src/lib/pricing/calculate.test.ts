@@ -16,8 +16,8 @@ const cfg: PricingConfig = {
 };
 
 const options: AddOnOption[] = [
-	{ id: 'varnish', label: 'Varnish', priceDeltaCents: 1500 },
-	{ id: 'stretched', label: 'Stretched', priceDeltaCents: 0 }
+	{ id: 'varnish', label: 'Varnish', priceDeltaCents: 1500, icon: 'droplet' },
+	{ id: 'stretched', label: 'Stretched', priceDeltaCents: 0, icon: 'layers' }
 ];
 
 describe('calculatePriceCents', () => {

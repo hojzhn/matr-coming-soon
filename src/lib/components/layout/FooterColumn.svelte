@@ -6,7 +6,7 @@
 </script>
 
 <div>
-	<Heading level={3} eyebrow uppercase>
+	<Heading level={5} tone="muted">
 		{heading}
 	</Heading>
 	<div class="mt-6">

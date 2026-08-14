@@ -11,7 +11,7 @@ export interface CartItem {
 	heightIn: number;
 	basePriceCents: number;
 	options: AddOnOption[];
-	sizingMode: string;
+	marginIn: number;
 	quantity: number;
 	unitPriceCents: number;
 	fileName: string | null;
@@ -26,7 +26,7 @@ export interface AddCartItemInput {
 	widthIn: number;
 	heightIn: number;
 	optionIds: string[];
-	sizingMode: string;
+	marginIn: number;
 	quantity: number;
 	fileName: string | null;
 	previewUrl: string | null;
@@ -65,7 +65,7 @@ export class CartStore {
 			heightIn: total.billableHeightIn,
 			basePriceCents: total.basePriceCents,
 			options: total.options,
-			sizingMode: input.sizingMode,
+			marginIn: input.marginIn,
 			quantity: total.quantity,
 			unitPriceCents: total.unitPriceCents,
 			fileName: input.fileName,

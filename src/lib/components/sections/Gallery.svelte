@@ -134,7 +134,7 @@
 	});
 </script>
 
-<Section id="gallery" tone="bg-surface" contained={false} class="my-20">
+<Section id="gallery" tone="surface" contained={false} class="my-20">
 	<div bind:this={galleryEl} class="gallery-grid">
 		<div class="flex gap-3 md:gap-4">
 			{#each columns as column, col (col)}
@@ -165,7 +165,7 @@
 									/>
 								{:else}
 									<div class="absolute inset-0 flex items-center justify-center bg-gray-400">
-										<Heading level={5} tag="p" eyebrow uppercase>Image placeholder</Heading>
+										<Heading level={5} tag="p" >Image placeholder</Heading>
 									</div>
 								{/if}
 
@@ -244,7 +244,7 @@
 				</div>
 			{:else}
 				<div class="flex aspect-4/5 max-h-full w-[70vw] items-center justify-center bg-gray-400">
-					<Heading level={5} tag="p" eyebrow uppercase>Image placeholder</Heading>
+					<Heading level={5} tag="p" >Image placeholder</Heading>
 				</div>
 			{/if}
 		</div>

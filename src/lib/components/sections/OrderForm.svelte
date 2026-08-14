@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fade, slide } from 'svelte/transition';
 	import Field from '$lib/components/ui/Field.svelte';
 	import SizeInput from '$lib/components/ui/SizeInput.svelte';
 	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
@@ -8,28 +9,35 @@
 	import { orderContent } from '$lib/content';
 	import {
 		addOnOptions,
-		sizingModes,
-		NORMAL_SIZING_MODE,
-		TO_STRETCH_SIZING_MODE,
 		STRETCH_SERVICE_OPTION_ID,
-		MAX_PRINT_SIDE_IN
+		OUTPAINT_OPTION_ID,
+		MAX_PRINT_SIDE_IN,
+		MARGIN_STEPS_IN,
+		MARGIN_DEFAULT_IN
 	} from '$lib/pricing/config';
-	import { calculateOrderTotal, resolveAddOns, formatPrice, toInches } from '$lib/pricing/calculate';
+	import { calculateOrderTotal, formatPrice, formatMarginStep, toInches } from '$lib/pricing/calculate';
 	import { cart } from '$lib/cart/cart.svelte';
+	import { submitCheckout } from '$lib/cart/checkout';
+	import { toast } from '$lib/toast/toast.svelte';
 	import { cn } from '$lib/cn';
+
+	let { formToken }: { formToken: string } = $props();
+
+	const REQUIRE_PROJECT_DETAILS = false;
 
 	const MAX_FILE_BYTES = 50 * 1024 * 1024;
 	const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
 
 	let projectName = $state('');
 	let error = $state('');
+	let checkoutLoading = $state(false);
+	let showConfirmation = $state(false);
 
 	let customWidth = $state('');
 	let customHeight = $state('');
 	let customUnit = $state<'in' | 'cm'>('in');
 	let selectedOptionIds = $state<string[]>([]);
-	let pendingOptionId = $state('');
-	let sizingMode = $state(NORMAL_SIZING_MODE);
+	let marginIn = $state(MARGIN_DEFAULT_IN);
 	let quantity = $state('1');
 
 	let fileInput = $state<HTMLInputElement>();
@@ -51,9 +59,6 @@
 			? activeSize.widthIn > MAX_PRINT_SIDE_IN || activeSize.heightIn > MAX_PRINT_SIDE_IN
 			: false
 	);
-
-	const availableOptions = $derived(addOnOptions.filter((o) => !selectedOptionIds.includes(o.id)));
-	const selectedOptions = $derived(resolveAddOns(selectedOptionIds));
 
 	const total = $derived.by(() => {
 		if (!activeSize || exceedsMaxSize) return null;
@@ -84,25 +89,27 @@
 			: orderContent.form.formHeading
 	);
 
-	function addOption() {
-		if (!pendingOptionId || selectedOptionIds.includes(pendingOptionId)) return;
-		selectedOptionIds = [...selectedOptionIds, pendingOptionId];
-		if (pendingOptionId === STRETCH_SERVICE_OPTION_ID) {
-			sizingMode = TO_STRETCH_SIZING_MODE;
+	const stretchSelected = $derived(selectedOptionIds.includes(STRETCH_SERVICE_OPTION_ID));
+
+	function toggleOption(id: string) {
+		if (selectedOptionIds.includes(id)) {
+			selectedOptionIds = selectedOptionIds.filter((optionId) => optionId !== id);
+			return;
 		}
-		pendingOptionId = '';
-	}
-
-	function removeOption(id: string) {
-		selectedOptionIds = selectedOptionIds.filter((optionId) => optionId !== id);
-	}
-
-	function selectSizingMode(id: string) {
-		sizingMode = id;
-		if (id !== TO_STRETCH_SIZING_MODE) {
-			selectedOptionIds = selectedOptionIds.filter((optionId) => optionId !== STRETCH_SERVICE_OPTION_ID);
+		selectedOptionIds = [...selectedOptionIds, id];
+		if (id === STRETCH_SERVICE_OPTION_ID) {
+			marginIn = MARGIN_DEFAULT_IN;
+			if (!selectedOptionIds.includes(OUTPAINT_OPTION_ID)) {
+				selectedOptionIds = [...selectedOptionIds, OUTPAINT_OPTION_ID];
+			}
 		}
 	}
+
+	$effect(() => {
+		if (stretchSelected && (marginIn !== MARGIN_DEFAULT_IN || !selectedOptionIds.includes(OUTPAINT_OPTION_ID))) {
+			selectedOptionIds = selectedOptionIds.filter((id) => id !== STRETCH_SERVICE_OPTION_ID);
+		}
+	});
 
 	function setFile(next: File | null) {
 		if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -147,8 +154,7 @@
 		customHeight = '';
 		customUnit = 'in';
 		selectedOptionIds = [];
-		pendingOptionId = '';
-		sizingMode = NORMAL_SIZING_MODE;
+		marginIn = MARGIN_DEFAULT_IN;
 		quantity = '1';
 		file = null;
 		previewUrl = null;
@@ -157,18 +163,30 @@
 		if (fileInput) fileInput.value = '';
 	}
 
-	function onsubmit(e: SubmitEvent) {
-		e.preventDefault();
+	function validate(): boolean {
 		error = '';
 
+		if (REQUIRE_PROJECT_DETAILS && !projectName.trim()) {
+			error = orderContent.form.errorProjectNameRequired;
+			return false;
+		}
+		if (REQUIRE_PROJECT_DETAILS && !file) {
+			error = orderContent.form.errorFileRequired;
+			return false;
+		}
 		if (!activeSize) {
 			error = orderContent.form.errorInvalidSize;
-			return;
+			return false;
 		}
 		if (exceedsMaxSize) {
 			error = orderContent.form.errorMaxSize;
-			return;
+			return false;
 		}
+		return true;
+	}
+
+	function addItemToCart(): boolean {
+		if (!validate() || !activeSize) return false;
 
 		const result = cart.add({
 			projectName,
@@ -178,7 +196,7 @@
 			widthIn: activeSize.widthIn,
 			heightIn: activeSize.heightIn,
 			optionIds: selectedOptionIds,
-			sizingMode,
+			marginIn,
 			quantity: Number(quantity) || 1,
 			fileName: file?.name ?? null,
 			previewUrl
@@ -186,18 +204,43 @@
 
 		if (!result.ok) {
 			error = orderContent.form.errorCartFull;
-			return;
+			return false;
 		}
 
+		return true;
+	}
+
+	function onsubmit(e: SubmitEvent) {
+		e.preventDefault();
+		if (!addItemToCart()) return;
+		toast.show(orderContent.form.addedToCartToast);
+		showConfirmation = true;
+		setTimeout(() => {
+			resetForm();
+			showConfirmation = false;
+		}, 1300);
+	}
+
+	async function checkoutNow() {
+		if (!addItemToCart()) return;
 		resetForm();
+		checkoutLoading = true;
+		const result = await submitCheckout(formToken);
+		if (!result.ok) error = result.error;
+		checkoutLoading = false;
 	}
 </script>
 
-<div>
-	
-	<form class="mt-8 grid gap-10 md:grid-cols-2" {onsubmit}>
+<div class="relative">
+	<form
+		class={cn(
+			'mt-8 grid gap-10 transition-all duration-500 ease-out md:grid-cols-2',
+			showConfirmation ? 'pointer-events-none blur-md opacity-0' : 'blur-none opacity-100'
+		)}
+		{onsubmit}
+	>
 		<div>
-			<Heading level={5} tag="p" eyebrow uppercase class="mb-4">Artwork</Heading>
+			<Heading level={5} tag="p" tone="muted" class="mb-4">Artwork *</Heading>
 			<div class="relative aspect-square w-full overflow-hidden bg-fill-soft/60">
 				<button
 					type="button"
@@ -271,6 +314,7 @@
 			<Field
 				label={orderContent.form.projectNameLabel}
 				placeholder={orderContent.form.projectNamePlaceholder}
+				required
 				bind:value={projectName}
 			/>
 
@@ -283,66 +327,92 @@
 					</Heading>
 				{/if}
 			</Field>
-
-			<Field label={orderContent.form.sizingModeLabel}>
-				<div class="grid grid-cols-2 gap-2">
-					{#each sizingModes as mode (mode.id)}
-						{@const active = sizingMode === mode.id}
+	<Field label={orderContent.form.marginLabel} description={orderContent.form.marginDescription}>
+				<div class="px-2 pt-4">
+					<div class="relative">
+						<div class="absolute inset-x-0 top-1.5 h-px bg-line"></div>
+						<div class="relative flex items-center justify-between">
+							{#each MARGIN_STEPS_IN as step (step)}
+								{@const active = marginIn === step}
+								<button
+									type="button"
+									onclick={() => (marginIn = step)}
+									aria-pressed={active}
+									aria-label={`${step} in`}
+									class={cn(
+										'flex h-4 w-4 items-center justify-center rounded-full border-2 bg-surface transition-colors',
+										active ? 'border-ink' : 'border-ink-faint hover:border-ink-muted'
+									)}
+								>
+									{#if active}
+										<span class="h-2 w-2 rounded-full bg-ink"></span>
+									{/if}
+								</button>
+							{/each}
+						</div>
+					</div>
+					<div class="mt-2 flex items-center justify-between">
+						{#each MARGIN_STEPS_IN as step (step)}
+						<div class="w-4 text-center">
+							<Heading
+								level={5}
+								tag="span"
+								size="xs"
+								weight={marginIn === step ? 'semibold' : 'normal'}
+								tone={marginIn === step ? 'ink' : 'muted'}
+							>
+								{formatMarginStep(step)}″
+							</Heading></div>
+						{/each}
+					</div>
+				</div>
+			</Field>
+			<Field label={orderContent.form.optionsLabel} description={orderContent.form.optionsDescription}>
+				<div class="flex flex-col gap-2 mt-4">
+					{#each addOnOptions as opt (opt.id)}
+						{@const selected = selectedOptionIds.includes(opt.id)}
 						<button
 							type="button"
-							onclick={() => selectSizingMode(mode.id)}
-							aria-pressed={active}
+							onclick={() => toggleOption(opt.id)}
+							aria-pressed={selected}
 							class={cn(
-								'border px-3 py-2 text-left transition-colors',
-								active ? 'border-ink bg-ink' : 'border-line hover:border-ink'
+								'flex flex-col gap-2 border-2 p-3 text-center transition-colors',
+								selected ? 'border-ink' : 'border-line hover:border-ink-muted'
 							)}
 						>
-							<Heading level={4} tag="span" size="sm" weight="medium" tone={active ? 'surface' : 'ink'}>
-								{mode.label}
-							</Heading>
+							<div class="flex items-center justify-between gap-2">
+								<div class="flex items-center gap-4">
+									<Icon name={opt.icon} class="h-6 w-6 text-ink" strokeWidth={1} />
+									<Heading level={4} tag="span" weight="medium">
+										{opt.label}
+									</Heading>
+									{#if selected}
+										<span
+											class="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-ink"
+											transition:fade={{ duration: 150 }}
+										>
+											<Icon name="check" class="h-2.5 w-2.5 text-surface" strokeWidth={3} />
+										</span>
+									{/if}
+								</div>
+								<Heading level={3}>
+									{opt.priceDeltaCents ? ` +${formatPrice(opt.priceDeltaCents)}` : ''}
+								</Heading>
+							</div>
+							{#if selected && opt.description}
+								<div class="text-left" transition:slide={{ duration: 250 }}>
+									<Heading level={5} tag="p" tone="muted">
+										{opt.description}
+									</Heading>
+								</div>
+							{/if}
 						</button>
 					{/each}
 				</div>
 
-				{#if sizingMode === TO_STRETCH_SIZING_MODE}
-					<StretchDiagram />
-				{/if}
 			</Field>
 
-			<Field label={orderContent.form.optionsLabel}>
-				<select
-					bind:value={pendingOptionId}
-					onchange={addOption}
-					class="w-full border-b-2 border-ink bg-transparent px-0 py-2.5 text-base font-medium text-ink outline-none transition-colors focus:border-brand"
-				>
-					<option value="" disabled>{orderContent.form.optionsPlaceholder}</option>
-					{#each availableOptions as opt (opt.id)}
-						<option value={opt.id}>
-							{opt.label}{opt.priceDeltaCents ? ` +${formatPrice(opt.priceDeltaCents)}` : ''}
-						</option>
-					{/each}
-				</select>
-
-				{#if selectedOptions.length}
-					<div class="mt-2 flex flex-col gap-1.5">
-						{#each selectedOptions as opt (opt.id)}
-							<div class="flex items-center justify-between gap-2">
-								<Heading level={5} tag="span" size="xs">
-									{opt.label} ({formatPrice(opt.priceDeltaCents)})
-								</Heading>
-								<button
-									type="button"
-									onclick={() => removeOption(opt.id)}
-									aria-label={orderContent.form.optionsRemoveLabel}
-									class="shrink-0 text-ink-faint transition-colors hover:text-ink"
-								>
-									<Icon name="close" class="h-3.5 w-3.5" />
-								</button>
-							</div>
-						{/each}
-					</div>
-				{/if}
-			</Field>
+		
 
 			<Field label={orderContent.form.quantityLabel}>
 				<input
@@ -377,11 +447,33 @@
 				<Heading level={4} tag="p" size="xs" class="text-danger">{error}</Heading>
 			{/if}
 
-			<ArrowLink type="submit" variant="button" label={orderContent.form.addToCartLabel} class="w-full" />
+			<div class="flex flex-col gap-3 sm:flex-row">
+				<ArrowLink
+					type="submit"
+					variant="button"
+					icon="cart"
+					arrow={false}
+					label={orderContent.form.addToCartLabel}
+					disabled={checkoutLoading}
+					class="w-full sm:flex-1"
+				/>
+				<ArrowLink
+					type="button"
+					variant="button"
+					icon="bolt"
+					arrow={false}
+					fill="ink"
+					label={orderContent.form.checkoutNowLabel}
+					loading={checkoutLoading}
+					disabled={checkoutLoading}
+					onclick={checkoutNow}
+					class="w-full bg-brand sm:flex-1"
+				/>
+			</div>
 
 			<div class="flex flex-col gap-2">
 				{#each orderContent.form.finePrint as item (item.text)}
-					<div class="flex items-start gap-2">
+					<div class="flex items-center gap-2">
 						<Icon name={item.icon as IconName} class="mt-0.5 h-4 w-4 shrink-0 text-ink-faint" />
 						<Heading level={5} tag="p" size="xs" tone="muted">{item.text}</Heading>
 					</div>
@@ -389,4 +481,42 @@
 			</div>
 		</div>
 	</form>
+
+	{#if showConfirmation}
+		<div
+			class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-4"
+			transition:fade={{ duration: 300 }}
+		>
+			<svg
+				viewBox="0 0 24 24"
+				class="h-14 w-14 text-ink"
+				fill="none"
+				stroke="currentColor"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<circle cx="12" cy="12" r="10" stroke-width="2" class="confirm-circle" />
+				<path d="M8 12l3 3 5-6" stroke-width="2" class="confirm-check" />
+			</svg>
+			<Heading level={2} tag="p" size="lg">{orderContent.form.addedToCartConfirmation}</Heading>
+		</div>
+	{/if}
 </div>
+
+<style>
+	.confirm-circle {
+		stroke-dasharray: 63;
+		stroke-dashoffset: 63;
+		animation: confirm-draw 450ms ease-out forwards;
+	}
+	.confirm-check {
+		stroke-dasharray: 13;
+		stroke-dashoffset: 13;
+		animation: confirm-draw 300ms ease-out 400ms forwards;
+	}
+	@keyframes confirm-draw {
+		to {
+			stroke-dashoffset: 0;
+		}
+	}
+</style>

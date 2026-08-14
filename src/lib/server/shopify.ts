@@ -1,5 +1,5 @@
 import { env } from '$env/dynamic/private';
-import { TO_STRETCH_SIZING_MODE } from '$lib/pricing/config';
+import { STRETCH_SERVICE_OPTION_ID } from '$lib/pricing/config';
 
 const MUTATION = `
 	mutation DraftOrderCreate($input: DraftOrderInput!) {
@@ -21,13 +21,14 @@ export interface DraftOrderLineItem {
 	widthIn: number;
 	heightIn: number;
 	options: DraftOrderLineItemOption[];
-	sizingMode: string;
+	marginIn?: number;
 	quantity: number;
 	unitPriceCents: number;
 }
 
-function stretchSpecLabel(sizingMode: string): string {
-	return sizingMode === TO_STRETCH_SIZING_MODE ? 'To Stretch (0.5in outpaint, 3in margin)' : 'Normal';
+function stretchSpecLabel(options: DraftOrderLineItemOption[], marginIn?: number): string {
+	const isStretched = options.some((o) => o.id === STRETCH_SERVICE_OPTION_ID);
+	return isStretched ? `To Stretch (${marginIn ?? 3}in margin)` : 'Normal';
 }
 
 export interface DraftOrderArgs {
@@ -65,7 +66,7 @@ export async function createDraftOrder(args: DraftOrderArgs): Promise<DraftOrder
 		args.items
 			.map((item) => {
 				const optionsPart = item.options.length ? ` (${item.options.map((o) => o.label).join(', ')})` : '';
-				const base = `Custom Oil Print - ${item.widthIn} x ${item.heightIn} in${optionsPart}, Qty: ${item.quantity}, Sizing: ${stretchSpecLabel(item.sizingMode)}`;
+				const base = `Custom Oil Print - ${item.widthIn} x ${item.heightIn} in${optionsPart}, Qty: ${item.quantity}, Sizing: ${stretchSpecLabel(item.options, item.marginIn)}`;
 				return item.projectName ? `${base} — ${item.projectName}` : base;
 			})
 			.join('; ');

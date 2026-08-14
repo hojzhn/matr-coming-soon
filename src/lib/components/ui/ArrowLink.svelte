@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Heading, { type HeadingSize } from './Heading.svelte';
-	import Icon from './Icon.svelte';
+	import Icon, { type IconName } from './Icon.svelte';
 	import Spinner from './Spinner.svelte';
 	import { cn } from '$lib/cn';
 	import { DitherFill } from '$lib/dither';
@@ -8,6 +8,7 @@
 	let {
 		href,
 		label,
+		icon,
 		arrow = true,
 		external = false,
 		samepage = false,
@@ -23,6 +24,7 @@
 	}: {
 		href?: string;
 		label: string;
+		icon?: IconName;
 		arrow?: boolean;
 		external?: boolean;
 		samepage?: boolean;
@@ -84,6 +86,9 @@
 		tracking="tight"
 		class={cn('relative inline-flex items-center gap-2 transition-colors duration-300 ease-out', hoverText)}
 	>
+		{#if icon}
+			<Icon name={icon} class="h-[0.9em] w-[0.9em] shrink-0" />
+		{/if}
 		{label}
 		{#if loading}
 			<Spinner class="h-4 w-4" />

@@ -41,15 +41,19 @@
 			class={fieldClass}
 		/>
 
-		<div class="flex shrink-0 gap-1 pb-1.5" role="group" aria-label="Unit">
+		<div class="relative flex shrink-0 rounded-full border-2 border-ink p-1" role="group" aria-label="Unit">
+			<div
+				class="absolute inset-y-1 left-1 w-10 rounded-full bg-ink transition-transform duration-200 ease-out"
+				style="transform: translateX({unit === 'in' ? '0' : '100%'})"
+			></div>
 			{#each ['in', 'cm'] as const as u}
 				<button
 					type="button"
 					onclick={() => setUnit(u)}
 					aria-pressed={unit === u}
-					class="px-2 py-1 text-xs font-medium transition-colors {unit === u
-						? 'text-ink underline decoration-brand decoration-2 underline-offset-4'
-						: 'text-ink-faint hover:text-ink-muted'}"
+					class="relative z-10 w-10 py-1.5 text-sm font-medium transition-colors {unit === u
+						? 'text-surface'
+						: 'text-ink hover:text-ink-muted'}"
 				>
 					{u}
 				</button>

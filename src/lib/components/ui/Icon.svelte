@@ -16,7 +16,10 @@
 		| 'palette'
 		| 'ban'
 		| 'calendar'
-		| 'cart';
+		| 'cart'
+		| 'expand'
+		| 'bolt'
+		| 'check';
 
 	type IconDef = { body: string; fill?: boolean; strokeWidth?: number };
 
@@ -66,7 +69,17 @@
 			strokeWidth: 1.75,
 			body:
 				'<path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.8h8.2a2 2 0 0 0 2-1.8L21 8H6" /><circle cx="9" cy="20" r="1.4" fill="currentColor" stroke="none" /><circle cx="17" cy="20" r="1.4" fill="currentColor" stroke="none" />'
-		}
+		},
+		expand: {
+			strokeWidth: 1.5,
+			body:
+				'<rect x="7" y="7" width="10" height="10" /><path d="M3 3l4.5 4.5M21 3l-4.5 4.5M3 21l4.5-4.5M21 21l-4.5-4.5" />'
+		},
+		bolt: {
+			fill: true,
+			body: '<path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z" />'
+		},
+		check: { strokeWidth: 3, body: '<path d="M4 12l5 5L20 6" />' }
 	};
 </script>
 

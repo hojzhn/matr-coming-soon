@@ -15,7 +15,7 @@ interface StoredOrderItem {
 	height_in: number;
 	base_price_cents: number;
 	options: { id: string; label: string; priceDeltaCents: number }[];
-	sizing_mode: string;
+	margin_in: number | null;
 	quantity: number;
 	unit_price_cents: number;
 	total_price_cents: number;
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		heightIn: item.height_in,
 		basePriceCents: item.base_price_cents,
 		options: item.options,
-		sizingMode: item.sizing_mode,
+		marginIn: item.margin_in ?? undefined,
 		quantity: item.quantity,
 		unitPriceCents: item.unit_price_cents,
 		totalPriceCents: item.total_price_cents

@@ -5,21 +5,21 @@
     {
       "icon": "layers",
       "title": "Real depth",
-      "body": "Every print is done on wet surface. We use the medium that's used for traditional oil paint, giving each print that same buttery glow."
+      "body": "Every piece is rendered on wet surface. We use the medium that's used for traditional oil paint, giving each print that same buttery glow."
     },
     {
       "icon": "droplet",
       "title": "Oil-based ink",
-      "body": "We print with oil ink used for high-end giclée instead of standard pigment. That's what gives it the deep, painterly finish."
+      "body": "We produce with oil ink used for high-end giclée instead of standard pigment. That's what gives it the deep, painterly finish."
     },
     {
       "icon": "texture",
       "title": "Loose Belgian linen",
-      "body": "Every piece prints on loose Belgian linen. Frame and hang it as-is or stretch it yourself. Your call! (Or, we can do it for you as well.)"
+      "body": "No need to worry about creasing or wetting. Frame and hang it as-is, or stretch it yourself. Your call. (Or, we can take care of it for you as well.)"
     }
   ],
   "process": {
     "heading": "Fabulously handcrafted.",
-    "body": "We come out of art production, where we've been builing robotics and machines for artists. Starting from the old-school printing technology, we ended up with something fresh and we'd like to share it with you guys. \n\nWe built the machine ourselves in our own shop, and we run it by hand. We cut every piece of linen, apply the medium and finish each surface to decide when it is done. There is no automated line here and no catalog part we could have ordered. What we have is a machine we assembled, a process we worked out through failed prints, and hands that know what the linen should feel like at each stage.\n\n Every piece is handmade for you; a special gift from our studio."
+    "body": "We come out of art production, where we've been builing robotics and machines for artists. Starting from the old-school printing technology, we ended up with something fresh and we'd like to share it with you guys. \n\nWe built the machine ourselves in our own shop, and we run it by hand. We cut every piece of linen, apply the medium and finish each surface to decide when it is done. There is no automated line here and no catalog part we could have ordered. What we have is a machine we assembled, a process we worked out through trial and error, and hands that know what the piece should feel like at each stage.\n\n Every piece is handmade for you; a special gift from our studio."
   }
 }

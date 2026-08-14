@@ -53,6 +53,12 @@ export function formatPrice(cents: number, currency = 'USD'): string {
 	return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(cents / 100);
 }
 
+export function formatMarginStep(step: number): string {
+	const whole = Math.trunc(step);
+	if (step - whole !== 0.5) return String(step);
+	return whole === 0 ? '½' : `${whole}½`;
+}
+
 export function resolveAddOns(optionIds: string[], options: AddOnOption[] = addOnOptions): AddOnOption[] {
 	const seen = new Set<string>();
 	const resolved: AddOnOption[] = [];

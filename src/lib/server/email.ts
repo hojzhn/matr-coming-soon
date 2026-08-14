@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 import { env } from '$env/dynamic/private';
 import { formatPrice } from '$lib/pricing/calculate';
-import { TO_STRETCH_SIZING_MODE } from '$lib/pricing/config';
+import { STRETCH_SERVICE_OPTION_ID } from '$lib/pricing/config';
 
 function escapeHtml(value: string): string {
 	return value
@@ -64,7 +64,7 @@ export interface OrderNotificationLineItem {
 	heightIn: number;
 	basePriceCents: number;
 	options: OrderNotificationLineItemOption[];
-	sizingMode: string;
+	marginIn?: number;
 	quantity: number;
 	unitPriceCents: number;
 	totalPriceCents: number;
@@ -76,8 +76,9 @@ export interface OrderNotificationArgs {
 	invoiceUrl: string;
 }
 
-function stretchSpecLabel(sizingMode: string): string {
-	return sizingMode === TO_STRETCH_SIZING_MODE ? 'To Stretch (0.5in outpaint, 3in margin)' : 'Normal';
+function stretchSpecLabel(options: OrderNotificationLineItemOption[], marginIn?: number): string {
+	const isStretched = options.some((o) => o.id === STRETCH_SERVICE_OPTION_ID);
+	return isStretched ? `To Stretch (${marginIn ?? 3}in margin)` : 'Normal';
 }
 
 export function sendOrderNotification(args: OrderNotificationArgs) {
@@ -96,7 +97,7 @@ export function sendOrderNotification(args: OrderNotificationArgs) {
 					: '';
 				return row(
 					`Item ${i + 1}`,
-					`${item.widthIn} x ${item.heightIn} in (${formatPrice(item.basePriceCents)} base)${optionsPart}${projectPart} · Qty ${item.quantity} · Sizing: ${stretchSpecLabel(item.sizingMode)} · ${formatPrice(item.unitPriceCents)} ea · ${formatPrice(item.totalPriceCents)}`
+					`${item.widthIn} x ${item.heightIn} in (${formatPrice(item.basePriceCents)} base)${optionsPart}${projectPart} · Qty ${item.quantity} · Sizing: ${stretchSpecLabel(item.options, item.marginIn)} · ${formatPrice(item.unitPriceCents)} ea · ${formatPrice(item.totalPriceCents)}`
 				);
 			})
 			.join('') +

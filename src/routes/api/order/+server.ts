@@ -4,13 +4,11 @@ import { verifySession, MIN_SUBMIT_MS } from '$lib/server/security';
 import { calculateOrderTotal, toInches, type OrderTotal } from '$lib/pricing/calculate';
 import {
 	addOnOptions,
-	sizingModes,
-	NORMAL_SIZING_MODE,
-	TO_STRETCH_SIZING_MODE,
-	STRETCH_SERVICE_OPTION_ID,
 	MAX_PRINT_SIDE_IN,
 	MAX_CART_ITEMS,
-	MAX_ITEM_QUANTITY
+	MAX_ITEM_QUANTITY,
+	MARGIN_STEPS_IN,
+	MARGIN_DEFAULT_IN
 } from '$lib/pricing/config';
 import { createDraftOrder } from '$lib/server/shopify';
 
@@ -20,7 +18,7 @@ function fail(error: string, status = 400) {
 
 interface ValidatedItem {
 	projectName: string;
-	sizingMode: string;
+	marginIn: number;
 	total: OrderTotal;
 }
 
@@ -51,7 +49,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		const rawHeight = Number(raw?.rawHeight);
 		const rawUnit = raw?.rawUnit === 'cm' ? 'cm' : 'in';
 		const optionIds: string[] = Array.isArray(raw?.optionIds) ? raw.optionIds.map((id: unknown) => String(id)) : [];
-		const sizingMode = String(raw?.sizingMode ?? NORMAL_SIZING_MODE);
+		const rawMarginIn = Number(raw?.marginIn);
+		const marginIn = MARGIN_STEPS_IN.includes(rawMarginIn) ? rawMarginIn : MARGIN_DEFAULT_IN;
 		const quantity = Math.min(MAX_ITEM_QUANTITY, Math.max(1, Math.round(Number(raw?.quantity) || 1)));
 
 		if (!Number.isFinite(rawWidth) || !Number.isFinite(rawHeight) || rawWidth <= 0 || rawHeight <= 0) {
@@ -59,12 +58,6 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 		if (!optionIds.every((id) => addOnOptions.some((o) => o.id === id))) {
 			return fail('Please choose valid options.');
-		}
-		if (!sizingModes.some((m) => m.id === sizingMode)) {
-			return fail('Please choose a valid print size option.');
-		}
-		if (optionIds.includes(STRETCH_SERVICE_OPTION_ID) && sizingMode !== TO_STRETCH_SIZING_MODE) {
-			return fail('The Stretched add-on requires the To Stretch print size.');
 		}
 
 		const widthIn = toInches(rawWidth, rawUnit);
@@ -76,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		validated.push({
 			projectName,
-			sizingMode,
+			marginIn,
 			total: calculateOrderTotal(widthIn, heightIn, optionIds, quantity)
 		});
 	}
@@ -101,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				sq_in: v.total.sqIn,
 				base_price_cents: v.total.basePriceCents,
 				options: v.total.options,
-				sizing_mode: v.sizingMode,
+				margin_in: v.marginIn,
 				quantity: v.total.quantity,
 				unit_price_cents: v.total.unitPriceCents,
 				total_price_cents: v.total.totalPriceCents
@@ -124,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				widthIn: v.total.billableWidthIn,
 				heightIn: v.total.billableHeightIn,
 				options: v.total.options,
-				sizingMode: v.sizingMode,
+				marginIn: v.marginIn,
 				quantity: v.total.quantity,
 				unitPriceCents: v.total.unitPriceCents
 			}))

@@ -1,17 +1,41 @@
 <script lang="ts">
+	import { fly, fade } from 'svelte/transition';
 	import Container from '$lib/components/ui/Container.svelte';
 	import Logo from '$lib/components/ui/Logo.svelte';
 	import Icon from '$lib/components/ui/Icon.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
-	import { navContent } from '$lib/content';
+	import CartContents from '$lib/components/cart/CartContents.svelte';
+	import { navContent, orderContent } from '$lib/content';
 	import { cart } from '$lib/cart/cart.svelte';
 	import { cn } from '$lib/cn';
 
+	let { formToken }: { formToken: string } = $props();
+
 	let open = $state(false);
+	let mobileView = $state<'menu' | 'cart'>('menu');
 	let overDark = $state(true);
 
 	function close() {
 		open = false;
+		mobileView = 'menu';
+	}
+
+	function toggleMenu() {
+		if (open && mobileView === 'menu') {
+			close();
+		} else {
+			open = true;
+			mobileView = 'menu';
+		}
+	}
+
+	function toggleCart() {
+		if (open && mobileView === 'cart') {
+			close();
+		} else {
+			open = true;
+			mobileView = 'cart';
+		}
 	}
 
 	$effect(() => {
@@ -35,7 +59,7 @@
 	<Container width="full">
 		<div class="flex h-16 items-center justify-between">
 			<a href="#top" class="flex items-center" aria-label="matr labs, back to top" onclick={close}>
-				<Logo class={cn('h-7 w-auto transition-colors duration-300', inkClass)} />
+				<Logo class={cn('h-7 w-auto transition-colors duration-300', inkClass, open && 'max-md:text-ink')} />
 			</a>
 
 			<div class="flex items-center gap-4 md:gap-8">
@@ -53,13 +77,14 @@
 					{/each}
 				</nav>
 
-				<a
-					href="#order"
+				<button
+					type="button"
 					class="relative flex h-10 w-10 items-center justify-center"
 					aria-label={cart.count > 0 ? `Cart, ${cart.count} item${cart.count === 1 ? '' : 's'}` : 'Cart'}
-					onclick={close}
+					aria-expanded={open && mobileView === 'cart'}
+					onclick={toggleCart}
 				>
-					<Icon name="cart" class={cn('h-5 w-5 transition-colors duration-300', inkClass)} />
+					<Icon name="cart" class={cn('h-5 w-5 transition-colors duration-300', inkClass, open && 'max-md:text-ink')} />
 					{#if cart.count > 0}
 						<span
 							class="absolute top-1.5 right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-semibold text-ink"
@@ -67,16 +92,16 @@
 							{cart.count}
 						</span>
 					{/if}
-				</a>
+				</button>
 
 				<button
 					type="button"
 					class="flex h-10 w-10 items-center justify-center md:hidden"
-					aria-label={open ? 'Close menu' : 'Open menu'}
-					aria-expanded={open}
-					onclick={() => (open = !open)}
+					aria-label={open && mobileView === 'menu' ? 'Close menu' : 'Open menu'}
+					aria-expanded={open && mobileView === 'menu'}
+					onclick={toggleMenu}
 				>
-					<Icon name={open ? 'close' : 'menu'} class={cn('h-6 w-6 transition-colors duration-300', inkClass)} />
+					<Icon name="menu" class={cn('h-6 w-6 transition-colors duration-300', inkClass, open && 'max-md:text-ink')} />
 				</button>
 			</div>
 		</div>
@@ -84,13 +109,58 @@
 </header>
 
 {#if open}
-	<div class="fixed inset-0 z-40 flex flex-col justify-center bg-surface px-container md:hidden">
-		<nav class="flex flex-col gap-6">
-			{#each navContent.items as item (item.href)}
-				<a href={item.href} onclick={close}>
-					<Heading level={3} size="xl">{item.label}</Heading>
-				</a>
-			{/each}
-		</nav>
+	<div class="fixed inset-0 z-[45] flex flex-col bg-surface px-container md:hidden" transition:fly={{ x: 40, duration: 250 }}>
+		{#if mobileView === 'menu'}
+			<div class="flex flex-1 flex-col justify-center">
+				<nav class="flex flex-col gap-6">
+					{#each navContent.items as item (item.href)}
+						<a href={item.href} onclick={close}>
+							<Heading level={3} size="xl">{item.label}</Heading>
+						</a>
+					{/each}
+					<button type="button" class="text-left" onclick={() => (mobileView = 'cart')}>
+						<Heading level={3} size="xl">{orderContent.cart.menuLabel}</Heading>
+					</button>
+				</nav>
+			</div>
+		{:else}
+			<div class="flex min-h-0 flex-1 flex-col pt-24 pb-6">
+				<Heading level={2} tag="p" size="lg" class="mb-4 shrink-0">{orderContent.cart.heading}</Heading>
+				<div class="min-h-0 flex-1">
+					<CartContents {formToken} />
+				</div>
+			</div>
+		{/if}
+	</div>
+{/if}
+
+{#if open}
+	<div class="fixed inset-0 z-[60] hidden md:block">
+		<button
+			type="button"
+			class="absolute inset-0 bg-shade/10"
+			aria-label="Close cart"
+			onclick={close}
+			transition:fade={{ duration: 200 }}
+		></button>
+		<aside
+			class="absolute inset-y-0 right-0 flex w-full max-w-md flex-col bg-surface p-6 shadow-2xl"
+			transition:fly={{ x: 320, duration: 300 }}
+		>
+			<div class="flex shrink-0 items-center justify-between border-b border-line pb-4">
+				<Heading level={2} tag="p" size="lg">{orderContent.cart.heading}</Heading>
+				<button
+					type="button"
+					aria-label="Close cart"
+					onclick={close}
+					class="text-ink-faint transition-colors hover:text-ink"
+				>
+					<Icon name="close" class="h-5 w-5" />
+				</button>
+			</div>
+			<div class="mt-4 min-h-0 flex-1">
+				<CartContents {formToken} />
+			</div>
+		</aside>
 	</div>
 {/if}
