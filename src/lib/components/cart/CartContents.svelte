@@ -14,6 +14,39 @@
 	let loading = $state(false);
 	let error = $state('');
 
+	let discountCode = $state('');
+	let discountLoading = $state(false);
+	let discountError = $state('');
+
+	async function applyDiscount() {
+		const code = discountCode.trim();
+		if (!code) return;
+		discountError = '';
+		discountLoading = true;
+		try {
+			const res = await fetch('/api/discount', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ code, subtotalCents: cart.subtotalCents, formToken })
+			});
+			const data = await res.json();
+			if (data.ok) {
+				cart.applyDiscount({ code: data.code, title: data.title, discountCents: data.discountCents });
+				discountCode = '';
+			} else {
+				discountError = data.error || orderContent.cart.errorGeneric;
+			}
+		} catch {
+			discountError = orderContent.cart.errorGeneric;
+		}
+		discountLoading = false;
+	}
+
+	function removeDiscount() {
+		cart.removeDiscount();
+		discountError = '';
+	}
+
 	async function checkout() {
 		error = '';
 		loading = true;
@@ -98,7 +131,59 @@
 		<div class="mt-4 shrink-0 border-t border-line pt-4">
 			<div class="flex items-center justify-between">
 				<Heading level={4} tag="span" size="sm" tone="muted">{orderContent.cart.subtotalLabel}</Heading>
-				<Heading level={3} tag="span" size="lg">{formatPrice(cart.subtotalCents)}</Heading>
+				<Heading level={4} tag="span" size="sm">{formatPrice(cart.subtotalCents)}</Heading>
+			</div>
+
+			{#if cart.discount}
+				<div class="mt-1 flex items-center justify-between gap-2">
+					<Heading level={5} tag="span" size="xs" tone="muted">
+						{orderContent.cart.discountAppliedPrefix}
+						{cart.discount.code}
+					</Heading>
+					<div class="flex items-center gap-2">
+						<Heading level={5} tag="span" size="xs">-{formatPrice(cart.discountCents)}</Heading>
+						<button
+							type="button"
+							onclick={removeDiscount}
+							aria-label={orderContent.cart.discountRemoveLabel}
+							class="text-ink-faint transition-colors hover:text-ink"
+						>
+							<Icon name="close" class="h-3.5 w-3.5" />
+						</button>
+					</div>
+				</div>
+			{:else}
+				<div class="mt-3 flex items-center gap-2">
+					<label class="flex-1">
+						<span class="sr-only">{orderContent.cart.discountLabel}</span>
+						<input
+							type="text"
+							bind:value={discountCode}
+							placeholder={orderContent.cart.discountPlaceholder}
+							autocomplete="off"
+							class="w-full border-b-2 border-ink bg-transparent px-0 py-1 text-sm text-ink outline-none transition-colors focus:border-brand"
+						/>
+					</label>
+					<ArrowLink
+						type="button"
+						variant="button"
+						arrow={false}
+						size="xs"
+						label={discountLoading ? orderContent.cart.discountApplyingLabel : orderContent.cart.discountApplyLabel}
+						loading={discountLoading}
+						disabled={discountLoading || !discountCode.trim()}
+						onclick={applyDiscount}
+						class="shrink-0 px-4 py-2"
+					/>
+				</div>
+				{#if discountError}
+					<Heading level={5} tag="p" size="xs" class="mt-1 text-danger">{discountError}</Heading>
+				{/if}
+			{/if}
+
+			<div class="mt-3 flex items-center justify-between border-t border-line pt-3">
+				<Heading level={4} tag="span" size="sm" tone="muted">{orderContent.cart.totalLabel}</Heading>
+				<Heading level={3} tag="span" size="lg">{formatPrice(cart.totalCents)}</Heading>
 			</div>
 
 			<input

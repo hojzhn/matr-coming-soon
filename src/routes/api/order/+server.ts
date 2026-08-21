@@ -10,7 +10,8 @@ import {
 	MARGIN_STEPS_IN,
 	MARGIN_DEFAULT_IN
 } from '$lib/pricing/config';
-import { createDraftOrder } from '$lib/server/shopify';
+import { createDraftOrder, lookupDiscountCode } from '$lib/server/shopify';
+import { computeDiscountCents } from '$lib/pricing/discount';
 
 function fail(error: string, status = 400) {
 	return json({ ok: false, error }, { status });
@@ -76,6 +77,18 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	const totalPriceCents = validated.reduce((sum, v) => sum + v.total.totalPriceCents, 0);
 
+	const discountCode = String(body.discountCode ?? '').trim();
+	let discount: (Awaited<ReturnType<typeof lookupDiscountCode>> & { code: string }) | undefined;
+	if (discountCode) {
+		try {
+			const info = await lookupDiscountCode(discountCode);
+			discount = { ...info, code: discountCode };
+		} catch (err) {
+			return fail(err instanceof Error ? err.message : "That discount code isn't valid.");
+		}
+	}
+	const discountCents = discount ? computeDiscountCents(totalPriceCents, discount) : 0;
+
 	let supabase;
 	try {
 		supabase = getSupabaseAdmin();
@@ -100,6 +113,8 @@ export const POST: RequestHandler = async ({ request }) => {
 				total_price_cents: v.total.totalPriceCents
 			})),
 			total_price_cents: totalPriceCents,
+			discount_code: discount?.code ?? null,
+			discount_cents: discountCents,
 			status: 'pending'
 		})
 		.select('id')
@@ -120,7 +135,8 @@ export const POST: RequestHandler = async ({ request }) => {
 				marginIn: v.marginIn,
 				quantity: v.total.quantity,
 				unitPriceCents: v.total.unitPriceCents
-			}))
+			})),
+			discount
 		});
 
 		await supabase

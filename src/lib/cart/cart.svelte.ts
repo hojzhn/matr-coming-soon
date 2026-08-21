@@ -34,8 +34,15 @@ export interface AddCartItemInput {
 
 export type AddCartItemResult = { ok: true; id: string } | { ok: false; error: 'max-items' };
 
+export interface AppliedDiscount {
+	code: string;
+	title: string;
+	discountCents: number;
+}
+
 export class CartStore {
 	items = $state<CartItem[]>([]);
+	discount = $state<AppliedDiscount | null>(null);
 
 	get count(): number {
 		return this.items.length;
@@ -43,6 +50,14 @@ export class CartStore {
 
 	get subtotalCents(): number {
 		return this.items.reduce((sum, item) => sum + item.unitPriceCents * item.quantity, 0);
+	}
+
+	get discountCents(): number {
+		return this.discount ? Math.min(this.discount.discountCents, this.subtotalCents) : 0;
+	}
+
+	get totalCents(): number {
+		return this.subtotalCents - this.discountCents;
 	}
 
 	get isFull(): boolean {
@@ -81,6 +96,14 @@ export class CartStore {
 		this.items = this.items.filter((i) => i.id !== id);
 	}
 
+	applyDiscount(discount: AppliedDiscount): void {
+		this.discount = discount;
+	}
+
+	removeDiscount(): void {
+		this.discount = null;
+	}
+
 	updateQuantity(id: string, quantity: number): void {
 		const item = this.items.find((i) => i.id === id);
 		if (!item) return;
@@ -93,6 +116,7 @@ export class CartStore {
 			if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
 		}
 		this.items = [];
+		this.discount = null;
 	}
 }
 

@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 import { redirect, type RequestHandler } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 
-const SCOPES = 'write_draft_orders,read_draft_orders';
+const SCOPES = 'write_draft_orders,read_draft_orders,read_discounts';
 
 export const GET: RequestHandler = ({ cookies, url }) => {
 	const shop = env.SHOPIFY_STORE_DOMAIN;

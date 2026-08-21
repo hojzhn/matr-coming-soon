@@ -84,6 +84,13 @@ export interface OrderCartContent {
 	removeLabel: string;
 	quantityAriaLabel: string;
 	subtotalLabel: string;
+	discountLabel: string;
+	discountPlaceholder: string;
+	discountApplyLabel: string;
+	discountApplyingLabel: string;
+	discountRemoveLabel: string;
+	discountAppliedPrefix: string;
+	totalLabel: string;
 	checkoutLabel: string;
 	checkoutLoadingLabel: string;
 	errorEmpty: string;

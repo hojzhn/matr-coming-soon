@@ -23,7 +23,8 @@ export async function submitCheckout(formToken: string, company = ''): Promise<C
 					quantity: item.quantity
 				})),
 				company,
-				formToken
+				formToken,
+				discountCode: cart.discount?.code
 			})
 		});
 		const data = await res.json();
