@@ -14,6 +14,7 @@ function makeInput(overrides: Partial<AddCartItemInput> = {}): AddCartItemInput 
 		quantity: 1,
 		fileName: null,
 		previewUrl: null,
+		file: null,
 		...overrides
 	};
 }

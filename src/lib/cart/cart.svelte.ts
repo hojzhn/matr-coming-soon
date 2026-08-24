@@ -16,6 +16,7 @@ export interface CartItem {
 	unitPriceCents: number;
 	fileName: string | null;
 	previewUrl: string | null;
+	file: File | null;
 }
 
 export interface AddCartItemInput {
@@ -30,6 +31,7 @@ export interface AddCartItemInput {
 	quantity: number;
 	fileName: string | null;
 	previewUrl: string | null;
+	file: File | null;
 }
 
 export type AddCartItemResult = { ok: true; id: string } | { ok: false; error: 'max-items' };
@@ -84,7 +86,8 @@ export class CartStore {
 			quantity: total.quantity,
 			unitPriceCents: total.unitPriceCents,
 			fileName: input.fileName,
-			previewUrl: input.previewUrl
+			previewUrl: input.previewUrl,
+			file: input.file
 		});
 
 		return { ok: true, id };

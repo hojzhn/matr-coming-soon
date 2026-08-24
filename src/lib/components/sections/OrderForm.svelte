@@ -13,7 +13,9 @@
 		OUTPAINT_OPTION_ID,
 		MAX_PRINT_SIDE_IN,
 		MARGIN_STEPS_IN,
-		MARGIN_DEFAULT_IN
+		MARGIN_DEFAULT_IN,
+		MAX_ARTWORK_FILE_BYTES,
+		ACCEPTED_ARTWORK_TYPES
 	} from '$lib/pricing/config';
 	import { calculateOrderTotal, formatPrice, formatMarginStep, toInches } from '$lib/pricing/calculate';
 	import { cart } from '$lib/cart/cart.svelte';
@@ -25,8 +27,8 @@
 
 	const REQUIRE_PROJECT_DETAILS = false;
 
-	const MAX_FILE_BYTES = 50 * 1024 * 1024;
-	const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
+	const MAX_FILE_BYTES = MAX_ARTWORK_FILE_BYTES;
+	const ACCEPTED_TYPES = ACCEPTED_ARTWORK_TYPES;
 
 	let projectName = $state('');
 	let error = $state('');
@@ -199,7 +201,8 @@
 			marginIn,
 			quantity: Number(quantity) || 1,
 			fileName: file?.name ?? null,
-			previewUrl
+			previewUrl,
+			file
 		});
 
 		if (!result.ok) {

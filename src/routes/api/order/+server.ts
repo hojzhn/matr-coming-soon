@@ -1,5 +1,7 @@
+import crypto from 'node:crypto';
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { getSupabaseAdmin, PRINT_ORDERS_TABLE } from '$lib/server/supabase';
+import { uploadOrderArtwork } from '$lib/server/artwork';
 import { verifySession, MIN_SUBMIT_MS } from '$lib/server/security';
 import { calculateOrderTotal, toInches, type OrderTotal } from '$lib/pricing/calculate';
 import {
@@ -21,10 +23,23 @@ interface ValidatedItem {
 	projectName: string;
 	marginIn: number;
 	total: OrderTotal;
+	artworkPath: string | null;
+	artworkFileName: string | null;
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-	const body = await request.json().catch(() => null);
+	const formData = await request.formData().catch(() => null);
+	if (!formData) return fail('Invalid request body.');
+
+	const payloadRaw = formData.get('payload');
+	let body: Record<string, unknown> | null = null;
+	if (typeof payloadRaw === 'string') {
+		try {
+			body = JSON.parse(payloadRaw);
+		} catch {
+			body = null;
+		}
+	}
 	if (!body) return fail('Invalid request body.');
 
 	if (String(body.company ?? '').trim() !== '') {
@@ -43,8 +58,19 @@ export const POST: RequestHandler = async ({ request }) => {
 		return fail(`You can order up to ${MAX_CART_ITEMS} prints at a time.`);
 	}
 
+	let supabase;
+	try {
+		supabase = getSupabaseAdmin();
+	} catch (err) {
+		console.error(err);
+		return fail('Server is not configured to accept orders yet.', 500);
+	}
+
+	const orderId = crypto.randomUUID();
+
 	const validated: ValidatedItem[] = [];
-	for (const raw of body.items) {
+	for (let i = 0; i < body.items.length; i++) {
+		const raw = body.items[i];
 		const projectName = String(raw?.projectName ?? '').trim();
 		const rawWidth = Number(raw?.rawWidth);
 		const rawHeight = Number(raw?.rawHeight);
@@ -68,10 +94,25 @@ export const POST: RequestHandler = async ({ request }) => {
 			return fail(`${MAX_PRINT_SIDE_IN} in is the largest side we can print.`);
 		}
 
+		let artworkPath: string | null = null;
+		let artworkFileName: string | null = null;
+		const fileEntry = formData.get(`file_${i}`);
+		if (fileEntry instanceof File) {
+			try {
+				const uploaded = await uploadOrderArtwork(orderId, i, fileEntry);
+				artworkPath = uploaded.path;
+				artworkFileName = uploaded.fileName;
+			} catch (err) {
+				return fail(err instanceof Error ? err.message : 'Could not upload artwork. Please try again.');
+			}
+		}
+
 		validated.push({
 			projectName,
 			marginIn,
-			total: calculateOrderTotal(widthIn, heightIn, optionIds, quantity)
+			total: calculateOrderTotal(widthIn, heightIn, optionIds, quantity),
+			artworkPath,
+			artworkFileName
 		});
 	}
 
@@ -89,17 +130,10 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 	const discountCents = discount ? computeDiscountCents(totalPriceCents, discount) : 0;
 
-	let supabase;
-	try {
-		supabase = getSupabaseAdmin();
-	} catch (err) {
-		console.error(err);
-		return fail('Server is not configured to accept orders yet.', 500);
-	}
-
 	const { data: inserted, error: insertError } = await supabase
 		.from(PRINT_ORDERS_TABLE)
 		.insert({
+			id: orderId,
 			items: validated.map((v) => ({
 				project_name: v.projectName || null,
 				width_in: v.total.billableWidthIn,
@@ -110,7 +144,9 @@ export const POST: RequestHandler = async ({ request }) => {
 				margin_in: v.marginIn,
 				quantity: v.total.quantity,
 				unit_price_cents: v.total.unitPriceCents,
-				total_price_cents: v.total.totalPriceCents
+				total_price_cents: v.total.totalPriceCents,
+				artwork_path: v.artworkPath,
+				artwork_file_name: v.artworkFileName
 			})),
 			total_price_cents: totalPriceCents,
 			discount_code: discount?.code ?? null,

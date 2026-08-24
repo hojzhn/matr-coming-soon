@@ -9,24 +9,28 @@ export async function submitCheckout(formToken: string, company = ''): Promise<C
 	}
 
 	try {
-		const res = await fetch('/api/order', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				items: cart.items.map((item) => ({
-					projectName: item.projectName,
-					rawWidth: item.rawWidth,
-					rawHeight: item.rawHeight,
-					rawUnit: item.rawUnit,
-					optionIds: item.options.map((o) => o.id),
-					marginIn: item.marginIn,
-					quantity: item.quantity
-				})),
-				company,
-				formToken,
-				discountCode: cart.discount?.code
-			})
+		const payload = {
+			items: cart.items.map((item) => ({
+				projectName: item.projectName,
+				rawWidth: item.rawWidth,
+				rawHeight: item.rawHeight,
+				rawUnit: item.rawUnit,
+				optionIds: item.options.map((o) => o.id),
+				marginIn: item.marginIn,
+				quantity: item.quantity
+			})),
+			company,
+			formToken,
+			discountCode: cart.discount?.code
+		};
+
+		const body = new FormData();
+		body.append('payload', JSON.stringify(payload));
+		cart.items.forEach((item, i) => {
+			if (item.file) body.append(`file_${i}`, item.file, item.file.name);
 		});
+
+		const res = await fetch('/api/order', { method: 'POST', body });
 		const data = await res.json();
 		if (data.ok && data.invoiceUrl) {
 			cart.clear();

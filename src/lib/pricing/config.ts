@@ -36,6 +36,9 @@ export const MAX_PRINT_SIDE_IN = 45;
 export const MAX_CART_ITEMS = 20;
 export const MAX_ITEM_QUANTITY = 50;
 
+export const MAX_ARTWORK_FILE_BYTES = 50 * 1024 * 1024;
+export const ACCEPTED_ARTWORK_TYPES = ["image/jpeg", "image/png", "application/pdf"];
+
 export const MARGIN_STEPS_IN = [0.5, 1, 1.5, 2, 3, 4, 5];
 export const MARGIN_DEFAULT_IN = 3;
 
