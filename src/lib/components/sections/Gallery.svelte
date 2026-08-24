@@ -85,15 +85,26 @@
 	let openIndex = $state<number | null>(null);
 
 	$effect(() => {
-		galleryContent.items.forEach((item, i) => {
-			const img = new Image();
-			img.onload = () => {
-				aspectRatios[i] = img.naturalWidth / img.naturalHeight;
-				loaded[i] = true;
-			};
-			img.onerror = () => (failed[i] = true);
-			img.src = item.src;
-		});
+		if (!galleryEl) return;
+
+		const io = new IntersectionObserver(
+			(entries) => {
+				if (!entries[0]?.isIntersecting) return;
+				io.disconnect();
+				galleryContent.items.forEach((item, i) => {
+					const img = new Image();
+					img.onload = () => {
+						aspectRatios[i] = img.naturalWidth / img.naturalHeight;
+						loaded[i] = true;
+					};
+					img.onerror = () => (failed[i] = true);
+					img.src = item.src;
+				});
+			},
+			{ rootMargin: '600px' }
+		);
+		io.observe(galleryEl);
+		return () => io.disconnect();
 	});
 
 	function open(i: number) {

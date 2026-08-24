@@ -394,7 +394,7 @@
 										</span>
 									{/if}
 								</div>
-								<Heading level={3}>
+								<Heading level={4} size="md">
 									{opt.priceDeltaCents ? ` +${formatPrice(opt.priceDeltaCents)}` : ''}
 								</Heading>
 							</div>

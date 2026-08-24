@@ -7,11 +7,11 @@
 	import { strengthsContent } from '$lib/content';
   import ArrowLink from '../ui/ArrowLink.svelte';
 
-	const detailSrc = '/images/strengths/detail.jpg';
-	const strengthMiddleSrc = '/images/strengths/strength-middle.jpg';
-	const strengthSideSrc = '/images/strengths/strength-side.jpg';
-	const strengthSide2Src = '/images/strengths/strength-side-2.jpg';
-	const craftedSrc = '/images/strengths/crafted.jpg';
+	const detailSrc = '/images/strengths/detail.webp';
+	const strengthMiddleSrc = '/images/strengths/strength-middle.webp';
+	const strengthSideSrc = '/images/strengths/strength-side.webp';
+	const strengthSide2Src = '/images/strengths/strength-side-2.webp';
+	const craftedSrc = '/images/strengths/crafted.webp';
 
 	let processImageEl = $state<HTMLElement>();
 	let scrollY = $state(0);
@@ -75,7 +75,7 @@
 	{#each strengthsContent.items as item, i (i)}
 		<div>
 			<Icon name={item.icon as 'droplet' | 'layers' | 'hand'} class="h-7 w-7 text-brand" strokeWidth={1.5} />
-			<Heading level={4} class="mt-4">{item.title}</Heading>
+			<Heading level={4} class="mt-4" size="md">{item.title}</Heading>
 			<div class="mt-2 flex flex-col gap-3">
 				{#each item.body.split('\n').filter(Boolean) as paragraph, pi (pi)}
 					<Heading level={4} tag="p" weight="medium" tone="muted">{@html paragraph}</Heading>

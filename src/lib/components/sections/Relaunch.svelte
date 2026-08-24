@@ -11,7 +11,7 @@
 		{ icon: 'message', href: '#testimonials', label: 'Testimonials', external: false }
 	];
 
-	const subheroSrc = '/images/relaunch/subhero.jpg';
+	const subheroSrc = '/images/relaunch/subhero.webp';
 
 	let revealed = $state(false);
 

@@ -8,7 +8,7 @@
 
 	let { formToken }: { formToken: string } = $props();
 
-	const contactImageSrc = '/images/contact.jpg';
+	const contactImageSrc = '/images/contact.webp';
 
 	let name = $state('');
 	let email = $state('');

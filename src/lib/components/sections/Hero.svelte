@@ -4,18 +4,21 @@
 	import LazyImage from '$lib/components/ui/LazyImage.svelte';
 	import { heroContent, brandsContent } from '$lib/content';
 
-	const carouselImages = Array.from({ length: 10 }, (_, i) => `/images/hero/carousel_${i + 1}.png`);
+	const carouselImages = Array.from({ length: 10 }, (_, i) => `/images/hero/carousel_${i + 1}.webp`);
 
 	let activeIndex = $state(0);
+	let readyCount = $state(0);
 
 	$effect(() => {
 		carouselImages.forEach((src) => {
 			const img = new Image();
+			img.onload = img.onerror = () => (readyCount += 1);
 			img.src = src;
 		});
 	});
 
 	$effect(() => {
+		if (readyCount < carouselImages.length) return;
 		const id = setInterval(() => {
 			activeIndex = (activeIndex + 1) % carouselImages.length;
 		}, 750);
@@ -31,7 +34,7 @@
 				src={carouselImages[activeIndex]}
 				alt=""
 				loading="eager"
-				decoding="sync"
+				decoding="async"
 				class="absolute inset-0 h-full w-full object-contain"
 			/>
 		</div>

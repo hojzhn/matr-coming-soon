@@ -34,7 +34,7 @@
 				</button>
 				{#if openIndex === i}
 					<div transition:slide={{ duration: 250 }}>
-							<Heading level={4} tag="p" weight="medium" tone="muted" class="max-w-3xl pb-6">
+							<Heading level={4} tag="p" weight="medium" size="md" tone="muted" class="max-w-3xl pb-6">
 							{item.answer}
 						</Heading>
 					</div>

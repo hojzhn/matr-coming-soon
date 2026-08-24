@@ -29,14 +29,14 @@
 	<Hero />
 	<Relaunch />
 	<LazyImage
-		src="/images/dividers/brush-divider-1.png"
+		src="/images/dividers/brush-divider-1.webp"
 		alt=""
 		class="h-10 w-full object-cover md:object-contain md:h-20 md:my-12"
 	/>
 	<OrderSection formToken={data.formToken} />
 	<Faq />
 	<LazyImage
-		src="/images/dividers/brush-divider-2.png"
+		src="/images/dividers/brush-divider-2.webp"
 		alt=""
 		class="h-10 w-full object-cover  md:object-contain md:h-22 md:my-12"
 	/>
