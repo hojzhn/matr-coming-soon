@@ -5,6 +5,7 @@
 	import LazyImage from '$lib/components/ui/LazyImage.svelte';
 
 	import { strengthsContent } from '$lib/content';
+  import ArrowLink from '../ui/ArrowLink.svelte';
 
 	const detailSrc = '/images/strengths/detail.jpg';
 	const strengthMiddleSrc = '/images/strengths/strength-middle.jpg';
@@ -70,12 +71,16 @@
 	</Heading>
 </div>
 
-<div class="mt-12 grid gap-8 sm:grid-cols-3">
-	{#each strengthsContent.items as item (item.title)}
+<div class="mt-12 grid gap-12 sm:grid-cols-3">
+	{#each strengthsContent.items as item, i (i)}
 		<div>
 			<Icon name={item.icon as 'texture' | 'droplet' | 'layers'} class="h-7 w-7 text-brand" strokeWidth={1.5} />
 			<Heading level={3} size="sm" sizeMd="md" class="mt-4">{item.title}</Heading>
-			<Heading level={4} tag="p" size="sm" sizeMd="md" weight="medium" tone="muted" class="mt-2">{item.body}</Heading>
+			<div class="mt-2 flex flex-col gap-3">
+				{#each item.body.split('\n').filter(Boolean) as paragraph, pi (pi)}
+					<Heading level={4} tag="p" size="sm" sizeMd="md" weight="medium" tone="muted">{@html paragraph}</Heading>
+				{/each}
+			</div>
 		</div>
 	{/each}
 </div>
@@ -111,9 +116,11 @@
 		<LazyImage src={craftedSrc} alt="" class="absolute inset-0 h-full w-full object-cover" />
 	</div>
 
+	<div>
 	<Heading level={2} tag="p" size="sm" sizeMd="lg" weight="medium" balance={false} >
 		{strengthsContent.process.body}
 	</Heading>
+	<ArrowLink href="/#contact" label="Contact us" size="sm" sizeMd="md" arrow={false} class="mt-4 lg:mt-12 border-2 px-6 py-3" /></div>
 		</div>
 </div>
 </Container>

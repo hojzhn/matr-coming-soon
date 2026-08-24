@@ -18,7 +18,7 @@
 	$effect(() => {
 		const id = setInterval(() => {
 			activeIndex = (activeIndex + 1) % carouselImages.length;
-		}, 500);
+		}, 750);
 		return () => clearInterval(id);
 	});
 </script>

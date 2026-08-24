@@ -1,3 +1,5 @@
+import announcement from './announcement.json';
+import faq from './faq.json';
 import nav from './nav.json';
 import site from './site.json';
 import hero from './hero.json';
@@ -11,6 +13,8 @@ import newsletter from './newsletter.json';
 import contact from './contact.json';
 import footer from './footer.json';
 import type {
+	AnnouncementContent,
+	FaqContent,
 	NavContent,
 	SiteContent,
 	HeroContent,
@@ -25,6 +29,8 @@ import type {
 	FooterContent
 } from './types';
 
+export const announcementContent = announcement satisfies AnnouncementContent;
+export const faqContent = faq satisfies FaqContent;
 export const navContent = nav satisfies NavContent;
 export const siteContent = site satisfies SiteContent;
 export const heroContent = hero satisfies HeroContent;

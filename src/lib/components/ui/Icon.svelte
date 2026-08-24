@@ -19,7 +19,8 @@
 		| 'cart'
 		| 'expand'
 		| 'bolt'
-		| 'check';
+		| 'check'
+		| 'chevron-down';
 
 	type IconDef = { body: string; fill?: boolean; strokeWidth?: number };
 
@@ -79,7 +80,8 @@
 			fill: true,
 			body: '<path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z" />'
 		},
-		check: { strokeWidth: 3, body: '<path d="M4 12l5 5L20 6" />' }
+		check: { strokeWidth: 3, body: '<path d="M4 12l5 5L20 6" />' },
+		'chevron-down': { strokeWidth: 2, body: '<path d="M6 9l6 6 6-6" />' }
 	};
 </script>
 

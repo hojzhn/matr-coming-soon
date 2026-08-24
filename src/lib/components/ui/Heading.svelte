@@ -25,6 +25,7 @@
 		eyebrow = false,
 		uppercase = false,
 		balance = true,
+		underline = false,
 		class: className,
 		children
 	}: {
@@ -40,6 +41,7 @@
 		eyebrow?: boolean;
 		uppercase?: boolean;
 		balance?: boolean;
+		underline?: boolean;
 		class?: string;
 		children: Snippet;
 	} = $props();
@@ -56,7 +58,7 @@
 	};
 
 	const resolvedSize = $derived(size ?? (eyebrow ? 'xs' : defaultSize[level]));
-	const resolvedWeight = $derived(weight ?? (eyebrow ? 'medium' : 'semibold'));
+	const resolvedWeight = $derived(weight ?? (eyebrow ? 'medium' : level === 2 ? 'bold' : 'semibold'));
 	const resolvedTone = $derived(tone ?? (eyebrow ? 'muted' : undefined));
 	const resolvedTracking = $derived(tracking ?? (uppercase ? 'wide' : 'tight'));
 	const resolvedLeading = $derived(leading ?? (resolvedSize === 'hero' ? 'none' : 'tight'));
@@ -127,6 +129,7 @@
 		align === 'center' && 'text-center',
 		resolvedTone && tones[resolvedTone],
 		uppercase && 'uppercase',
+		underline && 'underline underline-offset-4',
 		className
 	)}
 >

@@ -3,23 +3,23 @@
   "intro": "Meet our fat, glossy, oil-slick print, rendered on real linen with real oil medium. It sure hits different.",
   "items": [
     {
-      "icon": "layers",
-      "title": "Real depth",
-      "body": "Every piece is rendered on wet surface. We use the medium that's used for traditional oil paint, giving each print that same buttery glow."
-    },
-    {
       "icon": "droplet",
       "title": "Real Oil",
-      "body": "There is a reason painters have chosen oil for centuries. Its richness comes from the material itself. That’s what makes an Oil Edition immediately different in person."
+      "body": "There is a reason painters have chosen oil as a medium for centuries: the richness that comes from the material itself. The way light moves through suspended pigment, and the way color develops over time.\n<b>Feel the color before you touch it.</b> "
+    },
+    {
+      "icon": "layers",
+      "title": "Real Belgian Linen",
+      "body": "Every Oil Edition begins with hand-preparing artist-grade Belgian linen, one of painting's most extraordinary supports. Linen has been prized for its strength, beautiful weave, and exceptional longevity. \n<b>And we think your images deserve it too.</b>"
     },
     {
       "icon": "texture",
-      "title": "Loose Belgian linen",
-      "body": "Every Oil Edition starts with artist-grade Belgian linen, prepared by hand in our studio to receive the oil-based image."
+      "title": "Real Hands",
+      "body": "From preparing the surface to applying the image, there are real hands behind every piece. Our process brings together advanced technology and hands-on craftsmanship, born from a genuine love of making things and a deep respect for the art of painting.\n <b>We're in it for the love of the game.</b>"
     }
   ],
   "process": {
-    "heading": "Fabulously handcrafted.",
+    "heading": "Fabulously handcrafted.\nEngineered at MIT, Made in Brooklyn.",
     "body": "Matr Labs began by building machines for artists. For more than a decade, our artists and engineers have developed robotic systems that work with the physical language of painting; color, surface, material, movement and finish. Our Oil Edition takes what we've learned and makes it available to everyone. \n\nWe built the machine ourselves in our own shop, and we run it by hand. We cut every piece of linen, apply the medium and finish each surface to decide when it is done. There is no automated line here and no catalog part we could have ordered. What we have is a machine we assembled, a process we worked out through trial and error, and hands that know what the piece should feel like at each stage.\n\n Every piece is handmade for you; a special gift from our studio."
   }
 }

@@ -8,6 +8,7 @@
 	import { navContent, orderContent } from '$lib/content';
 	import { cart } from '$lib/cart/cart.svelte';
 	import { cn } from '$lib/cn';
+	import { announcementState } from './announcement-state.svelte';
 
 	let { formToken }: { formToken: string } = $props();
 
@@ -53,9 +54,15 @@
 	});
 
 	const inkClass = $derived(overDark ? 'text-surface' : 'text-ink');
+	const announcementShown = $derived(!announcementState.dismissed && !announcementState.hiddenByScroll);
 </script>
 
-<header class="fixed inset-x-0 top-0 z-50 w-full">
+<header
+	class={cn(
+		'fixed inset-x-0 z-50 w-full transition-[top] duration-300 ease-out',
+		announcementShown ? 'top-6' : 'top-0'
+	)}
+>
 	<Container width="full">
 		<div class="flex h-16 items-center justify-between">
 			<a href="#top" class="flex items-center" aria-label="matr labs, back to top" onclick={close}>

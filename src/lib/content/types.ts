@@ -1,3 +1,15 @@
+export interface AnnouncementContent {
+	text: string;
+}
+
+export interface FaqItem {
+	question: string;
+	answer: string;
+}
+export interface FaqContent {
+	items: FaqItem[];
+}
+
 export interface NavItem {
 	label: string;
 	href: string;
@@ -130,6 +142,7 @@ export interface TestimonialsContent {
 }
 
 export interface RelaunchContent {
+	heading: string;
 	text: string;
 }
 

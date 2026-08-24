@@ -26,9 +26,9 @@
 </script>
 
 <Section tone="surface" width="full" class="py-10 md:py-12">
-	<div class="flex flex-col gap-6 xl:flex-row xl:items-end lg:justify-between relative xl:-mt-120">
-	<div class="flex flex-col xl:flex-row xl:items-end gap-12">
-	<div class="relative aspect-video overflow-hidden xl:aspect-4/5 xl:h-160">
+	<div class="flex flex-col gap-6 xl:flex-row xl:items-end lg:justify-between relative xl:-mt-80">
+	<div class="flex flex-col xl:flex-row xl:items-end gap-12 xl:gap-20">
+	<div class="relative aspect-video overflow-hidden xl:aspect-3/5 xl:h-160">
 		<div
 			class="absolute inset-0 transition-all duration-700 ease-out {revealed
 				? 'translate-y-0 opacity-100'
@@ -41,33 +41,33 @@
 			/>
 		</div>
 	</div>
-		<Heading
-			level={4}
-			tag="p"
-			size="base"
-			sizeMd="lg"
-			weight="medium"
-			tracking="tight"
-			tone="ink"
-			class="md:max-w-2xl"
+		<div
+			class="transition-all duration-700 ease-out {revealed
+				? 'translate-y-0 opacity-100'
+				: 'translate-y-8 opacity-0'}"
 		>
-			{relaunchContent.text}
-		</Heading>
+		<div class="flex flex-col gap-6 md:max-w-3xl">
+		<Heading level={3}>A New Medium for Art;</Heading>
+
+			<Heading level={2} size="2xl" tone="ink" class="relaunch-heading">{@html relaunchContent.heading}</Heading>
+
+				<Heading level={4} tag="p" size="base" sizeMd="lg" weight="medium" tracking="tight" tone="ink">
+				{relaunchContent.text}
+			</Heading>
 		</div>
-		<div class="flex items-center gap-3">
-			{#each links as link (link.label)}
-				<a
-					href={link.href}
-					target={link.external ? '_blank' : undefined}
-					rel={link.external ? 'noreferrer' : undefined}
-					aria-label={link.label}
-					class="group flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line transition-colors hover:border-ink"
-				>
-					<Icon name={link.icon} class="h-4.5 w-4.5 text-ink-muted transition-colors group-hover:text-brand" />
-				</a>
-			{/each}
 		</div>
+		</div>
+	
 
 	
 	</div>
 </Section>
+
+<style>
+	:global(.relaunch-heading a) {
+		color: var(--color-brand-accent);
+		text-decoration: underline;
+		text-decoration-style: dashed;
+		text-underline-offset: 4px;
+	}
+</style>
