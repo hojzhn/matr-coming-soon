@@ -136,7 +136,7 @@
 				{#if success}
 					<Heading level={4} tone="brand">{newsletterContent.successMessage}</Heading>
 				{:else}
-					<form class="flex flex-wrap items-center gap-3" {onsubmit}>
+					<form class="flex flex-wrap items-center md:gap-3" {onsubmit}>
 						<input
 							type="text"
 							name="company"
@@ -149,7 +149,7 @@
 								<Heading level={4}  balance={false} class="max-md:mb-1.5 ">
 									{newsletterContent.heading}
 								</Heading>
-								<div class="flex w-full gap-3 max-md:flex-col max-md:items-start">
+								<div class="flex w-full gap-3 items-center">
 								<input
 									type="email"
 									placeholder={newsletterContent.emailPlaceholder}
@@ -173,10 +173,11 @@
 						{siteContent.name}
 					</Heading>
 				</div>
-				<div class="flex gap-4 items-baseline">
+				<div class="flex flex-col gap-2 md:flex-row md:gap-4 items-baseline">
 				<Heading level={5} weight="medium" tone="muted" class="mt-4">
 					© {year} {siteContent.name}. {footerContent.legal.rights}.
 				</Heading>
+				<div class="flex gap-4 items-baseline">
 					<button type="button" onclick={() => (openLegalDoc = 'terms')} class="text-left">
 						<Heading level={5} weight="medium" tone="muted" underline>
 							{legalContent.terms.title}
@@ -186,7 +187,7 @@
 						<Heading level={5} weight="medium" tone="muted" underline>
 							{legalContent.privacy.title}
 						</Heading>
-					</button>
+					</button></div>
 					</div>
 			</div>
 

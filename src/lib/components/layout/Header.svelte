@@ -53,14 +53,33 @@
 		return () => observer.disconnect();
 	});
 
+	let hiddenByScroll = $state(false);
+
+	$effect(() => {
+		let lastY = window.scrollY;
+		let skipNext = true;
+		function onScroll() {
+			const y = window.scrollY;
+			if (skipNext) {
+				skipNext = false;
+			} else {
+				hiddenByScroll = y > 0 && y > lastY;
+			}
+			lastY = y;
+		}
+		window.addEventListener('scroll', onScroll, { passive: true });
+		return () => window.removeEventListener('scroll', onScroll);
+	});
+
 	const inkClass = $derived(overDark ? 'text-surface' : 'text-ink');
 	const announcementShown = $derived(!announcementState.dismissed && !announcementState.hiddenByScroll);
 </script>
 
 <header
 	class={cn(
-		'fixed inset-x-0 z-50 w-full transition-[top] duration-300 ease-out',
-		announcementShown ? 'top-6' : 'top-0'
+		'fixed inset-x-0 z-50 w-full transition-[top,transform] duration-300 ease-out',
+		announcementShown ? 'top-6' : 'top-0',
+		hiddenByScroll && !open ? 'max-md:-translate-y-full' : 'max-md:translate-y-0'
 	)}
 >
 	<Container width="full">

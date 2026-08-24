@@ -58,7 +58,8 @@
 	};
 
 	const defaultSizeMd: Partial<Record<HeadingLevel, HeadingSize>> = {
-		3: 'lg'
+		3: 'lg',
+		4: 'md'
 	};
 
 	const resolvedSize = $derived(size ?? (eyebrow ? 'xs' : defaultSize[level]));

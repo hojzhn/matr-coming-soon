@@ -6,23 +6,31 @@
     },
     {
       "question": "How long does it take to receive my print?",
-      "answer": "Every piece is made to order and ships within 5–7 business days after production. Shipping, taxes, and any customs fees are calculated at checkout."
+      "answer": "Every piece is made to order and ships within 5–7 business days after production. Additional options may extend this timeframe. Shipping, taxes, and any customs fees are calculated at checkout."
     },
     {
       "question": "What sizes can I order?",
-      "answer": "You can size your print to your artwork, up to 45 in on the largest side."
+      "answer": "You can size your print to your artwork, up to 45″ x 45″."
     },
     {
       "question": "How does the margin and stretching work?",
-      "answer": "Each print gets a 3 in margin of extra canvas stapled to the back, plus a ¼″ outpaint that wraps the stretcher edge so there's no hairline gap once it's mounted."
+      "answer": "You can choose a configurable unprinted margin around your artwork, with 3″ as the default. If you order stretching, the artwork also receives a minimal outpaint extension that wraps around the stretcher edge, helping prevent a hairline gap when mounted. If you plan to stretch the print yourself or want us to provide stretching, we recommend choosing a margin of at least 3″."
     },
     {
       "question": "Will the colors match what I see on screen?",
-      "answer": "Screen colors may differ slightly from the printed piece — oil ink on linen has a depth and warmth that's hard to preview on a display."
+      "answer": "Screen colors may differ slightly from the printed piece. Oil ink on linen has a depth and warmth that's hard to preview on a display."
     },
     {
       "question": "Can I return or exchange my print?",
-      "answer": "Every print is made to order for you, so custom prints are final sale and not eligible for return."
+      "answer": "Every print is made to order for you, so custom prints are final sale and not eligible for return. If your print arrives damaged, defective, or materially different from what you submitted, contact us within 14 days of delivery and we'll make it right."
+    },
+    {
+      "question": "What happens to my artwork after my order?",
+      "answer": "Your artwork is used to produce and fulfill your order. We don't use your artwork for advertising, unrelated commercial purposes, AI training, or machine-learning models. After your order is completed and your artwork is no longer needed for production or customer support, we intend to delete the uploaded image from our active systems, subject to necessary technical backups and any legal, accounting, security, or dispute-resolution requirements."
+    },
+    {
+      "question": "Do you use my artwork to train AI?",
+      "answer": "No. We do not use customer artwork to train artificial intelligence, machine-learning models, or other generative AI systems. Your artwork is used only as reasonably necessary to produce, fulfill, and support your order."
     }
   ]
 }

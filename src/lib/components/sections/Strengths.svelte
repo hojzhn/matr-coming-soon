@@ -56,6 +56,22 @@
 		mq.addEventListener('change', update);
 		return () => mq.removeEventListener('change', update);
 	});
+
+	let isXl = $state(false);
+
+	$effect(() => {
+		const mq = window.matchMedia('(min-width: 1280px)');
+		function update() {
+			isXl = mq.matches;
+		}
+		update();
+		mq.addEventListener('change', update);
+		return () => mq.removeEventListener('change', update);
+	});
+
+	const sideParallaxSpeed = 280;
+	const leftSideParallax = $derived((processImageProgress - 0.5) * -sideParallaxSpeed);
+	const rightSideParallax = $derived((processImageProgress - 0.5) * sideParallaxSpeed);
 </script>
 
 
@@ -93,15 +109,17 @@
 			<LazyImage src={strengthMiddleSrc} alt="" class="absolute inset-0 h-full w-full object-cover" />
 		</div>
 </Container>
-		<div class="mt-3 grid grid-cols-2 gap-1 md:mt-0 md:block md:gap-0">
+		<div class="mt-3 grid grid-cols-2 gap-1 xl:mt-0 xl:block xl:gap-0">
 			<div
-				class="relative aspect-4/5 w-full  md:absolute md:left-[calc(5vw_-_2rem)] md:top-[10%] md:w-[24%] md:max-w-120"
+				class="relative aspect-5/4 xl:aspect-2/3 w-full  xl:absolute xl:left-8 xl:top-[10%] xl:w-[calc(96vw_-_calc(var(--container-max)_+_48px))] xl:min-w-80 xl:max-w-100"
+				style="transform: translateY({isXl ? leftSideParallax : 0}px)"
 			>
 				<LazyImage src={strengthSideSrc} alt="" class="absolute inset-0 h-full w-full object-cover" />
 			</div>
 
 			<div
-				class="relative aspect-4/5 md:aspect-2/3 w-full md:absolute md:right-[calc(5vw_-_2rem)] md:-bottom-12 md:w-[22%] md:max-w-120"
+				class="relative aspect-5/4 xl:aspect-2/3 w-full xl:absolute xl:right-8 xl:-bottom-12 xl:w-[calc(96vw_-_calc(var(--container-max)_+_48px))] xl:min-w-80 xl:max-w-100"
+				style="transform: translateY({isXl ? rightSideParallax : 0}px)"
 			>
 				<LazyImage src={strengthSide2Src} alt="" class="absolute inset-0 h-full w-full object-cover" />
 			</div>

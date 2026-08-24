@@ -5,6 +5,7 @@
 	import Icon from '$lib/components/ui/Icon.svelte';
 	import { galleryContent } from '$lib/content';
 	import { fade } from 'svelte/transition';
+	import { lenisState } from '$lib/lenis.svelte';
 
 	let isDesktop = $state(false);
 
@@ -137,10 +138,12 @@
 		window.addEventListener('keydown', onKeydown);
 		const prevOverflow = document.body.style.overflow;
 		document.body.style.overflow = 'hidden';
+		lenisState.instance?.stop();
 
 		return () => {
 			window.removeEventListener('keydown', onKeydown);
 			document.body.style.overflow = prevOverflow;
+			lenisState.instance?.start();
 		};
 	});
 </script>

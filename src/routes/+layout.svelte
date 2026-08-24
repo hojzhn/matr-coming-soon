@@ -7,7 +7,7 @@
 </script>
 
 <svelte:head>
-	<title>matr labs</title>
+	<title>Matr Labs: Engineering for Art</title>
 	<meta name="description" content="Oil prints made to order. Matr labs is coming back soon." />
 </svelte:head>
 

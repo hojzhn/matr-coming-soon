@@ -180,13 +180,21 @@ export interface ContactContent {
 	form: ContactFormContent;
 }
 
+export interface LegalBlock {
+	heading?: string;
+	text?: string;
+	items?: string[];
+}
+
 export interface LegalSection {
 	heading: string;
-	body: string;
+	blocks: LegalBlock[];
 }
 export interface LegalDocument {
 	title: string;
-	updated: string;
+	effective_date: string;
+	last_updated: string;
+	intro?: string[];
 	sections: LegalSection[];
 }
 export interface LegalContent {

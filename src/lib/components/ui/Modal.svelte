@@ -3,6 +3,7 @@
 	import type { Snippet } from 'svelte';
 	import Heading from './Heading.svelte';
 	import Icon from './Icon.svelte';
+	import { lenisState } from '$lib/lenis.svelte';
 
 	let {
 		open,
@@ -24,8 +25,10 @@
 		if (!open) return;
 		const prevOverflow = document.body.style.overflow;
 		document.body.style.overflow = 'hidden';
+		lenisState.instance?.stop();
 		return () => {
 			document.body.style.overflow = prevOverflow;
+			lenisState.instance?.start();
 		};
 	});
 </script>
@@ -60,7 +63,7 @@
 						<Icon name="close" class="h-5 w-5" />
 					</button>
 				</div>
-				<div class="min-h-0 flex-1 overflow-y-auto px-6 py-6 md:px-8">
+				<div data-lenis-prevent class="min-h-0 flex-1 overflow-y-auto px-6 py-6 md:px-8">
 					{@render children()}
 				</div>
 			</div>

@@ -1,14 +1,13 @@
 <script lang="ts">
-	import Heading from '$lib/components/ui/Heading.svelte';
 	import Icon from '$lib/components/ui/Icon.svelte';
 </script>
 
 <div class="fixed bottom-6 right-6 z-40">
 	<a
 		href="#order"
-		class="flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-surface shadow-xl transition-colors hover:bg-canvas-from"
+		aria-label="Order print"
+		class="flex items-center justify-center rounded-full bg-brand p-3 text-ink shadow-xl transition-colors hover:bg-brand-accent"
 	>
-		<Heading level={5} tag="span" weight="medium" leading="none">Order print</Heading>
-		<Icon name="arrow-right" class="h-4 w-4 shrink-0" />
+		<Icon name="palette" class="h-6 w-6 shrink-0" />
 	</a>
 </div>

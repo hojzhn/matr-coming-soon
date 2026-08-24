@@ -1,89 +1,675 @@
 {
   "terms": {
     "title": "Terms of Service",
-    "updated": "August 2026",
+    "effective_date": "August 24, 2026",
+    "last_updated": "August 24, 2026",
+    "intro": [
+      "These Terms of Service (\"Terms\") govern your access to and use of matr.art and your purchase of products from Make Art Matter Inc. (\"Matr Labs,\" \"we,\" \"us,\" or \"our\").",
+      "By accessing matr.art, placing an order, or otherwise using our services, you agree to these Terms. If you do not agree to these Terms, please do not use the site or place an order."
+    ],
     "sections": [
       {
-        "heading": "1. Acceptance of terms",
-        "body": "By using matr.art or placing an order with Matr Labs (\"we\", \"us\"), you agree to these Terms of Service. If you don't agree, please don't use the site."
+        "heading": "1. Eligibility",
+        "blocks": [
+          {
+            "text": "You must be at least 18 years old to use matr.art or place an order."
+          },
+          {
+            "text": "By using the site, you represent that you are at least 18 years old and have the legal capacity to enter into these Terms."
+          }
+        ]
       },
       {
-        "heading": "2. Orders & payment",
-        "body": "Orders are placed and paid for through our checkout provider, Shopify. Prices are shown in USD and don't include applicable taxes, duties, or shipping until checkout. We reserve the right to refuse or cancel an order, including after payment, for reasons such as pricing errors, suspected fraud, or an inability to produce the artwork as submitted."
+        "heading": "2. Our Products",
+        "blocks": [
+          {
+            "text": "Matr Labs creates made-to-order artwork and prints based on artwork submitted by customers."
+          },
+          {
+            "text": "Because each piece is produced specifically for the customer, colors, texture, dimensions, cropping, framing, printing characteristics, and other physical characteristics may vary slightly from what appears on a screen. Your device's display may also affect how colors appear."
+          },
+          {
+            "text": "We reserve the right to determine whether an uploaded image is technically suitable for production and to decline an order where we reasonably believe the submitted artwork cannot be produced to an acceptable standard."
+          }
+        ]
       },
       {
-        "heading": "3. Production & shipping",
-        "body": "Every print is made to order. Production typically begins after your order is confirmed, and pieces ship within the window stated at checkout (currently 5–7 business days after production). Shipping timelines are estimates, not guarantees, and are affected by carrier delays outside our control."
+        "heading": "3. Customer Artwork",
+        "blocks": [
+          {
+            "text": "You retain ownership of the artwork you submit to us."
+          },
+          {
+            "text": "By submitting artwork, you represent and warrant that:"
+          },
+          {
+            "items": [
+              "You own the artwork or have all rights and permissions necessary for us to reproduce it",
+              "Your submission does not infringe or violate another person's intellectual property, privacy, publicity, or other rights",
+              "You have the authority to authorize us to produce the requested artwork",
+              "Your submission does not violate applicable law"
+            ]
+          },
+          {
+            "text": "You grant Matr Labs a limited, non-exclusive, worldwide license to reproduce, process, transmit, and otherwise handle your submitted artwork solely as reasonably necessary to produce, fulfill, package, ship, support, and administer your order."
+          },
+          {
+            "text": "We do not acquire ownership of your artwork through your purchase."
+          },
+          {
+            "text": "We do not use customer artwork to train artificial intelligence or machine-learning models."
+          }
+        ]
       },
       {
-        "heading": "4. Returns & refunds",
-        "body": "Because each piece is custom-made for you, orders are final sale and not eligible for return once production has started. If your order arrives damaged or materially different from what you submitted, contact us at hello@matr.art within 14 days of delivery and we'll make it right."
+        "heading": "4. Prohibited Content and Use",
+        "blocks": [
+          {
+            "text": "You may not use matr.art to:"
+          },
+          {
+            "items": [
+              "Submit artwork that you do not have the right to reproduce",
+              "Violate any applicable law or regulation",
+              "Infringe another person's intellectual property, privacy, publicity, or other rights",
+              "Submit unlawful, fraudulent, or abusive material",
+              "Interfere with or disrupt the site, checkout, or related systems",
+              "Attempt to gain unauthorized access to our systems or accounts",
+              "Reverse-engineer, copy, or circumvent technical protections used by the site or its services"
+            ]
+          },
+          {
+            "text": "We reserve the right to refuse or cancel an order if we reasonably believe it violates these Terms or cannot lawfully or technically be fulfilled."
+          }
+        ]
       },
       {
-        "heading": "5. Your artwork & our intellectual property",
-        "body": "You keep all rights to the artwork you upload. By submitting it, you confirm you own it or have permission to have it printed, and you give us the limited right to reproduce it solely to fulfill your order. The Matr Labs name, logo, and site content are our property and may not be used without permission."
+        "heading": "5. Orders and Payment",
+        "blocks": [
+          {
+            "text": "Orders are placed through our online checkout, which is provided by Shopify."
+          },
+          {
+            "text": "Prices are displayed in U.S. dollars. Applicable taxes, duties, shipping charges, and other applicable fees may be calculated and displayed at checkout."
+          },
+          {
+            "text": "Submitting an order constitutes an offer to purchase. An order is not accepted until we confirm it."
+          },
+          {
+            "text": "We reserve the right to refuse, cancel, or limit an order, including after payment, in circumstances including:"
+          },
+          {
+            "items": [
+              "Pricing or product errors",
+              "Suspected fraud or unauthorized activity",
+              "Technical errors",
+              "Artwork that cannot reasonably be produced",
+              "Violations of these Terms",
+              "Circumstances that prevent us from fulfilling the order"
+            ]
+          },
+          {
+            "text": "If we cancel an order after payment has been received, we will provide an appropriate refund of the amount paid for the canceled order."
+          },
+          {
+            "text": "Payment information is processed by Shopify and its applicable payment providers. Matr Labs does not store customers' full payment card information."
+          }
+        ]
       },
       {
-        "heading": "6. Acceptable use",
-        "body": "Don't upload artwork you don't have the rights to, use the site to violate any law, or attempt to disrupt or reverse-engineer the site or its checkout systems."
+        "heading": "6. Production",
+        "blocks": [
+          {
+            "text": "Our products are made to order."
+          },
+          {
+            "text": "Production generally begins after an order has been confirmed and any required artwork or production information has been received."
+          },
+          {
+            "text": "Estimated production and shipping timelines are displayed at checkout. Unless expressly stated otherwise, these timelines are estimates and are not guaranteed."
+          },
+          {
+            "text": "We may experience delays caused by production issues, carrier delays, weather, supply interruptions, technical problems, or circumstances outside our reasonable control."
+          }
+        ]
       },
       {
-        "heading": "7. Limitation of liability",
-        "body": "Matr Labs is provided as-is. To the extent permitted by law, we aren't liable for indirect, incidental, or consequential damages arising from your use of the site or a purchase, beyond the amount you paid for the order in question."
+        "heading": "7. Shipping and Delivery",
+        "blocks": [
+          {
+            "text": "Orders may be fulfilled through Shopify and supported by third-party fulfillment, packaging, and shipping providers."
+          },
+          {
+            "text": "Matr Labs may also work with service providers, including BluEdge, to assist with packaging, fulfillment, or shipping operations."
+          },
+          {
+            "text": "You are responsible for providing an accurate shipping address at checkout."
+          },
+          {
+            "text": "Once an order has been handed to a carrier, delivery times are controlled in part by the carrier and are outside our control. Carrier delays do not automatically constitute a failure by Matr Labs to fulfill an order."
+          }
+        ]
       },
       {
-        "heading": "8. Governing law",
-        "body": "These terms are governed by the laws of the State of New York, without regard to conflict-of-law principles."
+        "heading": "8. Returns, Cancellations, and Damaged Orders",
+        "blocks": [
+          {
+            "text": "Because our products are custom-made for you, orders are generally final sale."
+          },
+          {
+            "text": "Once production has started, orders cannot be returned or canceled except where required by applicable law or as otherwise stated in these Terms."
+          },
+          {
+            "text": "If your order arrives damaged, defective, or materially different from the artwork or product you ordered, please contact us at hello@matr.art within 14 days of delivery."
+          },
+          {
+            "text": "Please include your order number and photographs or other information that helps us evaluate the issue."
+          },
+          {
+            "text": "If we determine that an order was damaged, defective, or materially incorrect, we will work with you to provide an appropriate remedy, which may include a replacement or refund."
+          }
+        ]
       },
       {
-        "heading": "9. Changes to these terms",
-        "body": "We may update these terms as the business evolves. Continued use of the site after a change means you accept the updated terms."
+        "heading": "9. Intellectual Property",
+        "blocks": [
+          {
+            "text": "The matr.art website, including its design, text, graphics, logos, trademarks, software, and other content provided by Matr Labs, is owned by or licensed to Make Art Matter Inc. and is protected by applicable intellectual property laws."
+          },
+          {
+            "text": "Except as expressly permitted by us, you may not copy, reproduce, distribute, modify, publicly display, or otherwise exploit our site content, branding, trademarks, or other proprietary materials."
+          },
+          {
+            "text": "These rights are separate from your ownership of artwork that you submit to us."
+          }
+        ]
       },
       {
-        "heading": "10. Contact",
-        "body": "Questions about these terms? Reach us at hello@matr.art."
+        "heading": "10. Privacy",
+        "blocks": [
+          {
+            "text": "Our collection and use of personal information is described in our Privacy Policy."
+          },
+          {
+            "text": "We do not sell customers' personal information."
+          },
+          {
+            "text": "We do not use customer artwork to train AI or machine-learning models."
+          }
+        ]
+      },
+      {
+        "heading": "11. Third-Party Services",
+        "blocks": [
+          {
+            "text": "Our site relies on third-party services to operate, including Shopify, Supabase, Vercel, Cloudflare, payment providers, analytics providers, fulfillment providers, shipping carriers, and other service providers."
+          },
+          {
+            "text": "Your use of third-party services may also be subject to those providers' own terms and policies."
+          }
+        ]
+      },
+      {
+        "heading": "12. Disclaimers",
+        "blocks": [
+          {
+            "text": "To the maximum extent permitted by applicable law, matr.art and our services are provided on an \"as is\" and \"as available\" basis."
+          },
+          {
+            "text": "We do not guarantee that the site will always be available, uninterrupted, error-free, or free of harmful components."
+          },
+          {
+            "text": "We make no warranties beyond those expressly provided in these Terms or warranties that cannot legally be excluded."
+          }
+        ]
+      },
+      {
+        "heading": "13. Limitation of Liability",
+        "blocks": [
+          {
+            "text": "To the maximum extent permitted by law, Make Art Matter Inc. will not be liable for indirect, incidental, special, consequential, exemplary, or punitive damages arising out of or related to your use of matr.art or your purchase of a product."
+          },
+          {
+            "text": "To the maximum extent permitted by law, our total liability arising out of or relating to a particular order will not exceed the amount you actually paid for that order."
+          },
+          {
+            "text": "Nothing in these Terms limits liability that cannot legally be limited or excluded under applicable law."
+          }
+        ]
+      },
+      {
+        "heading": "14. Indemnification",
+        "blocks": [
+          {
+            "text": "To the extent permitted by applicable law, you agree to indemnify and hold harmless Make Art Matter Inc., its officers, employees, contractors, and service providers from claims, damages, liabilities, losses, and expenses arising from your violation of these Terms or your submission of artwork or other content that infringes or violates another person's rights."
+          }
+        ]
+      },
+      {
+        "heading": "15. Force Majeure",
+        "blocks": [
+          {
+            "text": "We are not responsible for delays or failures caused by circumstances beyond our reasonable control, including natural disasters, severe weather, acts of government, labor disruptions, carrier failures, supply shortages, internet or infrastructure failures, cyber incidents, or other events beyond our reasonable control."
+          }
+        ]
+      },
+      {
+        "heading": "16. Changes to These Terms",
+        "blocks": [
+          {
+            "text": "We may update these Terms from time to time as our business, services, or legal obligations change."
+          },
+          {
+            "text": "When we make changes, we will update the \"Last Updated\" date at the top of this page."
+          },
+          {
+            "text": "Your continued use of matr.art after updated Terms become effective constitutes acceptance of the revised Terms."
+          }
+        ]
+      },
+      {
+        "heading": "17. Governing Law",
+        "blocks": [
+          {
+            "text": "These Terms are governed by the laws of the State of New York, without regard to its conflict-of-law principles."
+          },
+          {
+            "text": "To the extent permitted by applicable law, disputes arising from or relating to these Terms or your use of matr.art will be subject to the applicable courts located in the State of New York."
+          }
+        ]
+      },
+      {
+        "heading": "18. Severability",
+        "blocks": [
+          {
+            "text": "If any provision of these Terms is determined to be invalid or unenforceable, the remaining provisions will remain in full force and effect."
+          }
+        ]
+      },
+      {
+        "heading": "19. Entire Agreement",
+        "blocks": [
+          {
+            "text": "These Terms, together with any policies expressly incorporated into them, constitute the agreement between you and Make Art Matter Inc. concerning your use of matr.art and purchases made through the site."
+          }
+        ]
+      },
+      {
+        "heading": "20. Contact",
+        "blocks": [
+          {
+            "text": "If you have questions about these Terms, please contact:"
+          },
+          {
+            "text": "Make Art Matter Inc. — hello@matr.art"
+          }
+        ]
       }
     ]
   },
   "privacy": {
     "title": "Privacy Policy",
-    "updated": "August 2026",
+    "effective_date": "August 24, 2026",
+    "last_updated": "August 24, 2026",
+    "intro": [
+      "Make Art Matter Inc. (\"Matr Labs,\" \"we,\" \"us,\" or \"our\") operates matr.art and is committed to handling personal information responsibly.",
+      "This Privacy Policy explains what information we collect, why we collect it, how we use it, when we share it, and the choices available to you.",
+      "Our goal is simple: we collect and use personal information primarily to provide the products and services you request, and we do not sell your personal information or use your customer artwork to train AI or machine-learning models."
+    ],
     "sections": [
       {
-        "heading": "1. Information we collect",
-        "body": "When you place an order, contact us, or sign up for our newsletter, we collect information like your name, email address, shipping address, order details, and the artwork you upload. Payment details are collected and processed directly by Shopify — we don't store your card information."
+        "heading": "1. Information We Collect",
+        "blocks": [
+          {
+            "text": "Depending on how you interact with matr.art, we may collect the following categories of information."
+          },
+          {
+            "heading": "Information you provide to us"
+          },
+          {
+            "text": "This may include:"
+          },
+          {
+            "items": [
+              "Name",
+              "Email address",
+              "Billing and shipping address",
+              "Telephone number, where provided",
+              "Order and purchase information",
+              "Communications you send to us",
+              "Newsletter and marketing preferences",
+              "Information submitted through customer service requests",
+              "Artwork or other files you upload for an order"
+            ]
+          },
+          {
+            "heading": "Payment information"
+          },
+          {
+            "text": "Payments are processed through Shopify and its applicable payment providers."
+          },
+          {
+            "text": "We do not store your full payment card number or other complete payment credentials on our own systems."
+          },
+          {
+            "heading": "Automatically collected information"
+          },
+          {
+            "text": "When you visit matr.art, we and our service providers may collect technical information such as:"
+          },
+          {
+            "items": [
+              "IP address",
+              "Browser and device information",
+              "Pages viewed",
+              "Approximate interaction and usage information",
+              "Referring pages",
+              "Timestamps",
+              "Information collected through cookies and similar technologies"
+            ]
+          },
+          {
+            "text": "Some of this information may be collected automatically by Shopify, analytics providers, hosting providers, security services, or other technology providers supporting the site."
+          }
+        ]
       },
       {
-        "heading": "2. How we use it",
-        "body": "We use your information to produce and ship your order, respond to messages, send order and shipping updates, and — only if you opt in — send occasional newsletter updates. We don't sell your personal information."
+        "heading": "2. How We Use Personal Information",
+        "blocks": [
+          {
+            "text": "We use personal information only for legitimate purposes related to operating Matr Labs and providing our services."
+          },
+          {
+            "text": "These purposes include:"
+          },
+          {
+            "items": [
+              "Processing and fulfilling orders",
+              "Producing and shipping your artwork",
+              "Communicating with you about your order",
+              "Providing customer support",
+              "Processing payments through our payment providers",
+              "Handling returns, replacements, refunds, and damaged-order claims",
+              "Maintaining records necessary for accounting, tax, legal, and regulatory requirements",
+              "Preventing fraud, abuse, unauthorized activity, and security incidents",
+              "Maintaining and securing our website and systems",
+              "Diagnosing and fixing technical problems",
+              "Understanding basic website usage and improving site functionality",
+              "Sending marketing or newsletter communications where you have opted in or where otherwise permitted by applicable law",
+              "Complying with legal obligations and responding to valid legal requests"
+            ]
+          },
+          {
+            "text": "We do not use customer personal information for unrelated purposes."
+          },
+          {
+            "text": "We do not sell your personal information."
+          },
+          {
+            "text": "We do not use your uploaded artwork to train artificial intelligence or machine-learning models."
+          }
+        ]
       },
       {
-        "heading": "3. Cookies & analytics",
-        "body": "We use essential cookies to keep checkout and your cart working, and may use basic analytics to understand how the site is used. You can control cookies through your browser settings."
+        "heading": "3. Marketing Communications",
+        "blocks": [
+          {
+            "text": "If you sign up for our newsletter or otherwise provide the required consent to receive marketing communications, we may send you occasional updates about Matr Labs, products, or related news."
+          },
+          {
+            "text": "You can unsubscribe from marketing emails at any time by using the unsubscribe mechanism included in the email or by contacting us at hello@matr.art."
+          },
+          {
+            "text": "Transactional communications — such as order confirmations, shipping updates, and messages necessary to fulfill or support an order — may still be sent even if you unsubscribe from marketing communications."
+          }
+        ]
       },
       {
-        "heading": "4. Third-party services",
-        "body": "We rely on a small number of trusted providers to run the site: Shopify for checkout and payments, and our hosting and database providers for storing order and account information securely. Each handles data under their own privacy policy."
+        "heading": "4. Cookies and Analytics",
+        "blocks": [
+          {
+            "text": "We use cookies and similar technologies that are necessary for the operation of matr.art, including features such as shopping cart functionality and checkout."
+          },
+          {
+            "text": "We may also use analytics tools to understand how visitors use the site and to help us improve its performance and functionality."
+          },
+          {
+            "text": "Depending on the tools and settings we use, analytics technologies may collect information such as device information, pages viewed, interactions, and approximate usage information."
+          },
+          {
+            "text": "Where required by applicable law, we will provide appropriate notice and choices regarding non-essential cookies and similar technologies."
+          },
+          {
+            "text": "You can also control cookies through your browser or device settings."
+          }
+        ]
       },
       {
-        "heading": "5. Data retention",
-        "body": "We keep order and account information for as long as needed to fulfill orders, meet legal and tax obligations, and resolve disputes, then delete or anonymize it."
+        "heading": "5. How We Share Personal Information",
+        "blocks": [
+          {
+            "text": "We do not sell your personal information."
+          },
+          {
+            "text": "We may share personal information with trusted service providers when doing so is necessary to operate Matr Labs or provide a service you have requested."
+          },
+          {
+            "text": "These providers may include:"
+          },
+          {
+            "heading": "Shopify"
+          },
+          {
+            "text": "Shopify provides our ecommerce platform, checkout, payment processing infrastructure, order management, and related services."
+          },
+          {
+            "heading": "Supabase"
+          },
+          {
+            "text": "Supabase provides database and related infrastructure services that we use to operate aspects of our website and business systems."
+          },
+          {
+            "heading": "Vercel"
+          },
+          {
+            "text": "Vercel provides hosting and infrastructure services for aspects of our website."
+          },
+          {
+            "heading": "Cloudflare"
+          },
+          {
+            "text": "Cloudflare provides domain, DNS, security, performance, and related infrastructure services."
+          },
+          {
+            "heading": "Fulfillment, packaging, and shipping providers"
+          },
+          {
+            "text": "We may provide necessary order information to fulfillment, packaging, and shipping partners so that your order can be produced, packaged, delivered, or otherwise supported."
+          },
+          {
+            "text": "This may include Shopify's fulfillment services and service providers assisting Matr Labs with packaging and shipping, including BluEdge where applicable."
+          },
+          {
+            "heading": "Analytics and technology providers"
+          },
+          {
+            "text": "We may share or permit access to limited information with providers that help us understand site usage, maintain security, or operate technical systems."
+          },
+          {
+            "heading": "Legal and safety purposes"
+          },
+          {
+            "text": "We may disclose information when reasonably necessary to:"
+          },
+          {
+            "items": [
+              "Comply with applicable law, regulation, legal process, or governmental request",
+              "Protect the rights, property, or safety of Matr Labs, our customers, or others",
+              "Detect, investigate, or prevent fraud, abuse, security incidents, or illegal activity",
+              "Enforce our agreements",
+              "Establish, exercise, or defend legal claims"
+            ]
+          }
+        ]
       },
       {
-        "heading": "6. Your rights",
-        "body": "You can ask us to access, correct, or delete the personal information we hold about you, or to unsubscribe from marketing emails at any time, by emailing hello@matr.art."
+        "heading": "6. Customer Artwork",
+        "blocks": [
+          {
+            "text": "Your uploaded artwork belongs to you."
+          },
+          {
+            "text": "We use uploaded artwork only as reasonably necessary to process and fulfill your order and provide related customer service."
+          },
+          {
+            "text": "We do not sell your artwork."
+          },
+          {
+            "text": "We do not use your artwork to train artificial intelligence or machine-learning models."
+          },
+          {
+            "text": "We do not use your artwork for unrelated commercial purposes."
+          },
+          {
+            "text": "Once your order has been completed and the artwork is no longer reasonably necessary for production or customer support, we intend to delete the uploaded artwork from our active systems, subject to technical backup cycles and any retention required for legal, accounting, security, or dispute-resolution purposes."
+          },
+          {
+            "text": "We may retain limited non-image production records associated with an order, such as an order number, product specifications, production date, and other information necessary to document the transaction and operate our business."
+          }
+        ]
       },
       {
-        "heading": "7. Children's privacy",
-        "body": "matr.art isn't directed at children under 13, and we don't knowingly collect information from them."
+        "heading": "7. Data Retention",
+        "blocks": [
+          {
+            "text": "We retain personal information only for as long as reasonably necessary for the purposes described in this Policy."
+          },
+          {
+            "text": "For example, we may retain order and transaction information for as long as necessary to:"
+          },
+          {
+            "items": [
+              "Fulfill and document an order",
+              "Provide customer service",
+              "Process returns, refunds, replacements, or disputes",
+              "Comply with tax, accounting, legal, or regulatory obligations",
+              "Prevent fraud and maintain security",
+              "Establish, exercise, or defend legal claims"
+            ]
+          },
+          {
+            "text": "Customer-uploaded artwork is intended to be deleted after it is no longer needed for production or customer support, subject to applicable backup systems and legal requirements."
+          },
+          {
+            "text": "When information is no longer needed, we may delete it, anonymize it, or securely dispose of it."
+          }
+        ]
       },
       {
-        "heading": "8. Changes to this policy",
-        "body": "We may update this policy from time to time. We'll change the date at the top of this page when we do."
+        "heading": "8. Data Security",
+        "blocks": [
+          {
+            "text": "We use reasonable administrative, technical, and organizational measures designed to protect personal information against unauthorized access, loss, misuse, alteration, or disclosure."
+          },
+          {
+            "text": "No method of transmission or storage is completely secure, and we cannot guarantee absolute security."
+          },
+          {
+            "text": "Access to customer information should be limited to people and service providers who reasonably need it to perform their responsibilities."
+          }
+        ]
       },
       {
-        "heading": "9. Contact",
-        "body": "Questions about this policy or your data? Reach us at hello@matr.art."
+        "heading": "9. Your Privacy Rights",
+        "blocks": [
+          {
+            "text": "Depending on where you live and applicable law, you may have rights concerning your personal information, including rights to:"
+          },
+          {
+            "items": [
+              "Request access to personal information we hold about you",
+              "Request correction of inaccurate information",
+              "Request deletion of personal information",
+              "Request information about how we collect or disclose personal information",
+              "Withdraw consent where processing is based on consent",
+              "Unsubscribe from marketing communications",
+              "Exercise other rights provided by applicable law"
+            ]
+          },
+          {
+            "text": "To make a privacy request, contact us at hello@matr.art."
+          },
+          {
+            "text": "We may need to verify your identity before completing certain requests."
+          },
+          {
+            "text": "We will respond to valid requests within the time required by applicable law."
+          }
+        ]
+      },
+      {
+        "heading": "10. Children's Privacy",
+        "blocks": [
+          {
+            "text": "matr.art is intended for adults and is not directed to children under 18."
+          },
+          {
+            "text": "We do not knowingly collect personal information from children under 18 for the purpose of allowing them to independently purchase our products."
+          },
+          {
+            "text": "If you believe that a child has provided us with personal information, please contact us at hello@matr.art."
+          }
+        ]
+      },
+      {
+        "heading": "11. Third-Party Services and Privacy Policies",
+        "blocks": [
+          {
+            "text": "Our website depends on third-party services, and those providers may process information according to their own privacy policies and terms."
+          },
+          {
+            "text": "These providers may include Shopify, Supabase, Vercel, Cloudflare, payment providers, analytics providers, fulfillment providers, shipping carriers, and other service providers that help us operate Matr Labs."
+          },
+          {
+            "text": "We encourage you to review the privacy policies of relevant third-party providers."
+          }
+        ]
+      },
+      {
+        "heading": "12. International and Other Data Transfers",
+        "blocks": [
+          {
+            "text": "Our service providers may process or store information in locations outside the state or country where you live."
+          },
+          {
+            "text": "Where applicable, we and our service providers will take steps required by law concerning the transfer and processing of personal information."
+          }
+        ]
+      },
+      {
+        "heading": "13. Changes to This Privacy Policy",
+        "blocks": [
+          {
+            "text": "We may update this Privacy Policy from time to time to reflect changes to our business, technology, services, or legal obligations."
+          },
+          {
+            "text": "When we make changes, we will update the \"Last Updated\" date at the top of this Policy."
+          },
+          {
+            "text": "We encourage you to review this Policy periodically."
+          }
+        ]
+      },
+      {
+        "heading": "14. Contact Us",
+        "blocks": [
+          {
+            "text": "If you have questions about this Privacy Policy, your personal information, or a privacy request, contact:"
+          },
+          {
+            "text": "Make Art Matter Inc. — hello@matr.art"
+          }
+        ]
       }
     ]
   }
