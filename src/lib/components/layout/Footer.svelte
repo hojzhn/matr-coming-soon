@@ -4,9 +4,12 @@
 	import Logo from '$lib/components/ui/Logo.svelte';
 	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
 	import FooterColumn from './FooterColumn.svelte';
-	import { navContent, siteContent, footerContent, newsletterContent } from '$lib/content';
+	import LegalModal from './LegalModal.svelte';
+	import { navContent, siteContent, footerContent, newsletterContent, legalContent } from '$lib/content';
 
 	let { formToken }: { formToken: string } = $props();
+
+	let openLegalDoc = $state<'terms' | 'privacy' | null>(null);
 
 	const year = new Date().getFullYear();
 
@@ -127,13 +130,13 @@
 
 		<hr class="my-12 border-0 border-t border-line opacity-50" />
 
-		<div class="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:items-end">
+		<div class="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:items-center">
 
-			<div class="w-full max-w-[400px] sm:order-2 sm:justify-self-end">
+			<div class="w-full  sm:order-2 sm:justify-self-end">
 				{#if success}
-					<Heading level={5} tone="brand">{newsletterContent.successMessage}</Heading>
+					<Heading level={4} tone="brand">{newsletterContent.successMessage}</Heading>
 				{:else}
-					<form class="flex items-end gap-3" {onsubmit}>
+					<form class="flex flex-wrap items-center gap-3" {onsubmit}>
 						<input
 							type="text"
 							name="company"
@@ -143,20 +146,17 @@
 							class="hidden"
 							aria-hidden="true"
 						/>
-						<div class="flex-1">
-							<label class=" block">
-								<Heading level={3} tag="span" balance={false} class="mb-1.5 block">
+								<Heading level={4}  balance={false} class="max-md:mb-1.5 ">
 									{newsletterContent.heading}
 								</Heading>
+								<div class="flex w-full gap-3 max-md:flex-col max-md:items-start">
 								<input
 									type="email"
 									placeholder={newsletterContent.emailPlaceholder}
 									bind:value={email}
-									class="w-full border-b-2 border-surface bg-transparent px-0 py-2.5 text-base font-medium text-surface outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
+									class="w-full whitespace-nowrap max-w-[400px] border-b-2 border-surface bg-transparent px-0 py-2.5 text-base font-medium text-surface outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
 								/>
-							</label>
-						</div>
-						<ArrowLink type="submit" label={newsletterContent.submitLabel} arrow={false} fill="surface" {loading} disabled={loading} class="mb-0.5" />
+						<ArrowLink type="submit" label={newsletterContent.submitLabel} arrow={false} fill="surface" {loading} disabled={loading} class="mb-0.5" /></div>
 					</form>
 					{#if error}
 						<Heading level={6} class="mt-2 text-danger">{error}</Heading>
@@ -173,12 +173,27 @@
 						{siteContent.name}
 					</Heading>
 				</div>
-				<Heading level={6} weight="medium" tone="muted" class="mt-4">
+				<div class="flex gap-4 items-baseline">
+				<Heading level={5} weight="medium" tone="muted" class="mt-4">
 					© {year} {siteContent.name}. {footerContent.legal.rights}.
 				</Heading>
+					<button type="button" onclick={() => (openLegalDoc = 'terms')} class="text-left">
+						<Heading level={5} weight="medium" tone="muted" underline>
+							{legalContent.terms.title}
+						</Heading>
+					</button>
+					<button type="button" onclick={() => (openLegalDoc = 'privacy')} class="text-left">
+						<Heading level={5} weight="medium" tone="muted" underline>
+							{legalContent.privacy.title}
+						</Heading>
+					</button>
+					</div>
 			</div>
 
 
 		</div>
 	</Container>
 </footer>
+
+<LegalModal doc={legalContent.terms} open={openLegalDoc === 'terms'} onclose={() => (openLegalDoc = null)} />
+<LegalModal doc={legalContent.privacy} open={openLegalDoc === 'privacy'} onclose={() => (openLegalDoc = null)} />

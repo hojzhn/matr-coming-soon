@@ -180,6 +180,20 @@ export interface ContactContent {
 	form: ContactFormContent;
 }
 
+export interface LegalSection {
+	heading: string;
+	body: string;
+}
+export interface LegalDocument {
+	title: string;
+	updated: string;
+	sections: LegalSection[];
+}
+export interface LegalContent {
+	terms: LegalDocument;
+	privacy: LegalDocument;
+}
+
 export interface FooterContent {
 	headings: { connect: string; sayHello: string; localTime: string; index: string };
 	social: { label: string; href: string }[];

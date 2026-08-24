@@ -12,6 +12,7 @@ import relaunch from './relaunch.json';
 import newsletter from './newsletter.json';
 import contact from './contact.json';
 import footer from './footer.json';
+import legal from './legal.json';
 import type {
 	AnnouncementContent,
 	FaqContent,
@@ -26,7 +27,8 @@ import type {
 	RelaunchContent,
 	NewsletterContent,
 	ContactContent,
-	FooterContent
+	FooterContent,
+	LegalContent
 } from './types';
 
 export const announcementContent = announcement satisfies AnnouncementContent;
@@ -43,3 +45,4 @@ export const relaunchContent = relaunch satisfies RelaunchContent;
 export const newsletterContent = newsletter satisfies NewsletterContent;
 export const contactContent = contact satisfies ContactContent;
 export const footerContent = footer satisfies FooterContent;
+export const legalContent = legal satisfies LegalContent;
