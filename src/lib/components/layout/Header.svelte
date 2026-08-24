@@ -122,17 +122,17 @@
 				<nav class="flex flex-col gap-6">
 					{#each navContent.items as item (item.href)}
 						<a href={item.href} onclick={close}>
-							<Heading level={3} size="xl">{item.label}</Heading>
+							<Heading level={2}>{item.label}</Heading>
 						</a>
 					{/each}
 					<button type="button" class="text-left" onclick={() => (mobileView = 'cart')}>
-						<Heading level={3} size="xl">{orderContent.cart.menuLabel}</Heading>
+						<Heading level={2}>{orderContent.cart.menuLabel}</Heading>
 					</button>
 				</nav>
 			</div>
 		{:else}
 			<div class="flex min-h-0 flex-1 flex-col pt-24 pb-6">
-				<Heading level={2} tag="p" size="lg" class="mb-4 shrink-0">{orderContent.cart.heading}</Heading>
+				<Heading level={2} class="mb-4 shrink-0">{orderContent.cart.heading}</Heading>
 				<div class="min-h-0 flex-1">
 					<CartContents {formToken} />
 				</div>
@@ -155,7 +155,7 @@
 			transition:fly={{ x: 320, duration: 300 }}
 		>
 			<div class="flex shrink-0 items-center justify-between border-b border-line pb-4">
-				<Heading level={2} tag="p" size="lg">{orderContent.cart.heading}</Heading>
+				<Heading level={2}>{orderContent.cart.heading}</Heading>
 				<button
 					type="button"
 					aria-label="Close cart"

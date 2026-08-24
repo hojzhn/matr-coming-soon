@@ -85,7 +85,7 @@
 				<ul class="flex flex-col gap-1">
 					{#each footerContent.social as link (link.href)}
 						<li>
-							<ArrowLink href={link.href} label={link.label} external fill="surface" size="sm" sizeMd="lg" class="-ml-3" />
+							<ArrowLink href={link.href} label={link.label} external fill="surface" size="base" sizeMd="lg" class="-ml-3" />
 						</li>
 					{/each}
 				</ul>
@@ -97,20 +97,20 @@
 						href={`mailto:${siteContent.email}`}
 						label={siteContent.email}
 						fill="surface"
-						size="sm"
+						size="base"
 						sizeMd="lg"
 						class="-ml-3"
 					/>
-					<Heading level={4} size="sm" sizeMd="lg" weight="medium">
+					<Heading level={3}>
 						{footerContent.address.city}, {footerContent.address.region}
 					</Heading>
 				</div>
 			</FooterColumn>
 
 			<FooterColumn heading={footerContent.headings.localTime}>
-				<div class="space-y-2">
-					<Heading level={4} size="sm" sizeMd="lg" weight="medium">{dateLabel}</Heading>
-					<Heading level={4} size="sm" sizeMd="lg" weight="medium">{timeLabel}</Heading>
+				<div class="space-y-4">
+					<Heading level={3}>{dateLabel}</Heading>
+					<Heading level={3}>{timeLabel}</Heading>
 				</div>
 			</FooterColumn>
 
@@ -118,7 +118,7 @@
 				<ul class="flex flex-col gap-2">
 					{#each navContent.items as item (item.href)}
 						<li>
-							<ArrowLink href={item.href} label={item.label} samepage arrow={false} fill="surface" size="sm" sizeMd="lg" class="-ml-3" />
+							<ArrowLink href={item.href} label={item.label} samepage arrow={false} fill="surface" size="base" sizeMd="lg" class="-ml-3" />
 						</li>
 					{/each}
 				</ul>
@@ -131,7 +131,7 @@
 
 			<div class="w-full max-w-[400px] sm:order-2 sm:justify-self-end">
 				{#if success}
-					<Heading level={4} size="sm" tone="brand">{newsletterContent.successMessage}</Heading>
+					<Heading level={5} tone="brand">{newsletterContent.successMessage}</Heading>
 				{:else}
 					<form class="flex items-end gap-3" {onsubmit}>
 						<input
@@ -145,15 +145,7 @@
 						/>
 						<div class="flex-1">
 							<label class=" block">
-								<Heading
-									level={4}
-									tag="span"
-									size="sm"
-									sizeMd="lg"
-									weight="medium"
-									balance={false}
-									class="mb-1.5 block"
-								>
+								<Heading level={3} tag="span" balance={false} class="mb-1.5 block">
 									{newsletterContent.heading}
 								</Heading>
 								<input
@@ -167,7 +159,7 @@
 						<ArrowLink type="submit" label={newsletterContent.submitLabel} arrow={false} fill="surface" {loading} disabled={loading} class="mb-0.5" />
 					</form>
 					{#if error}
-						<Heading level={4} size="xs" class="mt-2 text-danger">{error}</Heading>
+						<Heading level={6} class="mt-2 text-danger">{error}</Heading>
 					{/if}
 				{/if}
 			</div>
@@ -177,11 +169,11 @@
 			<div class="sm:order-1">
 				<div class="flex items-end gap-4 sm:gap-6">
 					<Logo class="h-[clamp(2rem,4vw,4.25rem)] w-auto text-surface" />
-					<Heading level={2} size="2xl" weight="bold" tracking="tight" leading="none">
+					<Heading level={1} leading="none">
 						{siteContent.name}
 					</Heading>
 				</div>
-				<Heading level={3} size="xs" weight="medium" tone="muted" class="mt-4">
+				<Heading level={6} weight="medium" tone="muted" class="mt-4">
 					© {year} {siteContent.name}. {footerContent.legal.rights}.
 				</Heading>
 			</div>

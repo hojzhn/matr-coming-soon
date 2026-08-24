@@ -13,7 +13,7 @@
 			out:fade={{ duration: 150 }}
 		>
 			<Icon name="cart" class="h-4 w-4 shrink-0 text-ink" />
-			<Heading level={4} tag="span" size="sm" weight="medium" tone="ink">{message.text}</Heading>
+			<Heading level={5} tag="span" weight="medium" tone="ink">{message.text}</Heading>
 			<button
 				type="button"
 				aria-label="Dismiss"

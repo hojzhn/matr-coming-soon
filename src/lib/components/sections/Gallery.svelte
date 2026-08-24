@@ -250,7 +250,7 @@
 		</div>
 
 		{#if item.caption}
-			<Heading level={5} tag="p" size="sm"  align="center" class="mt-4 shrink-0">
+			<Heading level={5} tag="p" align="center" class="mt-4 shrink-0">
 				{item.caption}
 			</Heading>
 		{/if}

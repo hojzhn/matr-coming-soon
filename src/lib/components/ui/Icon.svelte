@@ -20,7 +20,9 @@
 		| 'expand'
 		| 'bolt'
 		| 'check'
-		| 'chevron-down';
+		| 'chevron-down'
+		| 'mail'
+		| 'hand';
 
 	type IconDef = { body: string; fill?: boolean; strokeWidth?: number };
 
@@ -81,7 +83,16 @@
 			body: '<path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z" />'
 		},
 		check: { strokeWidth: 3, body: '<path d="M4 12l5 5L20 6" />' },
-		'chevron-down': { strokeWidth: 2, body: '<path d="M6 9l6 6 6-6" />' }
+		'chevron-down': { strokeWidth: 2, body: '<path d="M6 9l6 6 6-6" />' },
+		mail: {
+			strokeWidth: 1.75,
+			body: '<rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" />'
+		},
+		hand: {
+			strokeWidth: 1.75,
+			body:
+				'<path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2" /><path d="M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v2" /><path d="M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8" /><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" />'
+		}
 	};
 </script>
 

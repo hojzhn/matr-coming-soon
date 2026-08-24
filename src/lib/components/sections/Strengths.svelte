@@ -65,8 +65,8 @@
 	</div>
 
 <div>
-	<Heading level={2} size="2xl">{strengthsContent.heading}</Heading>
-	<Heading level={2} tag="p" size="sm" sizeMd="lg" weight="medium" balance={false} class="mt-4 max-w-3xl">
+	<Heading level={1}>{strengthsContent.heading}</Heading>
+	<Heading level={3} tag="p"  weight="medium" balance={false} class="mt-4 max-w-3xl">
 		{strengthsContent.intro}
 	</Heading>
 </div>
@@ -74,11 +74,11 @@
 <div class="mt-12 grid gap-12 sm:grid-cols-3">
 	{#each strengthsContent.items as item, i (i)}
 		<div>
-			<Icon name={item.icon as 'texture' | 'droplet' | 'layers'} class="h-7 w-7 text-brand" strokeWidth={1.5} />
-			<Heading level={3} size="sm" sizeMd="md" class="mt-4">{item.title}</Heading>
+			<Icon name={item.icon as 'droplet' | 'layers' | 'hand'} class="h-7 w-7 text-brand" strokeWidth={1.5} />
+			<Heading level={4} class="mt-4">{item.title}</Heading>
 			<div class="mt-2 flex flex-col gap-3">
 				{#each item.body.split('\n').filter(Boolean) as paragraph, pi (pi)}
-					<Heading level={4} tag="p" size="sm" sizeMd="md" weight="medium" tone="muted">{@html paragraph}</Heading>
+					<Heading level={4} tag="p" weight="medium" tone="muted">{@html paragraph}</Heading>
 				{/each}
 			</div>
 		</div>
@@ -110,14 +110,14 @@
 
 	<Container>
 <div class="mt-4">
-	<Heading level={2} size="2xl">{strengthsContent.process.heading}</Heading>
+	<Heading level={1}>{strengthsContent.process.heading}</Heading>
 	<div class="flex flex-col items-start lg:items-end gap-8 mt-16 lg:flex-row xl:ml-50">
 	<div class="relative aspect-2/3 w-60 shrink-0 sm:w-56 lg:w-100">
 		<LazyImage src={craftedSrc} alt="" class="absolute inset-0 h-full w-full object-cover" />
 	</div>
 
 	<div>
-	<Heading level={2} tag="p" size="sm" sizeMd="lg" weight="medium" balance={false} >
+	<Heading level={3} tag="p"  weight="medium" balance={false}>
 		{strengthsContent.process.body}
 	</Heading>
 	<ArrowLink href="/#contact" label="Contact us" size="sm" sizeMd="md" arrow={false} class="mt-4 lg:mt-12 border-2 px-6 py-3" /></div>

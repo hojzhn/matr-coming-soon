@@ -49,19 +49,26 @@
 	const Tag = $derived(tag ?? (`h${level}` as const));
 
 	const defaultSize: Record<HeadingLevel, HeadingSize> = {
-		1: 'xl',
+		1: '2xl',
 		2: 'lg',
-		3: 'md',
+		3: 'base',
 		4: 'base',
 		5: 'sm',
 		6: 'xs'
 	};
 
+	const defaultSizeMd: Partial<Record<HeadingLevel, HeadingSize>> = {
+		3: 'lg'
+	};
+
 	const resolvedSize = $derived(size ?? (eyebrow ? 'xs' : defaultSize[level]));
-	const resolvedWeight = $derived(weight ?? (eyebrow ? 'medium' : level === 2 ? 'bold' : 'semibold'));
+	const resolvedSizeMd = $derived(sizeMd ?? (eyebrow ? undefined : defaultSizeMd[level]));
+	const resolvedWeight = $derived(
+		weight ?? (eyebrow ? 'medium' : level === 1 || level === 2 ? 'bold' : 'semibold')
+	);
 	const resolvedTone = $derived(tone ?? (eyebrow ? 'muted' : undefined));
 	const resolvedTracking = $derived(tracking ?? (uppercase ? 'wide' : 'tight'));
-	const resolvedLeading = $derived(leading ?? (resolvedSize === 'hero' ? 'none' : 'tight'));
+	const resolvedLeading = $derived(leading ?? (resolvedSize === '2xl' ? 'tighter' : 'tight'));
 
 	const sizes: Record<HeadingSize, string> = {
 		xs: 'text-xs',
@@ -122,7 +129,7 @@
 		'font-sans whitespace-pre-line',
 		balance && 'text-balance',
 		sizes[resolvedSize],
-		sizeMd && mdSizes[sizeMd],
+		resolvedSizeMd && mdSizes[resolvedSizeMd],
 		weights[resolvedWeight],
 		leadings[resolvedLeading],
 		trackings[resolvedTracking],

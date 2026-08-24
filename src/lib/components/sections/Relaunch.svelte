@@ -47,11 +47,11 @@
 				: 'translate-y-8 opacity-0'}"
 		>
 		<div class="flex flex-col gap-6 md:max-w-3xl">
-		<Heading level={3}>A New Medium for Art;</Heading>
+		<Heading level={4} weight="medium">A New Medium for Art</Heading>
 
-			<Heading level={2} size="2xl" tone="ink" class="relaunch-heading">{@html relaunchContent.heading}</Heading>
+			<Heading level={1} tone="ink" class="relaunch-heading">{@html relaunchContent.heading}</Heading>
 
-				<Heading level={4} tag="p" size="base" sizeMd="lg" weight="medium" tracking="tight" tone="ink">
+				<Heading level={3} tag="p" weight="medium" tone="ink">
 				{relaunchContent.text}
 			</Heading>
 		</div>

@@ -266,7 +266,7 @@
 						/>
 					{:else if file}
 						<Icon name="file" class="h-8 w-8 text-ink-muted" />
-						<Heading level={5} tag="span" size="xs" tone="muted" class="max-w-[80%] truncate">
+						<Heading level={6} tag="span" tone="muted" class="max-w-[80%] truncate">
 							{file.name}
 						</Heading>
 					{:else}
@@ -274,10 +274,10 @@
 							name="upload"
 							class="h-7 w-7 text-ink-faint transition-colors group-hover:text-brand"
 						/>
-						<Heading level={4} tag="span" size="sm" weight="medium" tone="muted">
+						<Heading level={5} tag="span" weight="medium" tone="muted">
 							{orderContent.form.uploadLabel}
 						</Heading>
-						<Heading level={5} tag="span" size="xs" tone="muted">{orderContent.form.uploadHint}</Heading>
+						<Heading level={6} tag="span" tone="muted">{orderContent.form.uploadHint}</Heading>
 					{/if}
 				</button>
 
@@ -294,7 +294,7 @@
 			/>
 
 			<div class="mt-3 flex items-center justify-between gap-3">
-				<Heading level={5} tag="p" size="xs" tone="muted">{orderContent.form.uploadDpiNote}</Heading>
+				<Heading level={6} tag="p" tone="muted">{orderContent.form.uploadDpiNote}</Heading>
 				{#if file}
 					<button
 						type="button"
@@ -306,7 +306,7 @@
 				{/if}
 			</div>
 			{#if fileError}
-				<Heading level={5} tag="p" size="xs" class="mt-1 text-danger">{fileError}</Heading>
+				<Heading level={6} tag="p" class="mt-1 text-danger">{fileError}</Heading>
 			{/if}
 		</div>
 
@@ -322,7 +322,7 @@
 				<SizeInput bind:width={customWidth} bind:height={customHeight} bind:unit={customUnit} />
 
 				{#if exceedsMaxSize}
-					<Heading level={5} tag="p" size="xs" class="mt-1.5 text-danger">
+					<Heading level={6} tag="p" class="mt-1.5 text-danger">
 						{orderContent.form.errorMaxSize}
 					</Heading>
 				{/if}
@@ -355,9 +355,8 @@
 						{#each MARGIN_STEPS_IN as step (step)}
 						<div class="w-4 text-center">
 							<Heading
-								level={5}
+								level={6}
 								tag="span"
-								size="xs"
 								weight={marginIn === step ? 'semibold' : 'normal'}
 								tone={marginIn === step ? 'ink' : 'muted'}
 							>
@@ -426,17 +425,17 @@
 
 			<div class="border-t border-line pt-4">
 				<div class="flex items-center justify-between">
-					<Heading level={4} tag="span" size="sm" tone="muted">{orderContent.form.totalLabel}</Heading>
-					<Heading level={3} tag="span" size="lg">
+					<Heading level={5} tag="span" tone="muted">{orderContent.form.totalLabel}</Heading>
+					<Heading level={2} tag="span">
 						{total ? formatPrice(total.totalPriceCents) : '—'}
 					</Heading>
 				</div>
 				{#if total}
-					<Heading level={5} tag="p" size="xs" tone="muted" class="mt-1">
+					<Heading level={6} tag="p" tone="muted" class="mt-1">
 						{total.quantity} x {projectName.trim() || orderContent.form.untitledLabel} ({formatPrice(total.basePriceCents)})
 					</Heading>
 					{#each total.options as opt (opt.id)}
-						<Heading level={5} tag="p" size="xs" tone="muted" class="ml-3">
+						<Heading level={6} tag="p" tone="muted" class="ml-3">
 							- {opt.label} ({formatPrice(opt.priceDeltaCents)})
 						</Heading>
 					{/each}
@@ -444,7 +443,7 @@
 			</div>
 
 			{#if error}
-				<Heading level={4} tag="p" size="xs" class="text-danger">{error}</Heading>
+				<Heading level={6} tag="p" class="text-danger">{error}</Heading>
 			{/if}
 
 			<div class="flex flex-col gap-3 sm:flex-row">
@@ -475,7 +474,7 @@
 				{#each orderContent.form.finePrint as item (item.text)}
 					<div class="flex items-center gap-2">
 						<Icon name={item.icon as IconName} class="mt-0.5 h-4 w-4 shrink-0 text-ink-faint" />
-						<Heading level={5} tag="p" size="xs" tone="muted">{item.text}</Heading>
+						<Heading level={6} tag="p" tone="muted">{item.text}</Heading>
 					</div>
 				{/each}
 			</div>
@@ -498,7 +497,7 @@
 				<circle cx="12" cy="12" r="10" stroke-width="2" class="confirm-circle" />
 				<path d="M8 12l3 3 5-6" stroke-width="2" class="confirm-check" />
 			</svg>
-			<Heading level={2} tag="p" size="lg">{orderContent.form.addedToCartConfirmation}</Heading>
+			<Heading level={2}>{orderContent.form.addedToCartConfirmation}</Heading>
 		</div>
 	{/if}
 </div>

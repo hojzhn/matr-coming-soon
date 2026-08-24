@@ -31,7 +31,7 @@
 <svelte:element this={children ? 'div' : 'label'} class="block mb-4">
 	<Heading level={5} tag="span" tone="muted" class="block">{label}{required ? ' *' : ''}</Heading>
 	{#if description}
-		<Heading level={5} tag="p" size="xs" tone="muted" class="mt-2 mb-3">{description}</Heading>
+		<Heading level={6} tag="p" tone="muted" class="mt-2 mb-3">{description}</Heading>
 	{/if}
 	{#if children}
 		{@render children()}

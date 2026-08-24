@@ -2,11 +2,13 @@
 	import Section from '$lib/components/ui/Section.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
+	import LazyImage from '$lib/components/ui/LazyImage.svelte';
+	import Icon from '$lib/components/ui/Icon.svelte';
 	import { contactContent } from '$lib/content';
 
 	let { formToken }: { formToken: string } = $props();
 
-	const contactVideoSrc = '/videos/contact.mp4';
+	const contactImageSrc = '/images/contact.jpg';
 
 	let name = $state('');
 	let email = $state('');
@@ -46,21 +48,23 @@
 	}
 </script>
 
-<Section id="contact" tone="surface" fullHeight>
-	<div class="flex w-full flex-col gap-12 py-0 h-full md:pb-20">
-		<video
-			src={contactVideoSrc}
-			autoplay
-			muted
-			loop
-			playsinline
-			class="w-full shrink-0 object-contain contrast-110 brightness-140"
-		></video>
-
+<Section id="contact" tone="surface" fullHeight class="md:mb-40">
+	<div class="flex w-full flex-col py-0 h-full md:pb-20">
+	<div class="flex flex-row justify-between items-center mb-2">
+		<Icon name="mail" class="h-6 w-6 text-ink" />
+		<Heading level={4}>hello@matr.art</Heading>
+	</div>
+		<LazyImage
+			src={contactImageSrc}
+			alt=""
+			class="w-full shrink-0 object-contain"
+		/>
 		{#if success}
-			<Heading level={2} size="lg" tone="brand" class="flex flex-1 min-h-0 items-center">
+		<div class="mt-8 w-full text-right">
+			<Heading level={3}>
 				{contactContent.form.successMessage}
 			</Heading>
+		</div>
 		{:else}
 			<form class="flex flex-1 min-h-0 flex-col justify-center gap-8" {onsubmit}>
 				<input
@@ -73,65 +77,47 @@
 					aria-hidden="true"
 				/>
 
-				<Heading
-					level={2}
-					tag="p"
-					size="xl"
-					sizeMd="2xl"
-					weight="semibold"
-					tracking="tight"
-					balance={false}
-					class="flex flex-wrap items-baseline gap-x-3 gap-y-2"
-				>
-					<span>{contactContent.form.madlibGreeting}</span>
+				<div class="flex flex-col gap-4 md:flex-row md:gap-8 mt-8">
+				<Heading level={3} tag="p" balance={false} class="flex flex-nowrap flex-col items-baseline gap-x-3 gap-y-2">
 					<input
 						type="text"
 						bind:value={name}
 						placeholder={contactContent.form.namePlaceholder}
 						required
 						autocomplete="name"
-						class="min-w-20 max-w-70 field-sizing-content border-b-2 border-ink bg-transparent px-0 pb-1 outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
+						class="min-w-20 md:max-w-md bg-transparent px-0 outline-none transition-colors placeholder:text-ink-faint "
 					/>
-					<span>,</span>
-					</Heading>
-					<textarea
-						bind:value={message}
-						placeholder={contactContent.form.messagePlaceholder}
-						required
-						rows={4}
-						class="w-full leading-tight resize-none bg-transparent px-0 py-1 text-md font-medium tracking-tight text-ink outline-none placeholder:text-ink-faint md:text-lg"
-					></textarea>
-
-					
-
-				{#if error}
-					<Heading level={4} tag="p" size="xs" class="text-danger">{error}</Heading>
-				{/if}
-
-				<div class="flex flex-col gap-y-4 md:flex-row md:items-center md:justify-between">
-				<div class="flex flex-row items-baseline">
-				<Heading
-			level={4}
-			tag="p"
-			size="base"
-			sizeMd="lg"
-			weight="medium"
-			tracking="tight"
-			tone="ink"
-			class="md:max-w-2xl"
-		>
-					<span>{contactContent.form.madlibClosing}</span>
+					<div>{'<'}
 					<input
 						type="email"
 						bind:value={email}
 						placeholder={contactContent.form.emailPlaceholder}
 						required
 						autocomplete="email"
-						class="w-56 border-b-2 border-ink bg-transparent px-0 md:ml-2 pb-1 outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
+						class="field-sizing-content max-w-full min-w-20 bg-transparent px-0 outline-none transition-colors placeholder:text-ink-faint"
 					/>
-					<span>.</span>
+					{'>'}</div>
 					</Heading>
-				</div>
+
+					<Heading level={3} tag="p" balance={false} class="w-full">
+						<textarea
+							bind:value={message}
+							placeholder={contactContent.form.messagePlaceholder}
+							required
+							rows={4}
+							class="w-full resize-none bg-transparent p-0 outline-none placeholder:text-ink-faint"
+						></textarea>
+					</Heading>
+					</div>
+
+					
+
+				{#if error}
+					<Heading level={6} tag="p" class="text-danger">{error}</Heading>
+				{/if}
+
+				<div class="flex flex-col gap-y-4 md:flex-row md:items-center md:justify-end">
+				
 
 				<ArrowLink
 					type="submit"

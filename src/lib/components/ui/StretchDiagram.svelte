@@ -14,15 +14,15 @@
 	<div class="flex flex-col gap-1.5">
 		<div class="flex items-center gap-2">
 			<span class="h-2 w-2 shrink-0 rounded-full bg-ink"></span>
-			<Heading level={5} tag="span" size="xs" tone="muted">{orderContent.form.stretchDiagramArtworkLabel}</Heading>
+			<Heading level={6} tag="span" tone="muted">{orderContent.form.stretchDiagramArtworkLabel}</Heading>
 		</div>
 		<div class="flex items-center gap-2">
 			<span class="h-2 w-2 shrink-0 rounded-full bg-brand"></span>
-			<Heading level={5} tag="span" size="xs" tone="muted">{orderContent.form.stretchDiagramOutpaintLabel}</Heading>
+			<Heading level={6} tag="span" tone="muted">{orderContent.form.stretchDiagramOutpaintLabel}</Heading>
 		</div>
 		<div class="flex items-center gap-2">
 			<span class="h-2 w-2 shrink-0 rounded-full bg-ink-faint"></span>
-			<Heading level={5} tag="span" size="xs" tone="muted">{orderContent.form.stretchDiagramMarginLabel}</Heading>
+			<Heading level={6} tag="span" tone="muted">{orderContent.form.stretchDiagramMarginLabel}</Heading>
 		</div>
 	</div>
 </div>

@@ -60,8 +60,8 @@
 	<div class="min-h-0 flex-1 overflow-y-auto">
 		{#if cart.items.length === 0}
 			<div class="border border-dashed border-line px-6 py-10 text-center">
-				<Heading level={4} tag="p" size="sm" weight="medium">{orderContent.cart.emptyLabel}</Heading>
-				<Heading level={5} tag="p" size="xs" tone="muted" class="mt-1">{orderContent.cart.emptyHint}</Heading>
+				<Heading level={5} tag="p" weight="medium">{orderContent.cart.emptyLabel}</Heading>
+				<Heading level={6} tag="p" tone="muted" class="mt-1">{orderContent.cart.emptyHint}</Heading>
 			</div>
 		{:else}
 			<div class="flex flex-col divide-y divide-line">
@@ -78,17 +78,17 @@
 						</div>
 
 						<div class="min-w-0 flex-1">
-							<Heading level={4} tag="p" size="sm" weight="medium" class="truncate">
+							<Heading level={5} tag="p" weight="medium" class="truncate">
 								{item.projectName || orderContent.form.untitledLabel}
 							</Heading>
-							<Heading level={5} tag="p" size="xs" tone="muted" class="mt-0.5">
+							<Heading level={6} tag="p" tone="muted" class="mt-0.5">
 								{item.widthIn} x {item.heightIn} in
 								{#if item.options.some((o) => o.id === STRETCH_SERVICE_OPTION_ID)}
 									· {formatMarginStep(item.marginIn)}″ margin
 								{/if}
 							</Heading>
 							{#each item.options as opt (opt.id)}
-								<Heading level={5} tag="p" size="xs" tone="muted" class="ml-3">
+								<Heading level={6} tag="p" tone="muted" class="ml-3">
 									- {opt.label} ({formatPrice(opt.priceDeltaCents)})
 								</Heading>
 							{/each}
@@ -107,7 +107,7 @@
 									/>
 								</label>
 
-								<Heading level={4} tag="span" size="sm" weight="medium">
+								<Heading level={5} tag="span" weight="medium">
 									{formatPrice(item.unitPriceCents * item.quantity)}
 								</Heading>
 
@@ -130,18 +130,18 @@
 	{#if cart.items.length > 0}
 		<div class="mt-4 shrink-0 border-t border-line pt-4">
 			<div class="flex items-center justify-between">
-				<Heading level={4} tag="span" size="sm" tone="muted">{orderContent.cart.subtotalLabel}</Heading>
-				<Heading level={4} tag="span" size="sm">{formatPrice(cart.subtotalCents)}</Heading>
+				<Heading level={5} tag="span" tone="muted">{orderContent.cart.subtotalLabel}</Heading>
+				<Heading level={5} tag="span">{formatPrice(cart.subtotalCents)}</Heading>
 			</div>
 
 			{#if cart.discount}
 				<div class="mt-1 flex items-center justify-between gap-2">
-					<Heading level={5} tag="span" size="xs" tone="muted">
+					<Heading level={6} tag="span" tone="muted">
 						{orderContent.cart.discountAppliedPrefix}
 						{cart.discount.code}
 					</Heading>
 					<div class="flex items-center gap-2">
-						<Heading level={5} tag="span" size="xs">-{formatPrice(cart.discountCents)}</Heading>
+						<Heading level={6} tag="span">-{formatPrice(cart.discountCents)}</Heading>
 						<button
 							type="button"
 							onclick={removeDiscount}
@@ -177,13 +177,13 @@
 					/>
 				</div>
 				{#if discountError}
-					<Heading level={5} tag="p" size="xs" class="mt-1 text-danger">{discountError}</Heading>
+					<Heading level={6} tag="p" class="mt-1 text-danger">{discountError}</Heading>
 				{/if}
 			{/if}
 
 			<div class="mt-3 flex items-center justify-between border-t border-line pt-3">
-				<Heading level={4} tag="span" size="sm" tone="muted">{orderContent.cart.totalLabel}</Heading>
-				<Heading level={3} tag="span" size="lg">{formatPrice(cart.totalCents)}</Heading>
+				<Heading level={5} tag="span" tone="muted">{orderContent.cart.totalLabel}</Heading>
+				<Heading level={2} tag="span">{formatPrice(cart.totalCents)}</Heading>
 			</div>
 
 			<input
@@ -197,7 +197,7 @@
 			/>
 
 			{#if error}
-				<Heading level={4} tag="p" size="xs" class="mt-4 text-danger">{error}</Heading>
+				<Heading level={6} tag="p" class="mt-4 text-danger">{error}</Heading>
 			{/if}
 
 			<ArrowLink

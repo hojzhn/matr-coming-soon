@@ -22,7 +22,7 @@
 					aria-expanded={openIndex === i}
 					onclick={() => toggle(i)}
 				>
-					<Heading level={2} tag="p" size="sm" sizeMd="lg" weight="medium" balance={false}>
+					<Heading level={3} tag="p"  weight="medium" balance={false}>
 						{item.question}
 					</Heading>
 					<Icon
@@ -34,8 +34,7 @@
 				</button>
 				{#if openIndex === i}
 					<div transition:slide={{ duration: 250 }}>
-						<Heading level={2} tag="p" size="sm" 
-						tone="muted" sizeMd="lg" weight="medium" balance={false} class="max-w-3xl pb-6">
+							<Heading level={4} tag="p" weight="medium" tone="muted" class="max-w-3xl pb-6">
 							{item.answer}
 						</Heading>
 					</div>
