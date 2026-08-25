@@ -4,7 +4,12 @@
 	import SmoothScroll from '$lib/components/layout/SmoothScroll.svelte';
 	import CookieConsentBanner from '$lib/components/layout/CookieConsentBanner.svelte';
 	import { consentState } from '$lib/consent/consent-state.svelte';
+	import { siteContent } from '$lib/content';
 	import type { LayoutProps } from './$types';
+
+	const pageTitle = 'Matr Labs: Engineering for Art';
+	const pageDescription = 'Oil prints made to order. Matr labs is coming back soon.';
+	const shareImage = `${siteContent.url}/images/og-share.webp`;
 
 	let { data, children }: LayoutProps = $props();
 
@@ -16,8 +21,24 @@
 </script>
 
 <svelte:head>
-	<title>Matr Labs: Engineering for Art</title>
-	<meta name="description" content="Oil prints made to order. Matr labs is coming back soon." />
+	<title>{pageTitle}</title>
+	<meta name="description" content={pageDescription} />
+	<link rel="canonical" href={siteContent.url} />
+
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content={siteContent.name} />
+	<meta property="og:url" content={siteContent.url} />
+	<meta property="og:title" content={pageTitle} />
+	<meta property="og:description" content={pageDescription} />
+	<meta property="og:image" content={shareImage} />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={pageTitle} />
+	<meta name="twitter:description" content={pageDescription} />
+	<meta name="twitter:image" content={shareImage} />
+
 	{#if cookieConsent === 'accepted'}
 		<script async src="https://t.contentsquare.net/uxa/ae8b39acc16e9.js"></script>
 	{/if}

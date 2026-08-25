@@ -40,7 +40,7 @@
 		</div>
 
 	<div class="mb-12 shrink-0">
-		<Heading level={5} tag="p" tone="muted"  align="center">
+		<Heading level={5} tag="h1" tone="muted"  align="center">
 			{heroContent.logosLabel}
 		</Heading>
 		<div class="mt-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
