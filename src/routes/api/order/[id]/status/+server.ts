@@ -1,10 +1,9 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { getSupabaseAdmin, PRINT_ORDERS_TABLE } from '$lib/server/supabase';
-
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+import { isValidOrderId } from '$lib/server/order-id';
 
 export const GET: RequestHandler = async ({ params }) => {
-	if (!UUID_RE.test(params.id ?? '')) {
+	if (!isValidOrderId(params.id)) {
 		return json({ status: null }, { status: 400 });
 	}
 

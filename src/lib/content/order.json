@@ -50,7 +50,8 @@
     "errorInvalidFile": "That file's too big or not a supported type.",
     "errorCartFull": "Your cart is full. Remove an item to add another.",
     "errorProjectNameRequired": "Give this print a name first.",
-    "errorFileRequired": "Upload your artwork first."
+    "errorFileRequired": "Upload your artwork first.",
+    "errorUploadFailed": "Couldn't upload your artwork. Please try again."
   },
   "cart": {
     "heading": "Your cart",

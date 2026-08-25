@@ -1,28 +1,44 @@
 import { getSupabaseAdmin, ORDER_ARTWORK_BUCKET } from './supabase';
 import { MAX_ARTWORK_FILE_BYTES, ACCEPTED_ARTWORK_TYPES } from '$lib/pricing/config';
 
-export interface UploadedArtwork {
+export interface ArtworkUploadTarget {
+	index: number;
 	path: string;
-	fileName: string;
+	signedUrl: string;
 }
 
-export async function uploadOrderArtwork(orderId: string, index: number, file: File): Promise<UploadedArtwork> {
-	if (!ACCEPTED_ARTWORK_TYPES.includes(file.type)) {
-		throw new Error('Unsupported artwork file type.');
-	}
-	if (file.size > MAX_ARTWORK_FILE_BYTES) {
-		throw new Error('Artwork file is too large.');
-	}
+function sanitizeExt(fileName: string): string {
+	return fileName.split('.').pop()?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
+}
 
+export function artworkPath(orderId: string, index: number, fileName: string): string {
+	return `${orderId}/${index}.${sanitizeExt(fileName)}`;
+}
+
+export function isValidArtworkMeta(fileType: string, fileSize: number): boolean {
+	return (
+		ACCEPTED_ARTWORK_TYPES.includes(fileType) &&
+		Number.isFinite(fileSize) &&
+		fileSize > 0 &&
+		fileSize <= MAX_ARTWORK_FILE_BYTES
+	);
+}
+
+export async function createArtworkUploadUrl(
+	orderId: string,
+	index: number,
+	fileName: string
+): Promise<ArtworkUploadTarget> {
 	const supabase = getSupabaseAdmin();
-	const ext = file.name.split('.').pop()?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
-	const path = `${orderId}/${index}.${ext}`;
+	const path = artworkPath(orderId, index, fileName);
+	const { data, error } = await supabase.storage.from(ORDER_ARTWORK_BUCKET).createSignedUploadUrl(path);
+	if (error || !data) throw new Error('Could not prepare artwork upload.');
+	return { index, path, signedUrl: data.signedUrl };
+}
 
-	const { error } = await supabase.storage
-		.from(ORDER_ARTWORK_BUCKET)
-		.upload(path, file, { contentType: file.type, upsert: false });
-
-	if (error) throw new Error(`Artwork upload failed: ${error.message}`);
-
-	return { path, fileName: file.name };
+export async function listUploadedArtworkNames(orderId: string): Promise<Set<string>> {
+	const supabase = getSupabaseAdmin();
+	const { data, error } = await supabase.storage.from(ORDER_ARTWORK_BUCKET).list(orderId);
+	if (error) throw new Error('Could not verify uploaded artwork.');
+	return new Set((data ?? []).map((f) => f.name));
 }

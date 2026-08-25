@@ -1,7 +1,7 @@
-import crypto from 'node:crypto';
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { getSupabaseAdmin, PRINT_ORDERS_TABLE, ORDER_ITEMS_TABLE } from '$lib/server/supabase';
-import { uploadOrderArtwork } from '$lib/server/artwork';
+import { artworkPath, listUploadedArtworkNames } from '$lib/server/artwork';
+import { isValidOrderId } from '$lib/server/order-id';
 import { verifySession, MIN_SUBMIT_MS } from '$lib/server/security';
 import { calculateOrderTotal, toInches, type OrderTotal } from '$lib/pricing/calculate';
 import {
@@ -23,23 +23,12 @@ interface ValidatedItem {
 	projectName: string;
 	marginIn: number;
 	total: OrderTotal;
-	artworkPath: string | null;
-	artworkFileName: string | null;
+	artworkPath: string;
+	artworkFileName: string;
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-	const formData = await request.formData().catch(() => null);
-	if (!formData) return fail('Invalid request body.');
-
-	const payloadRaw = formData.get('payload');
-	let body: Record<string, unknown> | null = null;
-	if (typeof payloadRaw === 'string') {
-		try {
-			body = JSON.parse(payloadRaw);
-		} catch {
-			body = null;
-		}
-	}
+	const body = await request.json().catch(() => null);
 	if (!body) return fail('Invalid request body.');
 
 	if (String(body.company ?? '').trim() !== '') {
@@ -50,6 +39,11 @@ export const POST: RequestHandler = async ({ request }) => {
 	if (!session.ok || session.ageMs < MIN_SUBMIT_MS) {
 		return fail('Unable to process request.');
 	}
+
+	if (!isValidOrderId(body.orderId)) {
+		return fail('Invalid request body.');
+	}
+	const orderId = body.orderId;
 
 	if (!Array.isArray(body.items) || body.items.length === 0) {
 		return fail('Add at least one print before checking out.');
@@ -65,8 +59,6 @@ export const POST: RequestHandler = async ({ request }) => {
 		console.error(err);
 		return fail('Server is not configured to accept orders yet.', 500);
 	}
-
-	const orderId = crypto.randomUUID();
 
 	const validated: ValidatedItem[] = [];
 	for (let i = 0; i < body.items.length; i++) {
@@ -97,28 +89,33 @@ export const POST: RequestHandler = async ({ request }) => {
 			return fail(`${MAX_PRINT_SIDE_IN} in is the largest side we can print.`);
 		}
 
-		const fileEntry = formData.get(`file_${i}`);
-		if (!(fileEntry instanceof File)) {
+		const artworkFileName = String(raw?.artworkFileName ?? '').trim();
+		const artworkPathClaim = String(raw?.artworkPath ?? '').trim();
+		if (!artworkFileName || !artworkPathClaim) {
 			return fail('Upload your artwork first.');
 		}
-
-		let artworkPath: string | null = null;
-		let artworkFileName: string | null = null;
-		try {
-			const uploaded = await uploadOrderArtwork(orderId, i, fileEntry);
-			artworkPath = uploaded.path;
-			artworkFileName = uploaded.fileName;
-		} catch (err) {
-			return fail(err instanceof Error ? err.message : 'Could not upload artwork. Please try again.');
+		if (artworkPathClaim !== artworkPath(orderId, i, artworkFileName)) {
+			return fail('Artwork upload could not be verified. Please try again.');
 		}
 
 		validated.push({
 			projectName,
 			marginIn,
 			total: calculateOrderTotal(widthIn, heightIn, optionIds, quantity),
-			artworkPath,
+			artworkPath: artworkPathClaim,
 			artworkFileName
 		});
+	}
+
+	try {
+		const uploadedNames = await listUploadedArtworkNames(orderId);
+		const allUploaded = validated.every((v) => uploadedNames.has(v.artworkPath.split('/').pop()!));
+		if (!allUploaded) {
+			return fail('Artwork upload did not complete. Please try again.');
+		}
+	} catch (err) {
+		console.error('Could not verify uploaded artwork:', err);
+		return fail('Could not verify uploaded artwork. Please try again.', 500);
 	}
 
 	const totalPriceCents = validated.reduce((sum, v) => sum + v.total.totalPriceCents, 0);

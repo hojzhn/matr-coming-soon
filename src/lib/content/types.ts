@@ -87,6 +87,7 @@ export interface OrderFormContent {
 	errorCartFull: string;
 	errorProjectNameRequired: string;
 	errorFileRequired: string;
+	errorUploadFailed: string;
 }
 export interface OrderCartContent {
 	heading: string;
