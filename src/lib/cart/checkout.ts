@@ -1,4 +1,5 @@
 import { orderContent } from '$lib/content';
+import { COLORED_MARGIN_OPTION_ID } from '$lib/pricing/config';
 import { cart, type CartItem } from './cart.svelte';
 import { beginAwaitingPayment } from './checkout-status.svelte';
 
@@ -91,6 +92,7 @@ export async function submitCheckout(
 				rawUnit: item.rawUnit,
 				optionIds: item.options.map((o) => o.id),
 				marginIn: item.marginIn,
+				marginColor: item.options.find((o) => o.id === COLORED_MARGIN_OPTION_ID)?.color ?? null,
 				quantity: item.quantity,
 				artworkPath: artworkPaths.get(index) ?? null,
 				artworkFileName: item.file?.name ?? null

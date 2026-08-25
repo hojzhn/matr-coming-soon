@@ -11,6 +11,8 @@
 		addOnOptions,
 		STRETCH_SERVICE_OPTION_ID,
 		OUTPAINT_OPTION_ID,
+		COLORED_MARGIN_OPTION_ID,
+		DEFAULT_MARGIN_COLOR,
 		MAX_PRINT_SIDE_IN,
 		MARGIN_STEPS_IN,
 		MARGIN_DEFAULT_IN,
@@ -38,6 +40,7 @@
 	let customHeight = $state('');
 	let customUnit = $state<'in' | 'cm'>('in');
 	let selectedOptionIds = $state<string[]>([]);
+	let marginColor = $state(DEFAULT_MARGIN_COLOR);
 	let marginIn = $state(MARGIN_DEFAULT_IN);
 	let quantity = $state('1');
 
@@ -63,7 +66,16 @@
 
 	const total = $derived.by(() => {
 		if (!activeSize || exceedsMaxSize) return null;
-		return calculateOrderTotal(activeSize.widthIn, activeSize.heightIn, selectedOptionIds, Number(quantity) || 1);
+		return calculateOrderTotal(
+			activeSize.widthIn,
+			activeSize.heightIn,
+			selectedOptionIds,
+			Number(quantity) || 1,
+			undefined,
+			undefined,
+			undefined,
+			marginColor
+		);
 	});
 
 	const boundingBoxStyle = $derived.by(() => {
@@ -155,6 +167,7 @@
 		customHeight = '';
 		customUnit = 'in';
 		selectedOptionIds = [];
+		marginColor = DEFAULT_MARGIN_COLOR;
 		marginIn = MARGIN_DEFAULT_IN;
 		quantity = '1';
 		file = null;
@@ -198,6 +211,7 @@
 			heightIn: activeSize.heightIn,
 			optionIds: selectedOptionIds,
 			marginIn,
+			marginColor: selectedOptionIds.includes(COLORED_MARGIN_OPTION_ID) ? marginColor : null,
 			quantity: Number(quantity) || 1,
 			fileName: file?.name ?? null,
 			previewUrl,
@@ -374,21 +388,24 @@
 					{#each addOnOptions as opt (opt.id)}
 						{@const selected = selectedOptionIds.includes(opt.id)}
 						{@const optPriceCents = priceAddOnCents(opt, activeSize?.widthIn ?? 0, activeSize?.heightIn ?? 0)}
-						<button
-							type="button"
-							onclick={() => toggleOption(opt.id)}
-							aria-pressed={selected}
+						<div
 							class={cn(
 								'flex flex-col gap-2 border-2 p-3 text-center transition-colors',
 								selected ? 'border-ink' : 'border-line hover:border-ink-muted'
 							)}
 						>
-							<div class="flex items-center justify-between gap-2">
+							<button type="button" onclick={() => toggleOption(opt.id)} aria-pressed={selected} class="flex items-center justify-between gap-2">
 								<div class="flex items-center gap-4">
 									<Icon name={opt.icon} class="h-6 w-6 text-ink" strokeWidth={1} />
 									<Heading level={4} tag="span" weight="medium">
 										{opt.label}
 									</Heading>
+									{#if opt.id === COLORED_MARGIN_OPTION_ID}
+										<span
+											class="h-4 w-4 shrink-0 rounded-full border border-line"
+											style={`background-color:${marginColor}`}
+										></span>
+									{/if}
 									{#if selected}
 										<span
 											class="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-ink"
@@ -401,7 +418,7 @@
 								<Heading level={4} size="md">
 									{optPriceCents ? ` +${formatPrice(optPriceCents)}` : ''}
 								</Heading>
-							</div>
+							</button>
 							{#if selected && opt.description}
 								<div class="text-left" transition:slide={{ duration: 250 }}>
 									<Heading level={5} tag="p" tone="muted">
@@ -409,7 +426,18 @@
 									</Heading>
 								</div>
 							{/if}
-						</button>
+							{#if selected && opt.id === COLORED_MARGIN_OPTION_ID}
+								<div class="flex items-center gap-3 pt-1" transition:slide={{ duration: 250 }}>
+									<input
+										type="color"
+										bind:value={marginColor}
+										aria-label="Margin color"
+										class="h-9 w-14 shrink-0 cursor-pointer border border-line bg-transparent p-0.5"
+									/>
+									<Heading level={6} tag="span" tone="muted">{marginColor}</Heading>
+								</div>
+							{/if}
+						</div>
 					{/each}
 				</div>
 
@@ -439,8 +467,14 @@
 						{total.quantity} x {projectName.trim() || orderContent.form.untitledLabel} ({formatPrice(total.basePriceCents)})
 					</Heading>
 					{#each total.options as opt (opt.id)}
-						<Heading level={6} tag="p" tone="muted" class="ml-3">
+						<Heading level={6} tag="p" tone="muted" class="ml-3 flex items-center gap-1.5">
 							- {opt.label} ({formatPrice(opt.priceDeltaCents)})
+							{#if opt.color}
+								<span
+									class="h-2.5 w-2.5 shrink-0 rounded-full border border-line"
+									style={`background-color:${opt.color}`}
+								></span>
+							{/if}
 						</Heading>
 					{/each}
 				{/if}

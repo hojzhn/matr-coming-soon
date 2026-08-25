@@ -87,8 +87,14 @@
 								{item.widthIn} x {item.heightIn} in · {formatMarginStep(item.marginIn)}″ margin
 							</Heading>
 							{#each item.options as opt (opt.id)}
-								<Heading level={6} tag="p" tone="muted" class="ml-3">
+								<Heading level={6} tag="p" tone="muted" class="ml-3 flex items-center gap-1.5">
 									- {opt.label} ({formatPrice(opt.priceDeltaCents)})
+									{#if opt.color}
+										<span
+											class="h-2.5 w-2.5 shrink-0 rounded-full border border-line"
+											style={`background-color:${opt.color}`}
+										></span>
+									{/if}
 								</Heading>
 							{/each}
 

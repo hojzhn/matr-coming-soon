@@ -31,6 +31,7 @@ export interface AddCartItemInput {
 	heightIn: number;
 	optionIds: string[];
 	marginIn: number;
+	marginColor?: string | null;
 	quantity: number;
 	fileName: string | null;
 	previewUrl: string | null;
@@ -121,7 +122,16 @@ export class CartStore {
 	add(input: AddCartItemInput): AddCartItemResult {
 		if (this.isFull) return { ok: false, error: 'max-items' };
 
-		const total = calculateOrderTotal(input.widthIn, input.heightIn, input.optionIds, input.quantity);
+		const total = calculateOrderTotal(
+			input.widthIn,
+			input.heightIn,
+			input.optionIds,
+			input.quantity,
+			undefined,
+			undefined,
+			undefined,
+			input.marginColor
+		);
 		const id = crypto.randomUUID();
 
 		this.items.push({

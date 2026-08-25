@@ -2,6 +2,7 @@ import {
 	pricingConfig,
 	addOnOptions,
 	addOnPricingConfigs,
+	COLORED_MARGIN_OPTION_ID,
 	type PricingConfig,
 	type AddOnOption
 } from './config';
@@ -17,6 +18,7 @@ export interface OrderLineItemOption {
 	id: string;
 	label: string;
 	priceDeltaCents: number;
+	color?: string;
 }
 
 export interface OrderTotal {
@@ -101,13 +103,15 @@ export function calculateOrderTotal(
 	quantity: number,
 	cfg: PricingConfig = pricingConfig,
 	options: AddOnOption[] = addOnOptions,
-	addOnConfigs: Partial<Record<string, PricingConfig>> = addOnPricingConfigs
+	addOnConfigs: Partial<Record<string, PricingConfig>> = addOnPricingConfigs,
+	marginColor?: string | null
 ): OrderTotal {
 	const base = calculatePriceCents(widthIn, heightIn, cfg);
 	const selected: OrderLineItemOption[] = resolveAddOns(optionIds, options).map((o) => ({
 		id: o.id,
 		label: o.label,
-		priceDeltaCents: priceAddOnCents(o, base.billableWidthIn, base.billableHeightIn, addOnConfigs)
+		priceDeltaCents: priceAddOnCents(o, base.billableWidthIn, base.billableHeightIn, addOnConfigs),
+		...(o.id === COLORED_MARGIN_OPTION_ID && marginColor ? { color: marginColor } : {})
 	}));
 	const addOnsCents = selected.reduce((sum, o) => sum + o.priceDeltaCents, 0);
 	const unitPriceCents = base.priceCents + addOnsCents;

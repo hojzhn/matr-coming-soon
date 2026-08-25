@@ -40,6 +40,7 @@ export interface DraftOrderLineItemOption {
   id: string;
   label: string;
   priceDeltaCents: number;
+  color?: string;
 }
 
 export interface DraftOrderLineItem {
@@ -156,7 +157,10 @@ export async function createDraftOrder(
     const customAttributes = [
       { key: "Size", value: `${item.widthIn} x ${item.heightIn} in` },
       { key: "Margin", value: `${item.marginIn ?? 3} in` },
-      ...item.options.map((o) => ({ key: o.label, value: formatPrice(o.priceDeltaCents) })),
+      ...item.options.flatMap((o) => [
+        { key: o.label, value: formatPrice(o.priceDeltaCents) },
+        ...(o.color ? [{ key: `${o.label} color`, value: o.color }] : []),
+      ]),
       { key: "Weight", value: `${weightLb} lb` },
     ];
 
