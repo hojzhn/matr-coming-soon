@@ -214,3 +214,13 @@ export interface FooterContent {
 	localTime: { timeZone: string };
 	legal: { rights: string };
 }
+
+export interface CookieConsentContent {
+	banner: {
+		body: string;
+		acceptLabel: string;
+		rejectLabel: string;
+		policyLinkLabel: string;
+	};
+	footerLinkLabel: string;
+}

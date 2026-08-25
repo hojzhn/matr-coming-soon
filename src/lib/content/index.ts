@@ -13,6 +13,7 @@ import newsletter from './newsletter.json';
 import contact from './contact.json';
 import footer from './footer.json';
 import legal from './legal.json';
+import cookieConsent from './cookieConsent.json';
 import type {
 	AnnouncementContent,
 	FaqContent,
@@ -28,7 +29,8 @@ import type {
 	NewsletterContent,
 	ContactContent,
 	FooterContent,
-	LegalContent
+	LegalContent,
+	CookieConsentContent
 } from './types';
 
 export const announcementContent = announcement satisfies AnnouncementContent;
@@ -46,3 +48,4 @@ export const newsletterContent = newsletter satisfies NewsletterContent;
 export const contactContent = contact satisfies ContactContent;
 export const footerContent = footer satisfies FooterContent;
 export const legalContent = legal satisfies LegalContent;
+export const cookieConsentContent = cookieConsent satisfies CookieConsentContent;

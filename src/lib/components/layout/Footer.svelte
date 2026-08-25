@@ -5,7 +5,8 @@
 	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
 	import FooterColumn from './FooterColumn.svelte';
 	import LegalModal from './LegalModal.svelte';
-	import { navContent, siteContent, footerContent, newsletterContent, legalContent } from '$lib/content';
+	import { navContent, siteContent, footerContent, newsletterContent, legalContent, cookieConsentContent } from '$lib/content';
+	import { consentState } from '$lib/consent/consent-state.svelte';
 
 	let { formToken }: { formToken: string } = $props();
 
@@ -173,7 +174,7 @@
 						{siteContent.name}
 					</Heading>
 				</div>
-				<div class="flex flex-col gap-2 md:flex-row md:gap-4 items-baseline">
+				<div class="flex flex-col gap-2 items-baseline">
 				<Heading level={5} weight="medium" tone="muted" class="mt-4">
 					© {year} {siteContent.name}. {footerContent.legal.rights}.
 				</Heading>
@@ -186,6 +187,11 @@
 					<button type="button" onclick={() => (openLegalDoc = 'privacy')} class="text-left">
 						<Heading level={5} weight="medium" tone="muted" underline>
 							{legalContent.privacy.title}
+						</Heading>
+					</button>
+					<button type="button" onclick={() => (consentState.status = 'unset')} class="text-left">
+						<Heading level={5} weight="medium" tone="muted" underline>
+							{cookieConsentContent.footerLinkLabel}
 						</Heading>
 					</button></div>
 					</div>

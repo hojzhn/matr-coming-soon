@@ -1,26 +1,5 @@
 import { Resend } from 'resend';
 import { env } from '$env/dynamic/private';
-import { formatPrice } from '$lib/pricing/calculate';
-import { getSupabaseAdmin, ORDER_ARTWORK_BUCKET } from './supabase';
-
-const ARTWORK_LINK_EXPIRY_SECONDS = 60 * 60 * 24 * 365;
-
-async function artworkLinkHtml(path?: string | null, fileName?: string | null): Promise<string> {
-	if (!path) return '';
-	try {
-		const { data, error } = await getSupabaseAdmin()
-			.storage.from(ORDER_ARTWORK_BUCKET)
-			.createSignedUrl(path, ARTWORK_LINK_EXPIRY_SECONDS);
-		if (error || !data?.signedUrl) {
-			console.error('Could not sign artwork URL:', error);
-			return '';
-		}
-		return ` · <a href="${escapeHtml(data.signedUrl)}" style="color:#0b8a3f">${escapeHtml(fileName || 'View artwork')}</a>`;
-	} catch (err) {
-		console.error('Could not sign artwork URL:', err);
-		return '';
-	}
-}
 
 function escapeHtml(value: string): string {
 	return value
@@ -69,65 +48,6 @@ async function send({ to, replyTo, subject, html }: SendArgs): Promise<{ ok: boo
 		console.error('Resend threw:', err);
 		return { ok: false, error: 'Email send failed.' };
 	}
-}
-
-export interface OrderNotificationLineItemOption {
-	id: string;
-	label: string;
-	priceDeltaCents: number;
-}
-
-export interface OrderNotificationLineItem {
-	projectName?: string;
-	widthIn: number;
-	heightIn: number;
-	basePriceCents: number;
-	options: OrderNotificationLineItemOption[];
-	marginIn?: number;
-	quantity: number;
-	unitPriceCents: number;
-	totalPriceCents: number;
-	artworkPath?: string | null;
-	artworkFileName?: string | null;
-}
-
-export interface OrderNotificationArgs {
-	items: OrderNotificationLineItem[];
-	totalPriceCents: number;
-	invoiceUrl: string;
-}
-
-export async function sendOrderNotification(args: OrderNotificationArgs) {
-	const to = env.ORDER_NOTIFICATION_EMAIL;
-	if (!to) {
-		console.error('ORDER_NOTIFICATION_EMAIL is not set.');
-		return { ok: false, error: 'ORDER_NOTIFICATION_EMAIL is not set.' };
-	}
-
-	const itemRows = await Promise.all(
-		args.items.map(async (item, i) => {
-			const projectPart = item.projectName ? ` — ${escapeHtml(item.projectName)}` : '';
-			const optionsPart = item.options.length
-				? `, Options: ${item.options.map((o) => `${escapeHtml(o.label)} (${formatPrice(o.priceDeltaCents)})`).join(', ')}`
-				: '';
-			const artworkPart = await artworkLinkHtml(item.artworkPath, item.artworkFileName);
-			return row(
-				`Item ${i + 1}`,
-				`${item.widthIn} x ${item.heightIn} in (${formatPrice(item.basePriceCents)} base)${optionsPart}${projectPart} · Qty ${item.quantity} · ${formatPrice(item.unitPriceCents)} ea · ${formatPrice(item.totalPriceCents)}${artworkPart}`
-			);
-		})
-	);
-
-	const table =
-		itemRows.join('') +
-		row('Grand total', formatPrice(args.totalPriceCents)) +
-		row('Invoice', `<a href="${escapeHtml(args.invoiceUrl)}" style="color:#0b8a3f">${escapeHtml(args.invoiceUrl)}</a>`);
-
-	return send({
-		to,
-		subject: `New print order - ${args.items.length} item${args.items.length === 1 ? '' : 's'}`,
-		html: wrap('New print order', `A new oil print order came in on matr labs.`, table)
-	});
 }
 
 export function sendContactNotification(args: { name: string; email: string; message: string }) {

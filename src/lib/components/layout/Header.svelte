@@ -170,7 +170,7 @@
 			transition:fade={{ duration: 200 }}
 		></button>
 		<aside
-			class="absolute inset-y-0 right-0 flex w-full max-w-md flex-col bg-surface p-6 shadow-2xl"
+			class="absolute inset-y-0 right-0 flex w-full max-w-md flex-col bg-surface p-6 border-l-2 shadow-2xl"
 			transition:fly={{ x: 320, duration: 300 }}
 		>
 			<div class="flex shrink-0 items-center justify-between border-b border-line pb-4">
