@@ -13,12 +13,18 @@ export interface PriceResult {
 	priceCents: number;
 }
 
+export interface OrderLineItemOption {
+	id: string;
+	label: string;
+	priceDeltaCents: number;
+}
+
 export interface OrderTotal {
 	billableWidthIn: number;
 	billableHeightIn: number;
 	sqIn: number;
 	basePriceCents: number;
-	options: AddOnOption[];
+	options: OrderLineItemOption[];
 	unitPriceCents: number;
 	quantity: number;
 	totalPriceCents: number;
@@ -98,8 +104,9 @@ export function calculateOrderTotal(
 	addOnConfigs: Partial<Record<string, PricingConfig>> = addOnPricingConfigs
 ): OrderTotal {
 	const base = calculatePriceCents(widthIn, heightIn, cfg);
-	const selected = resolveAddOns(optionIds, options).map((o) => ({
-		...o,
+	const selected: OrderLineItemOption[] = resolveAddOns(optionIds, options).map((o) => ({
+		id: o.id,
+		label: o.label,
 		priceDeltaCents: priceAddOnCents(o, base.billableWidthIn, base.billableHeightIn, addOnConfigs)
 	}));
 	const addOnsCents = selected.reduce((sum, o) => sum + o.priceDeltaCents, 0);

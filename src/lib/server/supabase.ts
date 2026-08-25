@@ -17,5 +17,6 @@ export function getSupabaseAdmin(): SupabaseClient {
 }
 
 export const PRINT_ORDERS_TABLE = 'print_orders';
+export const ORDER_ITEMS_TABLE = 'print_order_items';
 export const NEWSLETTER_TABLE = 'newsletter_subscribers';
 export const ORDER_ARTWORK_BUCKET = 'order-artwork';

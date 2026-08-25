@@ -1,5 +1,6 @@
 import { env } from "$env/dynamic/private";
-import { STRETCH_SERVICE_OPTION_ID } from "$lib/pricing/config";
+import { formatPrice } from "$lib/pricing/calculate";
+import { orderContent } from "$lib/content";
 import type { DiscountInfo } from "$lib/pricing/discount";
 import { calculateItemWeightLb } from "$lib/shipping/calculate";
 
@@ -49,14 +50,6 @@ export interface DraftOrderLineItem {
   marginIn?: number;
   quantity: number;
   unitPriceCents: number;
-}
-
-function stretchSpecLabel(
-  options: DraftOrderLineItemOption[],
-  marginIn?: number,
-): string {
-  const isStretched = options.some((o) => o.id === STRETCH_SERVICE_OPTION_ID);
-  return isStretched ? `To Stretch (${marginIn ?? 3}in margin)` : "Normal";
 }
 
 export interface DraftOrderArgs {
@@ -153,16 +146,20 @@ export async function createDraftOrder(
   const { domain, token, version } = shopifyCredentials();
 
   const lineItems = args.items.map((item) => {
-    const optionsPart = item.options.length
-      ? ` (${item.options.map((o) => o.label).join(", ")})`
-      : "";
-    const base = `Custom Oil Print - ${item.widthIn} x ${item.heightIn} in${optionsPart}`;
-    const title = item.projectName ? `${base} - ${item.projectName}` : base;
+    const title = item.projectName?.trim() || orderContent.form.untitledLabel;
     const weightLb = calculateItemWeightLb(
       item.widthIn,
       item.heightIn,
       item.options.map((o) => o.id),
     );
+
+    const customAttributes = [
+      { key: "Size", value: `${item.widthIn} x ${item.heightIn} in` },
+      { key: "Margin", value: `${item.marginIn ?? 3} in` },
+      ...item.options.map((o) => ({ key: o.label, value: formatPrice(o.priceDeltaCents) })),
+      { key: "Weight", value: `${weightLb} lb` },
+    ];
+
     return {
       title,
       quantity: item.quantity,
@@ -170,6 +167,7 @@ export async function createDraftOrder(
       taxable: true,
       originalUnitPrice: (item.unitPriceCents / 100).toFixed(2),
       weight: { value: weightLb, unit: "POUNDS" },
+      customAttributes,
     };
   });
 
@@ -177,10 +175,7 @@ export async function createDraftOrder(
     args.note ??
     args.items
       .map((item) => {
-        const optionsPart = item.options.length
-          ? ` (${item.options.map((o) => o.label).join(", ")})`
-          : "";
-        const base = `Custom Oil Print - ${item.widthIn} x ${item.heightIn} in${optionsPart}, Qty: ${item.quantity}, Sizing: ${stretchSpecLabel(item.options, item.marginIn)}`;
+        const base = `Custom Oil Print - ${item.widthIn} x ${item.heightIn} in, Qty: ${item.quantity}`;
         return item.projectName ? `${base} - ${item.projectName}` : base;
       })
       .join("; ");

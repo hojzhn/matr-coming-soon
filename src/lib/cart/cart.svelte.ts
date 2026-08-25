@@ -1,5 +1,5 @@
-import { calculateOrderTotal } from '$lib/pricing/calculate';
-import { MAX_CART_ITEMS, MAX_ITEM_QUANTITY, type AddOnOption } from '$lib/pricing/config';
+import { calculateOrderTotal, type OrderLineItemOption } from '$lib/pricing/calculate';
+import { MAX_CART_ITEMS, MAX_ITEM_QUANTITY } from '$lib/pricing/config';
 
 export interface CartItem {
 	id: string;
@@ -10,7 +10,7 @@ export interface CartItem {
 	widthIn: number;
 	heightIn: number;
 	basePriceCents: number;
-	options: AddOnOption[];
+	options: OrderLineItemOption[];
 	marginIn: number;
 	quantity: number;
 	unitPriceCents: number;

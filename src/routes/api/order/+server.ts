@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { getSupabaseAdmin, PRINT_ORDERS_TABLE } from '$lib/server/supabase';
+import { getSupabaseAdmin, PRINT_ORDERS_TABLE, ORDER_ITEMS_TABLE } from '$lib/server/supabase';
 import { uploadOrderArtwork } from '$lib/server/artwork';
 import { verifySession, MIN_SUBMIT_MS } from '$lib/server/security';
 import { calculateOrderTotal, toInches, type OrderTotal } from '$lib/pricing/calculate';
@@ -134,20 +134,6 @@ export const POST: RequestHandler = async ({ request }) => {
 		.from(PRINT_ORDERS_TABLE)
 		.insert({
 			id: orderId,
-			items: validated.map((v) => ({
-				project_name: v.projectName || null,
-				width_in: v.total.billableWidthIn,
-				height_in: v.total.billableHeightIn,
-				sq_in: v.total.sqIn,
-				base_price_cents: v.total.basePriceCents,
-				options: v.total.options,
-				margin_in: v.marginIn,
-				quantity: v.total.quantity,
-				unit_price_cents: v.total.unitPriceCents,
-				total_price_cents: v.total.totalPriceCents,
-				artwork_path: v.artworkPath,
-				artwork_file_name: v.artworkFileName
-			})),
 			total_price_cents: totalPriceCents,
 			discount_code: discount?.code ?? null,
 			discount_cents: discountCents,
@@ -158,6 +144,29 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	if (insertError || !inserted) {
 		console.error('Insert failed:', insertError);
+		return fail('Could not save your order. Please try again.', 500);
+	}
+
+	const { error: itemsInsertError } = await supabase.from(ORDER_ITEMS_TABLE).insert(
+		validated.map((v) => ({
+			order_id: orderId,
+			project_name: v.projectName || null,
+			width_in: v.total.billableWidthIn,
+			height_in: v.total.billableHeightIn,
+			sq_in: v.total.sqIn,
+			base_price_cents: v.total.basePriceCents,
+			options: v.total.options,
+			margin_in: v.marginIn,
+			quantity: v.total.quantity,
+			unit_price_cents: v.total.unitPriceCents,
+			total_price_cents: v.total.totalPriceCents,
+			artwork_path: v.artworkPath,
+			artwork_file_name: v.artworkFileName
+		}))
+	);
+
+	if (itemsInsertError) {
+		console.error('Order items insert failed:', itemsInsertError);
 		return fail('Could not save your order. Please try again.', 500);
 	}
 

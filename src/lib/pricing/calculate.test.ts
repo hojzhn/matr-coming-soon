@@ -94,7 +94,7 @@ describe('calculateOrderTotal', () => {
 		const result = calculateOrderTotal(8, 10, ['varnish'], 1, cfg, options, {});
 		expect(result.basePriceCents).toBe(12900);
 		expect(result.unitPriceCents).toBe(12900 + 1500);
-		expect(result.options).toEqual([options[0]]);
+		expect(result.options).toEqual([{ id: 'varnish', label: 'Varnish', priceDeltaCents: 1500 }]);
 	});
 
 	it('has no price impact from a zero-delta add-on', () => {

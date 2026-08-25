@@ -5,7 +5,7 @@
 	import { orderContent } from '$lib/content';
 	import { cart } from '$lib/cart/cart.svelte';
 	import { submitCheckout } from '$lib/cart/checkout';
-	import { MAX_ITEM_QUANTITY, STRETCH_SERVICE_OPTION_ID } from '$lib/pricing/config';
+	import { MAX_ITEM_QUANTITY } from '$lib/pricing/config';
 	import { formatPrice, formatMarginStep } from '$lib/pricing/calculate';
 
 	let { formToken }: { formToken: string } = $props();
@@ -82,10 +82,7 @@
 								{item.projectName || orderContent.form.untitledLabel}
 							</Heading>
 							<Heading level={6} tag="p" tone="muted" class="mt-0.5">
-								{item.widthIn} x {item.heightIn} in
-								{#if item.options.some((o) => o.id === STRETCH_SERVICE_OPTION_ID)}
-									· {formatMarginStep(item.marginIn)}″ margin
-								{/if}
+								{item.widthIn} x {item.heightIn} in · {formatMarginStep(item.marginIn)}″ margin
 							</Heading>
 							{#each item.options as opt (opt.id)}
 								<Heading level={6} tag="p" tone="muted" class="ml-3">

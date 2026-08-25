@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import type { RequestHandler } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
-import { getSupabaseAdmin, PRINT_ORDERS_TABLE } from '$lib/server/supabase';
+import { getSupabaseAdmin, PRINT_ORDERS_TABLE, ORDER_ITEMS_TABLE } from '$lib/server/supabase';
 import { sendOrderNotification, type OrderNotificationLineItem } from '$lib/server/email';
 
 interface DraftOrderPayload {
@@ -19,6 +19,8 @@ interface StoredOrderItem {
 	quantity: number;
 	unit_price_cents: number;
 	total_price_cents: number;
+	artwork_path: string | null;
+	artwork_file_name: string | null;
 }
 
 function verifyHmac(rawBody: string, header: string | null, secret: string): boolean {
@@ -56,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const supabase = getSupabaseAdmin();
 	const { data: order, error } = await supabase
 		.from(PRINT_ORDERS_TABLE)
-		.select('id, items, total_price_cents, shopify_invoice_url, status')
+		.select('id, total_price_cents, shopify_invoice_url, status')
 		.eq('shopify_draft_order_id', draftGid)
 		.single();
 
@@ -69,8 +71,18 @@ export const POST: RequestHandler = async ({ request }) => {
 		return new Response(null, { status: 200 });
 	}
 
-	const items = (order.items ?? []) as StoredOrderItem[];
-	const lineItems: OrderNotificationLineItem[] = items.map((item) => ({
+	const { data: items, error: itemsError } = await supabase
+		.from(ORDER_ITEMS_TABLE)
+		.select(
+			'project_name, width_in, height_in, base_price_cents, options, margin_in, quantity, unit_price_cents, total_price_cents, artwork_path, artwork_file_name'
+		)
+		.eq('order_id', order.id);
+
+	if (itemsError) {
+		console.error('Could not load order items for notification:', draftGid, itemsError);
+	}
+
+	const lineItems: OrderNotificationLineItem[] = ((items ?? []) as StoredOrderItem[]).map((item) => ({
 		projectName: item.project_name ?? undefined,
 		widthIn: item.width_in,
 		heightIn: item.height_in,
@@ -79,7 +91,9 @@ export const POST: RequestHandler = async ({ request }) => {
 		marginIn: item.margin_in ?? undefined,
 		quantity: item.quantity,
 		unitPriceCents: item.unit_price_cents,
-		totalPriceCents: item.total_price_cents
+		totalPriceCents: item.total_price_cents,
+		artworkPath: item.artwork_path,
+		artworkFileName: item.artwork_file_name
 	}));
 
 	await sendOrderNotification({
