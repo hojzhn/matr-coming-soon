@@ -6,7 +6,7 @@
     },
     {
       "question": "How long does it take to receive my print?",
-      "answer": "Every piece is made to order and ships within 5–7 business days after production. Additional options may extend this timeframe. Shipping, taxes, and any customs fees are calculated at checkout."
+      "answer": "Every piece is made to order and ships within 7 business days after production. Additional options may extend this timeframe. Shipping, taxes, and any customs fees are calculated at checkout."
     },
     {
       "question": "What sizes can I order?",
@@ -31,6 +31,10 @@
     {
       "question": "Do you use my artwork to train AI?",
       "answer": "No. We do not use customer artwork to train artificial intelligence, machine-learning models, or other generative AI systems. Your artwork is used only as reasonably necessary to produce, fulfill, and support your order."
+    },
+    {
+      "question": "International shipping?",
+      "answer": "If you need international shipping for your order, please contact us at hello@matr.art."
     }
   ]
 }

@@ -5,6 +5,7 @@
 	import { orderContent } from '$lib/content';
 	import { cart } from '$lib/cart/cart.svelte';
 	import { submitCheckout } from '$lib/cart/checkout';
+	import { checkoutStatus } from '$lib/cart/checkout-status.svelte';
 	import { MAX_ITEM_QUANTITY } from '$lib/pricing/config';
 	import { formatPrice, formatMarginStep } from '$lib/pricing/calculate';
 
@@ -50,7 +51,8 @@
 	async function checkout() {
 		error = '';
 		loading = true;
-		const result = await submitCheckout(formToken, company);
+		const paymentWindow = window.open('about:blank', '_blank');
+		const result = await submitCheckout(formToken, company, paymentWindow);
 		if (!result.ok) error = result.error;
 		loading = false;
 	}
@@ -202,10 +204,16 @@
 				variant="button"
 				label={loading ? orderContent.cart.checkoutLoadingLabel : orderContent.cart.checkoutLabel}
 				{loading}
-				disabled={loading || cart.items.length === 0}
+				disabled={loading || cart.items.length === 0 || checkoutStatus.awaitingPayment}
 				onclick={checkout}
 				class="mt-4 w-full"
 			/>
+
+			{#if checkoutStatus.awaitingPayment}
+				<Heading level={6} tag="p" tone="muted" class="mt-2">
+					{orderContent.cart.awaitingPaymentLabel}
+				</Heading>
+			{/if}
 		</div>
 	{/if}
 </div>

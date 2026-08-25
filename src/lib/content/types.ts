@@ -107,6 +107,9 @@ export interface OrderCartContent {
 	checkoutLoadingLabel: string;
 	errorEmpty: string;
 	errorGeneric: string;
+	artworkRestoreFailedToast: string;
+	awaitingPaymentLabel: string;
+	paymentConfirmedToast: string;
 }
 export interface OrderContent {
 	form: OrderFormContent;

@@ -20,6 +20,7 @@
 	import { calculateOrderTotal, formatPrice, formatMarginStep, priceAddOnCents, toInches } from '$lib/pricing/calculate';
 	import { cart } from '$lib/cart/cart.svelte';
 	import { submitCheckout } from '$lib/cart/checkout';
+	import { checkoutStatus } from '$lib/cart/checkout-status.svelte';
 	import { toast } from '$lib/toast/toast.svelte';
 	import { cn } from '$lib/cn';
 
@@ -226,7 +227,8 @@
 		if (!addItemToCart()) return;
 		resetForm();
 		checkoutLoading = true;
-		const result = await submitCheckout(formToken);
+		const paymentWindow = window.open('about:blank', '_blank');
+		const result = await submitCheckout(formToken, '', paymentWindow);
 		if (!result.ok) error = result.error;
 		checkoutLoading = false;
 	}
@@ -466,11 +468,15 @@
 					fill="ink"
 					label={orderContent.form.checkoutNowLabel}
 					loading={checkoutLoading}
-					disabled={checkoutLoading}
+					disabled={checkoutLoading || checkoutStatus.awaitingPayment}
 					onclick={checkoutNow}
 					class="w-full bg-brand sm:flex-1"
 				/>
 			</div>
+
+			{#if checkoutStatus.awaitingPayment}
+				<Heading level={6} tag="p" tone="muted">{orderContent.cart.awaitingPaymentLabel}</Heading>
+			{/if}
 
 			<div class="flex flex-col gap-2">
 				{#each orderContent.form.finePrint as item (item.text)}

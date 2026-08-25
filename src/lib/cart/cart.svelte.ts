@@ -1,5 +1,8 @@
 import { calculateOrderTotal, type OrderLineItemOption } from '$lib/pricing/calculate';
 import { MAX_CART_ITEMS, MAX_ITEM_QUANTITY } from '$lib/pricing/config';
+import { orderContent } from '$lib/content';
+import { toast } from '$lib/toast/toast.svelte';
+import * as persistence from './persistence';
 
 export interface CartItem {
 	id: string;
@@ -46,6 +49,55 @@ export class CartStore {
 	items = $state<CartItem[]>([]);
 	discount = $state<AppliedDiscount | null>(null);
 
+	constructor() {
+		if (typeof window !== 'undefined') void this.hydrate();
+	}
+
+	private async hydrate(): Promise<void> {
+		const stored = persistence.loadCartMeta();
+		if (!stored) return;
+
+		const sanitized = stored.items.slice(0, MAX_CART_ITEMS).map(
+			(item): CartItem => ({
+				id: item.id,
+				projectName: item.projectName,
+				rawWidth: item.rawWidth,
+				rawHeight: item.rawHeight,
+				rawUnit: item.rawUnit,
+				widthIn: item.widthIn,
+				heightIn: item.heightIn,
+				basePriceCents: item.basePriceCents,
+				options: item.options,
+				marginIn: item.marginIn,
+				quantity: Math.min(MAX_ITEM_QUANTITY, Math.max(1, Math.round(item.quantity) || 1)),
+				unitPriceCents: item.unitPriceCents,
+				fileName: item.fileName,
+				previewUrl: null,
+				file: null
+			})
+		);
+
+		this.items = sanitized;
+		this.discount = stored.discount;
+
+		let restoreFailed = false;
+		for (const meta of stored.items) {
+			if (!meta.hasFile) continue;
+			const file = await persistence.loadFile(meta.id);
+			const target = this.items.find((i) => i.id === meta.id);
+			if (!target) continue;
+			if (!file) {
+				this.items = this.items.filter((i) => i.id !== meta.id);
+				restoreFailed = true;
+				continue;
+			}
+			target.file = file;
+			if (file.type.startsWith('image/')) target.previewUrl = URL.createObjectURL(file);
+		}
+
+		if (restoreFailed) toast.show(orderContent.cart.artworkRestoreFailedToast);
+	}
+
 	get count(): number {
 		return this.items.length;
 	}
@@ -90,6 +142,9 @@ export class CartStore {
 			file: input.file
 		});
 
+		if (input.file) void persistence.saveFile(id, input.file);
+		persistence.scheduleSaveCartMeta(this.items, this.discount);
+
 		return { ok: true, id };
 	}
 
@@ -97,14 +152,18 @@ export class CartStore {
 		const item = this.items.find((i) => i.id === id);
 		if (item?.previewUrl) URL.revokeObjectURL(item.previewUrl);
 		this.items = this.items.filter((i) => i.id !== id);
+		void persistence.deleteFile(id);
+		persistence.scheduleSaveCartMeta(this.items, this.discount);
 	}
 
 	applyDiscount(discount: AppliedDiscount): void {
 		this.discount = discount;
+		persistence.scheduleSaveCartMeta(this.items, this.discount);
 	}
 
 	removeDiscount(): void {
 		this.discount = null;
+		persistence.scheduleSaveCartMeta(this.items, this.discount);
 	}
 
 	updateQuantity(id: string, quantity: number): void {
@@ -112,6 +171,7 @@ export class CartStore {
 		if (!item) return;
 		const clamped = Math.min(MAX_ITEM_QUANTITY, Math.max(1, Math.round(quantity) || 1));
 		item.quantity = clamped;
+		persistence.scheduleSaveCartMeta(this.items, this.discount);
 	}
 
 	clear(): void {
@@ -120,6 +180,9 @@ export class CartStore {
 		}
 		this.items = [];
 		this.discount = null;
+		persistence.flushScheduledSave();
+		persistence.clearCartMeta();
+		void persistence.clearFiles();
 	}
 }
 

@@ -198,7 +198,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			})
 			.eq('id', inserted.id);
 
-		return json({ ok: true, invoiceUrl: draft.invoiceUrl });
+		return json({ ok: true, invoiceUrl: draft.invoiceUrl, orderId: inserted.id });
 	} catch (err) {
 		console.error('Shopify draft order failed:', err);
 		await supabase.from(PRINT_ORDERS_TABLE).update({ status: 'failed' }).eq('id', inserted.id);
