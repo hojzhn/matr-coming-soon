@@ -52,7 +52,8 @@
 				<ArrowLink
 					type="button"
 					variant="button"
-					size="xs"sizeMd="sm"
+					size="xs"
+					sizeMd="sm"
 					arrow={false}
 					label={cookieConsentContent.banner.acceptLabel}
 					onclick={accept}
