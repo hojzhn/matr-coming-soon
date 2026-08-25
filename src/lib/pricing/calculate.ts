@@ -1,4 +1,10 @@
-import { pricingConfig, addOnOptions, type PricingConfig, type AddOnOption } from './config';
+import {
+	pricingConfig,
+	addOnOptions,
+	addOnPricingConfigs,
+	type PricingConfig,
+	type AddOnOption
+} from './config';
 
 export interface PriceResult {
 	billableWidthIn: number;
@@ -72,16 +78,30 @@ export function resolveAddOns(optionIds: string[], options: AddOnOption[] = addO
 	return resolved;
 }
 
+export function priceAddOnCents(
+	option: AddOnOption,
+	widthIn: number,
+	heightIn: number,
+	configs: Partial<Record<string, PricingConfig>> = addOnPricingConfigs
+): number {
+	const cfg = configs[option.id];
+	return cfg ? calculatePriceCents(widthIn, heightIn, cfg).priceCents : option.priceDeltaCents;
+}
+
 export function calculateOrderTotal(
 	widthIn: number,
 	heightIn: number,
 	optionIds: string[],
 	quantity: number,
 	cfg: PricingConfig = pricingConfig,
-	options: AddOnOption[] = addOnOptions
+	options: AddOnOption[] = addOnOptions,
+	addOnConfigs: Partial<Record<string, PricingConfig>> = addOnPricingConfigs
 ): OrderTotal {
 	const base = calculatePriceCents(widthIn, heightIn, cfg);
-	const selected = resolveAddOns(optionIds, options);
+	const selected = resolveAddOns(optionIds, options).map((o) => ({
+		...o,
+		priceDeltaCents: priceAddOnCents(o, base.billableWidthIn, base.billableHeightIn, addOnConfigs)
+	}));
 	const addOnsCents = selected.reduce((sum, o) => sum + o.priceDeltaCents, 0);
 	const unitPriceCents = base.priceCents + addOnsCents;
 	const qty = Math.max(1, Math.round(quantity));

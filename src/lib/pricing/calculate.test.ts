@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { calculateOrderTotal, calculatePriceCents, cmToInches, resolveAddOns, toInches } from './calculate';
-import { pricingConfig } from './config';
+import {
+	calculateOrderTotal,
+	calculatePriceCents,
+	cmToInches,
+	priceAddOnCents,
+	resolveAddOns,
+	toInches
+} from './calculate';
+import { pricingConfig, STRETCH_SERVICE_OPTION_ID } from './config';
 import type { AddOnOption, PricingConfig } from './config';
 
 const cfg: PricingConfig = {
@@ -84,42 +91,89 @@ describe('resolveAddOns', () => {
 
 describe('calculateOrderTotal', () => {
 	it('adds selected add-on deltas to the base price for the unit price', () => {
-		const result = calculateOrderTotal(8, 10, ['varnish'], 1, cfg, options);
+		const result = calculateOrderTotal(8, 10, ['varnish'], 1, cfg, options, {});
 		expect(result.basePriceCents).toBe(12900);
 		expect(result.unitPriceCents).toBe(12900 + 1500);
 		expect(result.options).toEqual([options[0]]);
 	});
 
 	it('has no price impact from a zero-delta add-on', () => {
-		const result = calculateOrderTotal(8, 10, ['stretched'], 1, cfg, options);
+		const result = calculateOrderTotal(8, 10, ['stretched'], 1, cfg, options, {});
 		expect(result.unitPriceCents).toBe(12900);
 	});
 
 	it('sums multiple add-on deltas', () => {
-		const result = calculateOrderTotal(8, 10, ['varnish', 'stretched'], 1, cfg, options);
+		const result = calculateOrderTotal(8, 10, ['varnish', 'stretched'], 1, cfg, options, {});
 		expect(result.unitPriceCents).toBe(12900 + 1500);
 	});
 
 	it('has an empty options list and unchanged price when none are selected', () => {
-		const result = calculateOrderTotal(8, 10, [], 1, cfg, options);
+		const result = calculateOrderTotal(8, 10, [], 1, cfg, options, {});
 		expect(result.options).toEqual([]);
 		expect(result.unitPriceCents).toBe(12900);
 	});
 
 	it('multiplies the unit price by quantity for the total', () => {
-		const result = calculateOrderTotal(8, 10, [], 3, cfg, options);
+		const result = calculateOrderTotal(8, 10, [], 3, cfg, options, {});
 		expect(result.quantity).toBe(3);
 		expect(result.totalPriceCents).toBe(12900 * 3);
 	});
 
 	it('clamps quantity below 1 up to 1', () => {
-		const result = calculateOrderTotal(8, 10, [], 0, cfg, options);
+		const result = calculateOrderTotal(8, 10, [], 0, cfg, options, {});
 		expect(result.quantity).toBe(1);
 	});
 
 	it('rounds a fractional quantity', () => {
-		const result = calculateOrderTotal(8, 10, [], 2.4, cfg, options);
+		const result = calculateOrderTotal(8, 10, [], 2.4, cfg, options, {});
 		expect(result.quantity).toBe(2);
+	});
+});
+
+describe('priceAddOnCents (varnish/stretch size-based engine)', () => {
+	it('charges the min price at or below the first checkpoint (12x16)', () => {
+		expect(priceAddOnCents({ id: 'varnish', label: 'Varnish', priceDeltaCents: 0, icon: 'droplet' }, 8, 10)).toBe(
+			3500
+		);
+		expect(
+			priceAddOnCents(
+				{ id: STRETCH_SERVICE_OPTION_ID, label: 'Stretched', priceDeltaCents: 0, icon: 'layers' },
+				12,
+				16
+			)
+		).toBe(4500);
+	});
+
+	it('hits the middle checkpoint (24x24) exactly', () => {
+		expect(priceAddOnCents({ id: 'varnish', label: 'Varnish', priceDeltaCents: 0, icon: 'droplet' }, 24, 24)).toBe(
+			5900
+		);
+		expect(
+			priceAddOnCents(
+				{ id: STRETCH_SERVICE_OPTION_ID, label: 'Stretched', priceDeltaCents: 0, icon: 'layers' },
+				24,
+				24
+			)
+		).toBe(8500);
+	});
+
+	it('caps at the max checkpoint price beyond 36x36', () => {
+		expect(priceAddOnCents({ id: 'varnish', label: 'Varnish', priceDeltaCents: 0, icon: 'droplet' }, 45, 45)).toBe(
+			9900
+		);
+		expect(
+			priceAddOnCents(
+				{ id: STRETCH_SERVICE_OPTION_ID, label: 'Stretched', priceDeltaCents: 0, icon: 'layers' },
+				45,
+				45
+			)
+		).toBe(15000);
+	});
+
+	it('falls back to the static priceDeltaCents for options without a size-based config', () => {
+		expect(priceAddOnCents({ id: 'outpaint', label: 'Outpaint', priceDeltaCents: 0, icon: 'expand' }, 40, 40)).toBe(
+			0
+		);
 	});
 });
 

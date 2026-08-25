@@ -17,7 +17,7 @@
 		MAX_ARTWORK_FILE_BYTES,
 		ACCEPTED_ARTWORK_TYPES
 	} from '$lib/pricing/config';
-	import { calculateOrderTotal, formatPrice, formatMarginStep, toInches } from '$lib/pricing/calculate';
+	import { calculateOrderTotal, formatPrice, formatMarginStep, priceAddOnCents, toInches } from '$lib/pricing/calculate';
 	import { cart } from '$lib/cart/cart.svelte';
 	import { submitCheckout } from '$lib/cart/checkout';
 	import { toast } from '$lib/toast/toast.svelte';
@@ -373,6 +373,7 @@
 				<div class="flex flex-col gap-2 mt-4">
 					{#each addOnOptions as opt (opt.id)}
 						{@const selected = selectedOptionIds.includes(opt.id)}
+						{@const optPriceCents = priceAddOnCents(opt, activeSize?.widthIn ?? 0, activeSize?.heightIn ?? 0)}
 						<button
 							type="button"
 							onclick={() => toggleOption(opt.id)}
@@ -398,7 +399,7 @@
 									{/if}
 								</div>
 								<Heading level={4} size="md">
-									{opt.priceDeltaCents ? ` +${formatPrice(opt.priceDeltaCents)}` : ''}
+									{optPriceCents ? ` +${formatPrice(optPriceCents)}` : ''}
 								</Heading>
 							</div>
 							{#if selected && opt.description}

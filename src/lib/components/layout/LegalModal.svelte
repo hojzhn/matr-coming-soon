@@ -38,7 +38,7 @@
 								{/each}
 							</ul>
 						{:else if block.heading}
-							<Heading level={5} tag="p" tone="ink" weight="semibold">{block.heading}</Heading>
+							<Heading level={4} tag="p" tone="ink" weight="semibold">{block.heading}</Heading>
 						{:else if block.text}
 							<Heading level={4} tag="p" tone="muted">{block.text}</Heading>
 						{/if}

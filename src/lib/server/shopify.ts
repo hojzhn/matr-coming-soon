@@ -1,6 +1,7 @@
 import { env } from "$env/dynamic/private";
 import { STRETCH_SERVICE_OPTION_ID } from "$lib/pricing/config";
 import type { DiscountInfo } from "$lib/pricing/discount";
+import { calculateItemWeightLb } from "$lib/shipping/calculate";
 
 const MUTATION = `
 	mutation DraftOrderCreate($input: DraftOrderInput!) {
@@ -157,12 +158,18 @@ export async function createDraftOrder(
       : "";
     const base = `Custom Oil Print - ${item.widthIn} x ${item.heightIn} in${optionsPart}`;
     const title = item.projectName ? `${base} - ${item.projectName}` : base;
+    const weightLb = calculateItemWeightLb(
+      item.widthIn,
+      item.heightIn,
+      item.options.map((o) => o.id),
+    );
     return {
       title,
       quantity: item.quantity,
       requiresShipping: true,
       taxable: true,
       originalUnitPrice: (item.unitPriceCents / 100).toFixed(2),
+      weight: { value: weightLb, unit: "POUNDS" },
     };
   });
 
