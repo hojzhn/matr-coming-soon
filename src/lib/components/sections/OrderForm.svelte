@@ -25,8 +25,6 @@
 
 	let { formToken }: { formToken: string } = $props();
 
-	const REQUIRE_PROJECT_DETAILS = false;
-
 	const MAX_FILE_BYTES = MAX_ARTWORK_FILE_BYTES;
 	const ACCEPTED_TYPES = ACCEPTED_ARTWORK_TYPES;
 
@@ -168,11 +166,11 @@
 	function validate(): boolean {
 		error = '';
 
-		if (REQUIRE_PROJECT_DETAILS && !projectName.trim()) {
+		if (!projectName.trim()) {
 			error = orderContent.form.errorProjectNameRequired;
 			return false;
 		}
-		if (REQUIRE_PROJECT_DETAILS && !file) {
+		if (!file) {
 			error = orderContent.form.errorFileRequired;
 			return false;
 		}

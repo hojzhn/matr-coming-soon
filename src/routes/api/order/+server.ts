@@ -72,6 +72,9 @@ export const POST: RequestHandler = async ({ request }) => {
 	for (let i = 0; i < body.items.length; i++) {
 		const raw = body.items[i];
 		const projectName = String(raw?.projectName ?? '').trim();
+		if (!projectName) {
+			return fail('Give this print a name first.');
+		}
 		const rawWidth = Number(raw?.rawWidth);
 		const rawHeight = Number(raw?.rawHeight);
 		const rawUnit = raw?.rawUnit === 'cm' ? 'cm' : 'in';
@@ -94,17 +97,19 @@ export const POST: RequestHandler = async ({ request }) => {
 			return fail(`${MAX_PRINT_SIDE_IN} in is the largest side we can print.`);
 		}
 
+		const fileEntry = formData.get(`file_${i}`);
+		if (!(fileEntry instanceof File)) {
+			return fail('Upload your artwork first.');
+		}
+
 		let artworkPath: string | null = null;
 		let artworkFileName: string | null = null;
-		const fileEntry = formData.get(`file_${i}`);
-		if (fileEntry instanceof File) {
-			try {
-				const uploaded = await uploadOrderArtwork(orderId, i, fileEntry);
-				artworkPath = uploaded.path;
-				artworkFileName = uploaded.fileName;
-			} catch (err) {
-				return fail(err instanceof Error ? err.message : 'Could not upload artwork. Please try again.');
-			}
+		try {
+			const uploaded = await uploadOrderArtwork(orderId, i, fileEntry);
+			artworkPath = uploaded.path;
+			artworkFileName = uploaded.fileName;
+		} catch (err) {
+			return fail(err instanceof Error ? err.message : 'Could not upload artwork. Please try again.');
 		}
 
 		validated.push({
