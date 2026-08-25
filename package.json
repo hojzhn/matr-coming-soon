@@ -11,7 +11,8 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "vitest run",
-		"calc": "vite-node scripts/calc.ts"
+		"calc": "vite-node scripts/calc.ts",
+		"shopify:register-webhook": "node scripts/register-shopify-webhook.mjs"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-vercel": "^6.3.3",

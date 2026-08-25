@@ -9,6 +9,7 @@
 <svelte:head>
 	<title>Matr Labs: Engineering for Art</title>
 	<meta name="description" content="Oil prints made to order. Matr labs is coming back soon." />
+	<script async src="https://t.contentsquare.net/uxa/ae8b39acc16e9.js"></script>
 </svelte:head>
 
 <Preloader />
