@@ -39,7 +39,7 @@
 				class="absolute inset-0 h-full w-full object-contain mt-20 md:mt-0"
 			/>
 		
-			<div class="absolute inset-0 hidden items-center justify-between px-container md:flex">
+			<div class="absolute inset-0 hidden items-center mx-auto max-w-7xl justify-between  md:flex">
 				<Heading level={5} tag="span" tone="surface" tracking="widest" uppercase stroke>Engineering</Heading>
 				<Heading level={5} tag="span" tone="surface" tracking="widest" uppercase stroke>for art</Heading>
 			</div>
