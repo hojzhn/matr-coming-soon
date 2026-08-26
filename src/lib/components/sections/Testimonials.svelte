@@ -20,12 +20,62 @@
 		loadInstagramEmbeds();
 		loadTwitterEmbeds();
 	});
+
+	let scrollerEl = $state<HTMLDivElement>();
+
+	function scrollByCard(direction: 1 | -1) {
+		if (!scrollerEl) return;
+		const card = scrollerEl.querySelector<HTMLElement>(':scope > *');
+		const gap = 16;
+		const amount = card ? card.getBoundingClientRect().width + gap : 320;
+		scrollerEl.scrollBy({ left: direction * amount, behavior: 'smooth' });
+	}
+
+	function onKeydown(e: KeyboardEvent) {
+		if (e.key === 'ArrowRight') {
+			e.preventDefault();
+			scrollByCard(1);
+		} else if (e.key === 'ArrowLeft') {
+			e.preventDefault();
+			scrollByCard(-1);
+		}
+	}
 </script>
 
 <Section id="testimonials" tone="surface" contained={false}>
+	<Container class="mb-4 flex items-center justify-between gap-2">
+	<Heading level={4}>Meet our clients</Heading>
+	<div class="flex items-center gap-2">
 
+		<button
+			type="button"
+			aria-label="Scroll left"
+			onclick={() => scrollByCard(-1)}
+			class="flex h-9 w-9 items-center justify-center border border-line transition-colors hover:border-ink"
+		>
+			<Icon name="arrow-right" class="h-4 w-4 rotate-180" />
+		</button>
+		<button
+			type="button"
+			aria-label="Scroll right"
+			onclick={() => scrollByCard(1)}
+			class="flex h-9 w-9 items-center justify-center border border-line transition-colors hover:border-ink"
+		>
+			<Icon name="arrow-right" class="h-4 w-4" />
+		</button>
+		</div>
+	</Container>
 
-	<div class="no-scrollbar flex snap-x snap-proximity gap-4 overflow-x-auto px-container pb-2">
+	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div
+		bind:this={scrollerEl}
+		class="no-scrollbar flex snap-x snap-proximity gap-4 overflow-x-auto px-container pb-2 outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+		tabindex="0"
+		aria-label={testimonialsContent.postsLabel}
+		onkeydown={onKeydown}
+	>
 		{#each testimonialsContent.posts as post, i (i)}
 			{@const platform = post.platform as 'instagram' | 'twitter'}
 			{#if isEmbeddable(platform, post.href)}
