@@ -31,13 +31,13 @@ describe('CartStore.add', () => {
 	it('computes pricing via calculateOrderTotal for the item', () => {
 		const store = new CartStore();
 		store.add(makeInput({ widthIn: 8, heightIn: 10, optionIds: [] }));
-		expect(store.items[0].unitPriceCents).toBe(3900);
+		expect(store.items[0].unitPriceCents).toBe(4900);
 	});
 
 	it('resolves selected add-ons onto the item', () => {
 		const store = new CartStore();
 		store.add(makeInput({ widthIn: 8, heightIn: 10, optionIds: ['varnish'] }));
-		expect(store.items[0].unitPriceCents).toBe(3900 + 3500);
+		expect(store.items[0].unitPriceCents).toBe(4900 + 3500);
 		expect(store.items[0].options.map((o) => o.id)).toEqual(['varnish']);
 	});
 
@@ -95,7 +95,7 @@ describe('CartStore.subtotalCents', () => {
 		const store = new CartStore();
 		store.add(makeInput({ widthIn: 8, heightIn: 10, optionIds: [], quantity: 2 }));
 		store.add(makeInput({ widthIn: 8, heightIn: 10, optionIds: ['varnish'], quantity: 1 }));
-		expect(store.subtotalCents).toBe(3900 * 2 + (3900 + 3500));
+		expect(store.subtotalCents).toBe(4900 * 2 + (4900 + 3500));
 	});
 
 	it('is zero for an empty cart', () => {

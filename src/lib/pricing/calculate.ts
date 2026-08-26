@@ -60,7 +60,10 @@ export function calculatePriceCents(
 		lowerBound = zone.upToSqIn;
 	}
 
-	return { billableWidthIn: w, billableHeightIn: h, sqIn, priceCents: Math.round(price * 100) };
+	const centsExact = Math.round(price * 100);
+	const priceCents = Math.ceil(centsExact / 100) * 100;
+
+	return { billableWidthIn: w, billableHeightIn: h, sqIn, priceCents };
 }
 
 export function formatPrice(cents: number, currency = 'USD'): string {

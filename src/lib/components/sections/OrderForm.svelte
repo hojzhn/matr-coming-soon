@@ -17,7 +17,8 @@
 		MARGIN_STEPS_IN,
 		MARGIN_DEFAULT_IN,
 		MAX_ARTWORK_FILE_BYTES,
-		ACCEPTED_ARTWORK_TYPES
+		ACCEPTED_ARTWORK_TYPES,
+		COMPARE_AT_PRICE_RATE
 	} from '$lib/pricing/config';
 	import { calculateOrderTotal, formatPrice, formatMarginStep, priceAddOnCents, toInches } from '$lib/pricing/calculate';
 	import { cart } from '$lib/cart/cart.svelte';
@@ -78,11 +79,12 @@
 		);
 	});
 
-	const fakeOriginalTotalCents = $derived.by(() => {
+	const compareAtTotalCents = $derived.by(() => {
 		if (!total) return null;
 		const addOnsCents = total.unitPriceCents - total.basePriceCents;
-		const inflatedUnitCents = Math.round(total.basePriceCents * 1.5) + addOnsCents;
-		return inflatedUnitCents * total.quantity;
+		const inflatedBaseCents = Math.round(total.basePriceCents / (1 - COMPARE_AT_PRICE_RATE));
+		const rawCents = (inflatedBaseCents + addOnsCents) * total.quantity;
+		return Math.ceil(rawCents / 100) * 100;
 	});
 
 	const boundingBoxStyle = $derived.by(() => {
@@ -470,9 +472,9 @@
 				<div class="flex items-center justify-between">
 					<Heading level={5} tag="span" tone="muted">{orderContent.form.totalLabel}</Heading>
 					<div class="flex items-baseline gap-2">
-						{#if fakeOriginalTotalCents && total && fakeOriginalTotalCents > total.totalPriceCents}
+						{#if compareAtTotalCents && total && compareAtTotalCents > total.totalPriceCents}
 							<Heading level={4} tag="span" tone="muted" strike>
-								{formatPrice(fakeOriginalTotalCents)}
+								{formatPrice(compareAtTotalCents)}
 							</Heading>
 						{/if}
 						<Heading level={2} tag="span">

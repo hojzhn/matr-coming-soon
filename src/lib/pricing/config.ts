@@ -23,16 +23,18 @@ export interface AddOnOption {
 export const pricingConfig: PricingConfig = {
   minWidthIn: 6,
   minHeightIn: 6,
-  minPrice: 39,
+  minPrice: 49,
   zones: [
     { upToSqIn: 144, ratePerSqIn: 0 },
-    { upToSqIn: 576, ratePerSqIn: 70 / 432 },
-    { upToSqIn: 1296, ratePerSqIn: 80 / 720 },
+    { upToSqIn: 576, ratePerSqIn: 96 / 432 },
+    { upToSqIn: 1296, ratePerSqIn: 95 / 720 },
     { upToSqIn: Infinity, ratePerSqIn: 1 / 12 },
   ],
 };
 
-export const MAX_PRINT_SIDE_IN = 45;
+export const COMPARE_AT_PRICE_RATE = 0.25;
+
+export const MAX_PRINT_SIDE_IN = 48;
 export const MAX_CART_ITEMS = 20;
 export const MAX_ITEM_QUANTITY = 50;
 
