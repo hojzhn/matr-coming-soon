@@ -4,7 +4,7 @@
 	export type HeadingSize = 'xs' | 'sm' | 'base' | 'md' | 'lg' | 'xl' | '2xl' | 'hero';
 	export type HeadingWeight = 'normal' | 'medium' | 'semibold' | 'bold';
 	export type HeadingLeading = 'none' | 'tighter' | 'tight' | 'snug' | 'normal' | 'relaxed';
-	export type HeadingTracking = 'tighter' | 'tight' | 'normal' | 'wide';
+	export type HeadingTracking = 'tighter' | 'tight' | 'normal' | 'wide' | 'widest';
 	export type HeadingTone = 'ink' | 'muted' | 'brand' | 'surface';
 </script>
 
@@ -20,6 +20,7 @@
 		weight,
 		leading,
 		tracking,
+		trackingMd,
 		align = 'left',
 		tone,
 		eyebrow = false,
@@ -27,6 +28,7 @@
 		balance = true,
 		underline = false,
 		strike = false,
+		stroke = false,
 		class: className,
 		children
 	}: {
@@ -37,6 +39,7 @@
 		weight?: HeadingWeight;
 		leading?: HeadingLeading;
 		tracking?: HeadingTracking;
+		trackingMd?: HeadingTracking;
 		align?: 'left' | 'center';
 		tone?: HeadingTone;
 		eyebrow?: boolean;
@@ -44,6 +47,7 @@
 		balance?: boolean;
 		underline?: boolean;
 		strike?: boolean;
+		stroke?: boolean;
 		class?: string;
 		children: Snippet;
 	} = $props();
@@ -115,7 +119,16 @@
 		tighter: 'tracking-tighter',
 		tight: 'tracking-tight',
 		normal: 'tracking-normal',
-		wide: 'tracking-wide'
+		wide: 'tracking-wide',
+		widest: 'tracking-widest'
+	};
+
+	const mdTrackings: Record<HeadingTracking, string> = {
+		tighter: 'md:tracking-tighter',
+		tight: 'md:tracking-tight',
+		normal: 'md:tracking-normal',
+		wide: 'md:tracking-wide',
+		widest: 'md:tracking-widest'
 	};
 
 	const tones: Record<HeadingTone, string> = {
@@ -136,6 +149,7 @@
 		weights[resolvedWeight],
 		leadings[resolvedLeading],
 		trackings[resolvedTracking],
+		trackingMd && mdTrackings[trackingMd],
 		align === 'center' && 'text-center',
 		resolvedTone && tones[resolvedTone],
 		uppercase && 'uppercase',
@@ -143,6 +157,9 @@
 		strike && 'line-through',
 		className
 	)}
+	style={stroke
+		? 'text-shadow: 1px 0 0 #000, -1px 0 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;'
+		: undefined}
 >
 	{@render children()}
 </svelte:element>

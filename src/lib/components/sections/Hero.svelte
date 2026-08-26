@@ -26,20 +26,30 @@
 	});
 </script>
 
-<Section id="top" tone="ink" fullHeight contained={false} class="justify-between py-0">
+<Section id="top" tone="ink" fullHeight contained={false} class="relative justify-between py-0">
 	
-	
-		<div class="relative mb-20 w-full flex-1 min-h-0">
+
+
+		<div class="relative mb-20 w-full flex-1 min-h-0 ">
 			<img
 				src={carouselImages[activeIndex]}
 				alt=""
 				loading="eager"
 				decoding="async"
-				class="absolute inset-0 h-full w-full object-contain"
+				class="absolute inset-0 h-full w-full object-contain mt-20 md:mt-0"
 			/>
+		
+			<div class="absolute inset-0 hidden items-center justify-between px-container md:flex">
+				<Heading level={5} tag="span" tone="surface" tracking="widest" uppercase stroke>Engineering</Heading>
+				<Heading level={5} tag="span" tone="surface" tracking="widest" uppercase stroke>for art</Heading>
+			</div>
 		</div>
 
+		
 	<div class="mb-12 shrink-0">
+	<Heading level={5} tag="p" tone="surface"  uppercase stroke align="center" class="my-6 md:hidden">
+		Engineering for art
+	</Heading>
 		<Heading level={5} tag="h1" tone="muted"  align="center">
 			{heroContent.logosLabel}
 		</Heading>
