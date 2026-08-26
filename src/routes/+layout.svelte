@@ -14,10 +14,7 @@
 	let { data, children }: LayoutProps = $props();
 
 	// svelte-ignore state_referenced_locally -- seeds initial render (incl. SSR) from the cookie; the banner owns updates after that
-	const cookieConsent: 'accepted' | 'rejected' | null =
-		data.cookieConsent === 'accepted' || data.cookieConsent === 'rejected' ? data.cookieConsent : null;
-
-	consentState.status = cookieConsent ?? 'unset';
+	consentState.dismissed = data.cookieNoticeDismissed;
 </script>
 
 <svelte:head>
@@ -39,9 +36,7 @@
 	<meta name="twitter:description" content={pageDescription} />
 	<meta name="twitter:image" content={shareImage} />
 
-	{#if cookieConsent === 'accepted'}
-		<script async src="https://t.contentsquare.net/uxa/ae8b39acc16e9.js"></script>
-	{/if}
+	<script src="https://analytics.matr.art/api/script.js" data-site-id="db2110d0308a" defer></script>
 </svelte:head>
 
 <Preloader />

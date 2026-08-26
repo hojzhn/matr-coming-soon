@@ -1,7 +1,6 @@
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ cookies }) => {
-	const raw = cookies.get('cookie-consent');
-	const cookieConsent = raw === 'accepted' || raw === 'rejected' ? raw : null;
-	return { cookieConsent };
+	const cookieNoticeDismissed = cookies.get('cookie-notice-dismissed') === '1';
+	return { cookieNoticeDismissed };
 };

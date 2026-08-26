@@ -1,9 +1,8 @@
 {
 	"banner": {
-		"body": "We use cookies necessary for the site to work, like remembering your cart. With your permission, we'd also like to use analytics cookies to understand how visitors use the site.",
-		"acceptLabel": "Accept",
-		"rejectLabel": "Reject",
+		"body": "We use caching to remember what's in your shopping cart. That's it.",
+		"okLabel": "Ok",
 		"policyLinkLabel": "Privacy Policy"
 	},
-	"footerLinkLabel": "Cookie preferences"
+	"footerLinkLabel": "Cookie notice"
 }

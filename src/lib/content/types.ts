@@ -218,8 +218,7 @@ export interface FooterContent {
 export interface CookieConsentContent {
 	banner: {
 		body: string;
-		acceptLabel: string;
-		rejectLabel: string;
+		okLabel: string;
 		policyLinkLabel: string;
 	};
 	footerLinkLabel: string;

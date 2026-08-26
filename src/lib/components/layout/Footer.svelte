@@ -189,7 +189,7 @@
 							{legalContent.privacy.title}
 						</Heading>
 					</button>
-					<button type="button" onclick={() => (consentState.status = 'unset')} class="text-left">
+					<button type="button" onclick={() => (consentState.dismissed = false)} class="text-left">
 						<Heading level={5} weight="medium" tone="muted" underline>
 							{cookieConsentContent.footerLinkLabel}
 						</Heading>
