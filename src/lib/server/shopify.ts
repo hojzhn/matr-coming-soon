@@ -3,6 +3,7 @@ import { formatPrice } from "$lib/pricing/calculate";
 import { orderContent } from "$lib/content";
 import type { DiscountInfo } from "$lib/pricing/discount";
 import { calculateItemWeightLb } from "$lib/shipping/calculate";
+import { OUTPAINT_OPTION_ID } from "$lib/pricing/config";
 
 const MUTATION = `
 	mutation DraftOrderCreate($input: DraftOrderInput!) {
@@ -51,6 +52,7 @@ export interface DraftOrderLineItem {
   marginIn?: number;
   quantity: number;
   unitPriceCents: number;
+  artworkUrl?: string | null;
 }
 
 export interface DraftOrderArgs {
@@ -155,12 +157,15 @@ export async function createDraftOrder(
     );
 
     const customAttributes = [
+      ...(item.artworkUrl ? [{ key: "Artwork preview", value: item.artworkUrl }] : []),
       { key: "Size", value: `${item.widthIn} x ${item.heightIn} in` },
       { key: "Margin", value: `${item.marginIn ?? 3} in` },
-      ...item.options.flatMap((o) => [
-        { key: o.label, value: formatPrice(o.priceDeltaCents) },
-        ...(o.color ? [{ key: `${o.label} color`, value: o.color }] : []),
-      ]),
+      ...item.options
+        .filter((o) => o.id !== OUTPAINT_OPTION_ID)
+        .flatMap((o) => [
+          { key: o.label, value: formatPrice(o.priceDeltaCents) },
+          ...(o.color ? [{ key: `${o.label} color`, value: o.color }] : []),
+        ]),
       { key: "Weight", value: `${weightLb} lb` },
     ];
 

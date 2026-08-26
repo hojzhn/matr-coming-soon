@@ -17,8 +17,7 @@
 		MARGIN_STEPS_IN,
 		MARGIN_DEFAULT_IN,
 		MAX_ARTWORK_FILE_BYTES,
-		ACCEPTED_ARTWORK_TYPES,
-		COMPARE_AT_PRICE_RATE
+		ACCEPTED_ARTWORK_TYPES
 	} from '$lib/pricing/config';
 	import { calculateOrderTotal, formatPrice, formatMarginStep, priceAddOnCents, toInches } from '$lib/pricing/calculate';
 	import { cart } from '$lib/cart/cart.svelte';
@@ -79,12 +78,42 @@
 		);
 	});
 
-	const compareAtTotalCents = $derived.by(() => {
-		if (!total) return null;
-		const addOnsCents = total.unitPriceCents - total.basePriceCents;
-		const inflatedBaseCents = Math.round(total.basePriceCents / (1 - COMPARE_AT_PRICE_RATE));
-		const rawCents = (inflatedBaseCents + addOnsCents) * total.quantity;
-		return Math.ceil(rawCents / 100) * 100;
+	let compareAtTotalCents = $state<number | null>(null);
+
+	$effect(() => {
+		if (!total || !activeSize) {
+			compareAtTotalCents = null;
+			return;
+		}
+
+		const requestBody = {
+			rawWidth: activeSize.widthIn,
+			rawHeight: activeSize.heightIn,
+			rawUnit: 'in' as const,
+			optionIds: selectedOptionIds,
+			quantity: total.quantity,
+			marginColor
+		};
+
+		let cancelled = false;
+		const timer = setTimeout(async () => {
+			try {
+				const res = await fetch('/api/order/price-preview', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(requestBody)
+				});
+				const data = await res.json();
+				if (!cancelled && data.ok) compareAtTotalCents = data.compareAtTotalCents;
+			} catch {
+				/* preview is best-effort; leave the last known value in place */
+			}
+		}, 150);
+
+		return () => {
+			cancelled = true;
+			clearTimeout(timer);
+		};
 	});
 
 	const boundingBoxStyle = $derived.by(() => {
@@ -486,7 +515,7 @@
 					<Heading level={6} tag="p" tone="muted" class="mt-1">
 						{total.quantity} x {projectName.trim() || orderContent.form.untitledLabel} ({formatPrice(total.basePriceCents)})
 					</Heading>
-					{#each total.options as opt (opt.id)}
+					{#each total.options.filter((opt) => opt.id !== OUTPAINT_OPTION_ID) as opt (opt.id)}
 						<Heading level={6} tag="p" tone="muted" class="ml-3 flex items-center gap-1.5">
 							- {opt.label} ({formatPrice(opt.priceDeltaCents)})
 							{#if opt.color}

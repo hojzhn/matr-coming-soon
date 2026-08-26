@@ -87,7 +87,7 @@
 						autocomplete="name"
 						class="min-w-20 md:max-w-md bg-transparent px-0 outline-none transition-colors placeholder:text-ink-faint "
 					/>
-					<div>{'<'}
+					<span>{'<'}
 					<input
 						type="email"
 						bind:value={email}
@@ -96,7 +96,7 @@
 						autocomplete="email"
 						class="field-sizing-content max-w-full min-w-20 bg-transparent px-0 outline-none transition-colors placeholder:text-ink-faint"
 					/>
-					{'>'}</div>
+					{'>'}</span>
 					</Heading>
 
 					<Heading level={3} tag="p" balance={false} class="w-full">

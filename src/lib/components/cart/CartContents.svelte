@@ -6,7 +6,7 @@
 	import { cart } from '$lib/cart/cart.svelte';
 	import { submitCheckout } from '$lib/cart/checkout';
 	import { checkoutStatus } from '$lib/cart/checkout-status.svelte';
-	import { MAX_ITEM_QUANTITY } from '$lib/pricing/config';
+	import { MAX_ITEM_QUANTITY, OUTPAINT_OPTION_ID } from '$lib/pricing/config';
 	import { formatPrice, formatMarginStep } from '$lib/pricing/calculate';
 
 	let { formToken }: { formToken: string } = $props();
@@ -86,7 +86,7 @@
 							<Heading level={6} tag="p" tone="muted" class="mt-0.5">
 								{item.widthIn} x {item.heightIn} in · {formatMarginStep(item.marginIn)}″ margin
 							</Heading>
-							{#each item.options as opt (opt.id)}
+							{#each item.options.filter((opt) => opt.id !== OUTPAINT_OPTION_ID) as opt (opt.id)}
 								<Heading level={6} tag="p" tone="muted" class="ml-3 flex items-center gap-1.5">
 									- {opt.label} ({formatPrice(opt.priceDeltaCents)})
 									{#if opt.color}

@@ -30,7 +30,7 @@ interface ValidatedItem {
 	artworkFileName: string;
 }
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, url }) => {
 	const body = await request.json().catch(() => null);
 	if (!body) return fail('Invalid request body.');
 
@@ -193,7 +193,8 @@ export const POST: RequestHandler = async ({ request }) => {
 				options: v.total.options,
 				marginIn: v.marginIn,
 				quantity: v.total.quantity,
-				unitPriceCents: v.total.unitPriceCents
+				unitPriceCents: v.total.unitPriceCents,
+				artworkUrl: `${url.origin}/api/artwork/${v.artworkPath}`
 			})),
 			discount
 		});

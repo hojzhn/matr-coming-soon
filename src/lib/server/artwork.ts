@@ -36,6 +36,20 @@ export async function createArtworkUploadUrl(
 	return { index, path, signedUrl: data.signedUrl };
 }
 
+const ARTWORK_READ_URL_EXPIRY_SECONDS = 60 * 5; // generated fresh per click via the redirect route, so a short lease is enough
+
+export async function createArtworkReadUrl(path: string): Promise<string | null> {
+	const supabase = getSupabaseAdmin();
+	const { data, error } = await supabase.storage
+		.from(ORDER_ARTWORK_BUCKET)
+		.createSignedUrl(path, ARTWORK_READ_URL_EXPIRY_SECONDS);
+	if (error || !data) {
+		console.error('createArtworkReadUrl failed:', error);
+		return null;
+	}
+	return data.signedUrl;
+}
+
 export async function listUploadedArtworkNames(orderId: string): Promise<Set<string>> {
 	const supabase = getSupabaseAdmin();
 	const { data, error } = await supabase.storage.from(ORDER_ARTWORK_BUCKET).list(orderId);
