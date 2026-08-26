@@ -49,9 +49,14 @@
 </script>
 
 <Section id="contact" tone="surface" fullHeight class="md:mb-40">
+<div class="mb-8">
+	<Heading level={4} class="text-ink">Wanna collaborate?{'\n'}Our emails are open.</Heading>
+</div>
 	<div class="flex w-full flex-col py-0 h-full md:pb-20">
+
 	<div class="flex flex-row justify-between items-center mb-2">
-		<Icon name="mail" class="h-6 w-6 text-ink" />
+	<div>
+		<Icon name="mail" class="h-6 w-6 text-ink" /></div>
 		<Heading level={4}>hello@matr.art</Heading>
 	</div>
 		<LazyImage
@@ -98,13 +103,13 @@
 					/>
 					{'>'}</span>
 					</Heading>
-
+<hr class="block md:hidden border"/>
 					<Heading level={3} tag="p" balance={false} class="w-full">
 						<textarea
 							bind:value={message}
 							placeholder={contactContent.form.messagePlaceholder}
 							required
-							rows={4}
+							rows={5}
 							class="w-full resize-none bg-transparent p-0 outline-none placeholder:text-ink-faint"
 						></textarea>
 					</Heading>
