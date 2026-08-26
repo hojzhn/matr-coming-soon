@@ -2,7 +2,7 @@
   "items": [
     {
       "question": "What is the Oil Edition?",
-      "answer": "It's oil ink, inkjet-applied to artist-grade Belgian linen, prepared by hand in our studio. It carries the richness, depth, and light of real oil paint, engineered at MIT and made by hand in Brooklyn."
+      "answer": "We transform your image by applying real, oil-based color directly onto artist-grade Belgian linen using our patented technology. The result has qualities that conventional giclée printing can't reproduce: the richness, depth, and luminosity of oil paint."
     },
     {
       "question": "How long does it take to receive my print?",
@@ -10,30 +10,26 @@
     },
     {
       "question": "What sizes can I order?",
-      "answer": "You can size your print to your artwork, up to 45″ x 45″."
+      "answer": "You can size your print to your artwork, up to 45″ x 45″. You are responsible for preparing your digital file at the appropriate resolution: a minimum of 150 dpi at the final printed dimensions."
     },
     {
-      "question": "How does the margin and stretching work?",
-      "answer": "You can choose a configurable unprinted margin around your artwork, with 3″ as the default. If you order stretching, the artwork also receives a minimal outpaint extension that wraps around the stretcher edge, helping prevent a hairline gap when mounted. If you plan to stretch the print yourself or want us to provide stretching, we recommend choosing a margin of at least 3″."
+      "question": "Do you include extra canvas around the image?",
+      "answer": "Yes. We include an additional 3″ canvas border around the image by default, which is especially useful if you plan to stretch the canvas yourself or have us stretch it for you."
     },
     {
       "question": "Will the colors match what I see on screen?",
-      "answer": "Screen colors may differ slightly from the printed piece. Oil ink on linen has a depth and warmth that's hard to preview on a display."
+      "answer": "Screen colors may differ slightly from the finished piece. Digital images are viewed as light on a screen, while our Oil Editions are made with oil-based color on linen. The result has its own distinctive depth, warmth, and material character that a screen can't fully preview."
     },
     {
       "question": "Can I return or exchange my print?",
-      "answer": "Every print is made to order for you, so custom prints are final sale and not eligible for return. If your print arrives damaged, defective, or materially different from what you submitted, contact us within 14 days of delivery and we'll make it right."
-    },
-    {
-      "question": "What happens to my artwork after my order?",
-      "answer": "Your artwork is used to produce and fulfill your order. We don't use your artwork for advertising, unrelated commercial purposes, AI training, or machine-learning models. After your order is completed and your artwork is no longer needed for production or customer support, we intend to delete the uploaded image from our active systems, subject to necessary technical backups and any legal, accounting, security, or dispute-resolution requirements."
+      "answer": "Because every piece is made to order, custom prints are final sale and cannot be returned or exchanged. If your piece arrives damaged, defective, or materially different from the file you submitted, contact us within 14 days of delivery and we'll make it right."
     },
     {
       "question": "Do you use my artwork to train AI?",
-      "answer": "No. We do not use customer artwork to train artificial intelligence, machine-learning models, or other generative AI systems. Your artwork is used only as reasonably necessary to produce, fulfill, and support your order."
+      "answer": "No. We do not use customer artwork to train AI or machine-learning models. Your artwork is used only as needed to produce, fulfill, and support your order."
     },
     {
-      "question": "International shipping?",
+      "question": "Do you offer international shipping?",
       "answer": "If you need international shipping for your order, please contact us at hello@matr.art."
     }
   ]

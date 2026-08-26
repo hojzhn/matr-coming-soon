@@ -26,6 +26,7 @@
 		uppercase = false,
 		balance = true,
 		underline = false,
+		strike = false,
 		class: className,
 		children
 	}: {
@@ -42,6 +43,7 @@
 		uppercase?: boolean;
 		balance?: boolean;
 		underline?: boolean;
+		strike?: boolean;
 		class?: string;
 		children: Snippet;
 	} = $props();
@@ -138,6 +140,7 @@
 		resolvedTone && tones[resolvedTone],
 		uppercase && 'uppercase',
 		underline && 'underline underline-offset-4',
+		strike && 'line-through',
 		className
 	)}
 >

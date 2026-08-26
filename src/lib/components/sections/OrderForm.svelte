@@ -78,6 +78,13 @@
 		);
 	});
 
+	const fakeOriginalTotalCents = $derived.by(() => {
+		if (!total) return null;
+		const addOnsCents = total.unitPriceCents - total.basePriceCents;
+		const inflatedUnitCents = Math.round(total.basePriceCents * 1.5) + addOnsCents;
+		return inflatedUnitCents * total.quantity;
+	});
+
 	const boundingBoxStyle = $derived.by(() => {
 		if (!activeSize) return 'width:100%;height:100%;';
 		const { widthIn: w, heightIn: h } = activeSize;
@@ -103,6 +110,10 @@
 	);
 
 	const stretchSelected = $derived(selectedOptionIds.includes(STRETCH_SERVICE_OPTION_ID));
+
+	const visibleAddOnOptions = $derived(
+		addOnOptions.filter((opt) => opt.id !== OUTPAINT_OPTION_ID && opt.id !== COLORED_MARGIN_OPTION_ID)
+	);
 
 	function toggleOption(id: string) {
 		if (selectedOptionIds.includes(id)) {
@@ -385,7 +396,7 @@
 			</Field>
 			<Field label={orderContent.form.optionsLabel} description={orderContent.form.optionsDescription}>
 				<div class="flex flex-col gap-2 mt-4">
-					{#each addOnOptions as opt (opt.id)}
+					{#each visibleAddOnOptions as opt (opt.id)}
 						{@const selected = selectedOptionIds.includes(opt.id)}
 						{@const optPriceCents = priceAddOnCents(opt, activeSize?.widthIn ?? 0, activeSize?.heightIn ?? 0)}
 						<div
@@ -458,9 +469,16 @@
 			<div class="border-t border-line pt-4">
 				<div class="flex items-center justify-between">
 					<Heading level={5} tag="span" tone="muted">{orderContent.form.totalLabel}</Heading>
-					<Heading level={2} tag="span">
-						{total ? formatPrice(total.totalPriceCents) : '—'}
-					</Heading>
+					<div class="flex items-baseline gap-2">
+						{#if fakeOriginalTotalCents && total && fakeOriginalTotalCents > total.totalPriceCents}
+							<Heading level={4} tag="span" tone="muted" strike>
+								{formatPrice(fakeOriginalTotalCents)}
+							</Heading>
+						{/if}
+						<Heading level={2} tag="span">
+							{total ? formatPrice(total.totalPriceCents) : '—'}
+						</Heading>
+					</div>
 				</div>
 				{#if total}
 					<Heading level={6} tag="p" tone="muted" class="mt-1">

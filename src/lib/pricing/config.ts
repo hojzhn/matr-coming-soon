@@ -43,7 +43,7 @@ export const ACCEPTED_ARTWORK_TYPES = [
   "application/pdf",
 ];
 
-export const MARGIN_STEPS_IN = [0.5, 1, 1.5, 2, 3, 4, 5];
+export const MARGIN_STEPS_IN = [0.5, 1, 1.5, 2, 3];
 export const MARGIN_DEFAULT_IN = 3;
 
 export const STRETCH_SERVICE_OPTION_ID = "stretch-service";
@@ -59,7 +59,7 @@ export const addOnOptions: AddOnOption[] = [
     priceDeltaCents: 4500,
     icon: "layers",
     description:
-      "We stretch the piece onto a wooden frame for you.\n3″ margin and outpainting add-on is a prerequisite.",
+      "We stretch the piece onto a wooden frame for you.\nWe add a ¼″ outpaint to wrap the stretcher edge.",
   },
   {
     id: OUTPAINT_OPTION_ID,
@@ -74,7 +74,8 @@ export const addOnOptions: AddOnOption[] = [
     label: "Colored margin",
     priceDeltaCents: 1000,
     icon: "palette",
-    description: "The margin area is printed in the color you choose instead of raw canvas.",
+    description:
+      "The margin area is printed in the color you choose instead of raw canvas.",
   },
 ];
 
@@ -84,7 +85,11 @@ interface SizeCheckpoint {
   price: number;
 }
 
-function cappedTieredConfig(min: SizeCheckpoint, mid: SizeCheckpoint, max: SizeCheckpoint): PricingConfig {
+function cappedTieredConfig(
+  min: SizeCheckpoint,
+  mid: SizeCheckpoint,
+  max: SizeCheckpoint,
+): PricingConfig {
   const minSqIn = min.widthIn * min.heightIn;
   const midSqIn = mid.widthIn * mid.heightIn;
   const maxSqIn = max.widthIn * max.heightIn;
@@ -95,8 +100,14 @@ function cappedTieredConfig(min: SizeCheckpoint, mid: SizeCheckpoint, max: SizeC
     minPrice: min.price,
     zones: [
       { upToSqIn: minSqIn, ratePerSqIn: 0 },
-      { upToSqIn: midSqIn, ratePerSqIn: (mid.price - min.price) / (midSqIn - minSqIn) },
-      { upToSqIn: maxSqIn, ratePerSqIn: (max.price - mid.price) / (maxSqIn - midSqIn) },
+      {
+        upToSqIn: midSqIn,
+        ratePerSqIn: (mid.price - min.price) / (midSqIn - minSqIn),
+      },
+      {
+        upToSqIn: maxSqIn,
+        ratePerSqIn: (max.price - mid.price) / (maxSqIn - midSqIn),
+      },
       { upToSqIn: Infinity, ratePerSqIn: 0 },
     ],
   };
