@@ -6,6 +6,7 @@
 	import { cart } from '$lib/cart/cart.svelte';
 	import { submitCheckout } from '$lib/cart/checkout';
 	import { checkoutStatus } from '$lib/cart/checkout-status.svelte';
+	import { trackEvent } from '$lib/analytics/track';
 	import { MAX_ITEM_QUANTITY, OUTPAINT_OPTION_ID } from '$lib/pricing/config';
 	import { formatPrice, formatMarginStep } from '$lib/pricing/calculate';
 
@@ -33,6 +34,7 @@
 			const data = await res.json();
 			if (data.ok) {
 				cart.applyDiscount({ code: data.code, title: data.title, discountCents: data.discountCents });
+				trackEvent('discount_applied', { code: data.code });
 				discountCode = '';
 			} else {
 				discountError = data.error || orderContent.cart.errorGeneric;

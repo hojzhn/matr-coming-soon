@@ -24,6 +24,7 @@
 	import { submitCheckout } from '$lib/cart/checkout';
 	import { checkoutStatus } from '$lib/cart/checkout-status.svelte';
 	import { toast } from '$lib/toast/toast.svelte';
+	import { trackEvent } from '$lib/analytics/track';
 	import { cn } from '$lib/cn';
 
 	let { formToken }: { formToken: string } = $props();
@@ -264,6 +265,14 @@
 			error = orderContent.form.errorCartFull;
 			return false;
 		}
+
+		trackEvent('add_to_cart', {
+			widthIn: activeSize.widthIn,
+			heightIn: activeSize.heightIn,
+			quantity: Number(quantity) || 1,
+			optionCount: selectedOptionIds.length,
+			totalCents: total?.totalPriceCents ?? null
+		});
 
 		return true;
 	}

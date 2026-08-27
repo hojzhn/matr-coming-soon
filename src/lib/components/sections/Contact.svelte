@@ -5,6 +5,7 @@
 	import LazyImage from '$lib/components/ui/LazyImage.svelte';
 	import Icon from '$lib/components/ui/Icon.svelte';
 	import { contactContent } from '$lib/content';
+	import { trackEvent } from '$lib/analytics/track';
 
 	let { formToken }: { formToken: string } = $props();
 
@@ -37,6 +38,7 @@
 			const data = await res.json();
 			if (data.ok) {
 				success = true;
+				trackEvent('contact_form_submitted');
 			} else {
 				error = data.error || contactContent.form.errorGeneric;
 			}

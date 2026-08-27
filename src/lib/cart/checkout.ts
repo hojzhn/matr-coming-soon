@@ -1,5 +1,6 @@
 import { orderContent } from '$lib/content';
 import { COLORED_MARGIN_OPTION_ID } from '$lib/pricing/config';
+import { trackEvent } from '$lib/analytics/track';
 import { cart, type CartItem } from './cart.svelte';
 import { beginAwaitingPayment } from './checkout-status.svelte';
 
@@ -109,6 +110,12 @@ export async function submitCheckout(
 		});
 		const data = await res.json();
 		if (data.ok && data.invoiceUrl && data.orderId) {
+			trackEvent('checkout_started', {
+				itemCount: cart.items.length,
+				totalCents: cart.totalCents,
+				discountCode: cart.discount?.code ?? null
+			});
+
 			if (paymentWindow && !paymentWindow.closed) {
 				paymentWindow.location.href = data.invoiceUrl;
 				beginAwaitingPayment(data.orderId, paymentWindow);
