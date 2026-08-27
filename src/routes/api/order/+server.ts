@@ -1,5 +1,11 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { getSupabaseAdmin, PRINT_ORDERS_TABLE, ORDER_ITEMS_TABLE } from '$lib/server/supabase';
+import { env } from '$env/dynamic/private';
+import {
+	getSupabaseAdmin,
+	PRINT_ORDERS_TABLE,
+	ORDER_ITEMS_TABLE,
+	SHOPS_TABLE
+} from '$lib/server/supabase';
 import { artworkPath, listUploadedArtworkNames } from '$lib/server/artwork';
 import { isValidOrderId } from '$lib/server/order-id';
 import { verifySession, MIN_SUBMIT_MS } from '$lib/server/security';
@@ -60,6 +66,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		supabase = getSupabaseAdmin();
 	} catch (err) {
 		console.error(err);
+		return fail('Server is not configured to accept orders yet.', 500);
+	}
+
+	const { data: shop, error: shopError } = await supabase
+		.from(SHOPS_TABLE)
+		.select('id')
+		.eq('shopify_domain', env.SHOPIFY_STORE_DOMAIN)
+		.single();
+	if (shopError || !shop) {
+		console.error('No shop for domain:', env.SHOPIFY_STORE_DOMAIN, shopError);
 		return fail('Server is not configured to accept orders yet.', 500);
 	}
 
@@ -148,6 +164,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		.from(PRINT_ORDERS_TABLE)
 		.insert({
 			id: orderId,
+			shop_id: shop.id,
 			total_price_cents: totalPriceCents,
 			discount_code: discount?.code ?? null,
 			discount_cents: discountCents,
