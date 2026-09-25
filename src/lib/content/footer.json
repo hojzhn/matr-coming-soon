@@ -6,9 +6,12 @@
     "index": "Index"
   },
   "social": [
-    { "label": "Instagram", "href": "https://instagram.com/" },
-    { "label": "X / Twitter", "href": "https://twitter.com/" },
-    { "label": "LinkedIn", "href": "https://www.linkedin.com/company/" }
+    { "label": "Instagram", "href": "https://instagram.com/matr.labs" },
+    { "label": "X / Twitter", "href": "https://twitter.com/matr_lab" },
+    {
+      "label": "LinkedIn",
+      "href": "https://www.linkedin.com/company/matr-labs"
+    }
   ],
   "contactEmail": "hello@matr.art",
   "address": { "city": "Brooklyn", "region": "NY" },
