@@ -20,4 +20,5 @@ export const PRINT_ORDERS_TABLE = 'print_orders';
 export const ORDER_ITEMS_TABLE = 'print_order_items';
 export const SHOPS_TABLE = 'shops';
 export const NEWSLETTER_TABLE = 'newsletter_subscribers';
+export const CONTACT_MESSAGES_TABLE = 'contact_messages';
 export const ORDER_ARTWORK_BUCKET = 'order-artwork';
