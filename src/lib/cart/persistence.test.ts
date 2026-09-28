@@ -30,6 +30,8 @@ function makeItem(overrides: Partial<CartItem> = {}): CartItem {
 		fileName: null,
 		previewUrl: null,
 		file: null,
+		artworkPath: null,
+		artworkUploadedAt: null,
 		...overrides
 	};
 }
@@ -57,6 +59,18 @@ describe('persistence (localStorage)', () => {
 		expect(loaded?.items.map((i) => i.id)).toEqual(items.map((i) => i.id));
 		expect(loaded?.items[1].hasFile).toBe(true);
 		expect(loaded?.items[0].hasFile).toBe(false);
+	});
+
+	it('round-trips the uploaded artwork path', async () => {
+		vi.stubGlobal('window', { localStorage: createLocalStorageStub() });
+		const persistence = await import('./persistence');
+
+		const item = makeItem({ artworkPath: 'abc/0.png', artworkUploadedAt: 1700000000000 });
+		persistence.saveCartMetaNow([item], null);
+		const loaded = persistence.loadCartMeta();
+
+		expect(loaded?.items[0].artworkPath).toBe('abc/0.png');
+		expect(loaded?.items[0].artworkUploadedAt).toBe(1700000000000);
 	});
 
 	it('returns null when nothing is stored', async () => {

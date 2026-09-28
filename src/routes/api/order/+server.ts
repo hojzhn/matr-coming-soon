@@ -6,8 +6,8 @@ import {
 	ORDER_ITEMS_TABLE,
 	SHOPS_TABLE
 } from '$lib/server/supabase';
-import { artworkPath, listUploadedArtworkNames } from '$lib/server/artwork';
-import { isValidOrderId } from '$lib/server/order-id';
+import crypto from 'node:crypto';
+import { artworkExists, isValidArtworkPath } from '$lib/server/artwork';
 import { verifySession, MIN_SUBMIT_MS } from '$lib/server/security';
 import { calculateOrderTotal, toInches, type OrderTotal } from '$lib/pricing/calculate';
 import {
@@ -46,10 +46,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		return fail('Unable to process request.');
 	}
 
-	if (!isValidOrderId(body.orderId)) {
-		return fail('Invalid request body.');
-	}
-	const orderId = body.orderId;
+	const orderId = crypto.randomUUID();
 
 	if (!Array.isArray(body.items) || body.items.length === 0) {
 		return fail('Add at least one print before checking out.');
@@ -99,7 +96,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		if (!artworkFileName || !artworkPathClaim) {
 			return fail('Upload your artwork first.');
 		}
-		if (artworkPathClaim !== artworkPath(orderId, i, artworkFileName)) {
+		if (!isValidArtworkPath(artworkPathClaim, artworkFileName)) {
 			return fail('Artwork upload could not be verified. Please try again.');
 		}
 
@@ -123,7 +120,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
 	const [shopResult, uploadedResult, discountResult] = await Promise.allSettled([
 		supabase.from(SHOPS_TABLE).select('id').eq('shopify_domain', env.SHOPIFY_STORE_DOMAIN).single(),
-		listUploadedArtworkNames(orderId),
+		Promise.all(validated.map((v) => artworkExists(v.artworkPath))),
 		discountCode ? lookupDiscountCode(discountCode) : Promise.resolve(null)
 	]);
 
@@ -141,8 +138,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		console.error('Could not verify uploaded artwork:', uploadedResult.reason);
 		return fail('Could not verify uploaded artwork. Please try again.', 500);
 	}
-	const uploadedNames = uploadedResult.value;
-	if (!validated.every((v) => uploadedNames.has(v.artworkPath.split('/').pop()!))) {
+	if (!uploadedResult.value.every(Boolean)) {
 		return fail('Artwork upload did not complete. Please try again.');
 	}
 

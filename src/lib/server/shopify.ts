@@ -176,7 +176,7 @@ export async function createDraftOrder(
       ...(item.artworkUrl ? [{ key: "Artwork preview", value: item.artworkUrl }] : []),
       { key: "Size", value: `${item.widthIn} x ${item.heightIn} in` },
       ...item.options
-        .filter((o) => o.id !== OUTPAINT_OPTION_ID)
+        .filter((o) => o.id !== OUTPAINT_OPTION_ID && o.id !== STRETCH_SERVICE_OPTION_ID)
         .flatMap((o) => [
           { key: o.label, value: formatPrice(o.priceDeltaCents) },
           ...(o.color ? [{ key: `${o.label} color`, value: o.color }] : []),

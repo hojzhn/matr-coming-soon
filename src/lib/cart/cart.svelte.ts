@@ -3,6 +3,9 @@ import { MAX_CART_ITEMS, MAX_ITEM_QUANTITY } from '$lib/pricing/config';
 import { orderContent } from '$lib/content';
 import { toast } from '$lib/toast/toast.svelte';
 import * as persistence from './persistence';
+import { releaseArtworkUpload } from './artwork-upload.svelte';
+
+const ARTWORK_PATH_MAX_AGE_MS = 6 * 24 * 60 * 60 * 1000;
 
 export interface CartItem {
 	id: string;
@@ -19,6 +22,8 @@ export interface CartItem {
 	fileName: string | null;
 	previewUrl: string | null;
 	file: File | null;
+	artworkPath: string | null;
+	artworkUploadedAt: number | null;
 }
 
 export interface AddCartItemInput {
@@ -71,7 +76,8 @@ export class CartStore {
 				unitPriceCents: item.unitPriceCents,
 				fileName: item.fileName,
 				previewUrl: null,
-				file: null
+				file: null,
+				...freshArtwork(item.artworkPath ?? null, item.artworkUploadedAt ?? null)
 			})
 		);
 
@@ -145,7 +151,9 @@ export class CartStore {
 			unitPriceCents: total.unitPriceCents,
 			fileName: input.fileName,
 			previewUrl: input.previewUrl,
-			file: input.file
+			file: input.file,
+			artworkPath: null,
+			artworkUploadedAt: null
 		});
 
 		if (input.file) void persistence.saveFile(id, input.file);
@@ -154,9 +162,18 @@ export class CartStore {
 		return { ok: true, id };
 	}
 
+	setArtworkPath(id: string, path: string): void {
+		const item = this.items.find((i) => i.id === id);
+		if (!item) return;
+		item.artworkPath = path;
+		item.artworkUploadedAt = Date.now();
+		persistence.scheduleSaveCartMeta(this.items, this.discount);
+	}
+
 	remove(id: string): void {
 		const item = this.items.find((i) => i.id === id);
 		if (item?.previewUrl) URL.revokeObjectURL(item.previewUrl);
+		if (item && !this.items.some((i) => i.id !== id && i.file === item.file)) releaseArtworkUpload(item.file);
 		this.items = this.items.filter((i) => i.id !== id);
 		void persistence.deleteFile(id);
 		persistence.scheduleSaveCartMeta(this.items, this.discount);
@@ -183,6 +200,7 @@ export class CartStore {
 	clear(): void {
 		for (const item of this.items) {
 			if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
+			releaseArtworkUpload(item.file);
 		}
 		this.items = [];
 		this.discount = null;
@@ -190,6 +208,16 @@ export class CartStore {
 		persistence.clearCartMeta();
 		void persistence.clearFiles();
 	}
+}
+
+function freshArtwork(
+	path: string | null,
+	uploadedAt: number | null
+): { artworkPath: string | null; artworkUploadedAt: number | null } {
+	if (!path || !uploadedAt || Date.now() - uploadedAt > ARTWORK_PATH_MAX_AGE_MS) {
+		return { artworkPath: null, artworkUploadedAt: null };
+	}
+	return { artworkPath: path, artworkUploadedAt: uploadedAt };
 }
 
 export const cart = new CartStore();

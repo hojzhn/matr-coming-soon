@@ -1,4 +1,5 @@
 import { getSupabaseAdmin, ORDER_ARTWORK_BUCKET } from './supabase';
+import { isValidOrderId } from './order-id';
 import { MAX_ARTWORK_FILE_BYTES, ACCEPTED_ARTWORK_TYPES } from '$lib/pricing/config';
 
 export interface ArtworkUploadTarget {
@@ -50,9 +51,27 @@ export async function createArtworkReadUrl(path: string): Promise<string | null>
 	return data.signedUrl;
 }
 
-export async function listUploadedArtworkNames(orderId: string): Promise<Set<string>> {
+export function isValidArtworkPath(path: string, fileName: string): boolean {
+	const [folder, file, ...rest] = path.split('/');
+	return (
+		rest.length === 0 &&
+		isValidOrderId(folder) &&
+		path === artworkPath(folder, Number(file?.split('.')[0]), fileName)
+	);
+}
+
+export async function artworkExists(path: string): Promise<boolean> {
 	const supabase = getSupabaseAdmin();
-	const { data, error } = await supabase.storage.from(ORDER_ARTWORK_BUCKET).list(orderId);
+	const [folder, file] = path.split('/');
+	const { data, error } = await supabase.storage.from(ORDER_ARTWORK_BUCKET).list(folder, { search: file });
 	if (error) throw new Error('Could not verify uploaded artwork.');
-	return new Set((data ?? []).map((f) => f.name));
+	return (data ?? []).some((f) => f.name === file);
+}
+
+export async function removeArtwork(paths: string[]): Promise<void> {
+	const supabase = getSupabaseAdmin();
+	for (let i = 0; i < paths.length; i += 1000) {
+		const { error } = await supabase.storage.from(ORDER_ARTWORK_BUCKET).remove(paths.slice(i, i + 1000));
+		if (error) throw new Error(`Could not remove artwork: ${error.message}`);
+	}
 }

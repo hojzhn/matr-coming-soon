@@ -76,6 +76,9 @@ export interface OrderFormContent {
 	uploadDpiNote: string;
 	uploadChangeLabel: string;
 	uploadRemoveLabel: string;
+	uploadProgressLabel: string;
+	uploadDoneLabel: string;
+	uploadFailedLabel: string;
 	addToCartLabel: string;
 	checkoutNowLabel: string;
 	addedToCartToast: string;
@@ -110,6 +113,7 @@ export interface OrderCartContent {
 	totalLabel: string;
 	checkoutLabel: string;
 	checkoutLoadingLabel: string;
+	checkoutUploadingLabel: string;
 	errorEmpty: string;
 	errorGeneric: string;
 	artworkRestoreFailedToast: string;

@@ -48,13 +48,11 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 	}
 
-	const orderId = crypto.randomUUID();
-
 	try {
 		const uploads = await Promise.all(
-			fileMetas.map((f) => createArtworkUploadUrl(orderId, f.index, f.fileName))
+			fileMetas.map((f) => createArtworkUploadUrl(crypto.randomUUID(), f.index, f.fileName))
 		);
-		return json({ ok: true, orderId, uploads });
+		return json({ ok: true, uploads });
 	} catch (err) {
 		console.error('createArtworkUploadUrl failed:', err);
 		return fail('Could not prepare artwork upload. Please try again.', 500);

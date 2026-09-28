@@ -19,7 +19,8 @@
 	} from '$lib/pricing/config';
 	import { calculateOrderTotal, formatPrice, priceAddOnCents, toInches } from '$lib/pricing/calculate';
 	import { cart } from '$lib/cart/cart.svelte';
-	import { submitCheckout } from '$lib/cart/checkout';
+	import { pendingUploadProgress, submitCheckout } from '$lib/cart/checkout';
+	import { releaseArtworkUpload, startArtworkUpload, type ArtworkUpload } from '$lib/cart/artwork-upload.svelte';
 	import { checkoutStatus } from '$lib/cart/checkout-status.svelte';
 	import { toast } from '$lib/toast/toast.svelte';
 	import { trackEvent } from '$lib/analytics/track';
@@ -47,6 +48,7 @@
 	let previewUrl = $state<string | null>(null);
 	let imageAspect = $state<number | null>(null);
 	let fileError = $state('');
+	let upload = $state<ArtworkUpload | null>(null);
 	let dragOver = $state(false);
 
 	const activeSize = $derived.by(() => {
@@ -138,6 +140,8 @@
 			: orderContent.form.formHeading
 	);
 
+	const checkoutUploadProgress = $derived(pendingUploadProgress());
+
 	const stretchSelected = $derived(selectedOptionIds.includes(STRETCH_SERVICE_OPTION_ID));
 
 	const stretchOption = addOnOptions.find((opt) => opt.id === STRETCH_SERVICE_OPTION_ID)!;
@@ -194,10 +198,12 @@
 
 	function setFile(next: File | null) {
 		if (previewUrl) URL.revokeObjectURL(previewUrl);
+		if (file && !cart.items.some((item) => item.file === file)) releaseArtworkUpload(file);
 		previewUrl = null;
 		imageAspect = null;
 		fileError = '';
 		file = null;
+		upload = null;
 		if (!next) return;
 
 		if (!ACCEPTED_TYPES.includes(next.type) || next.size > MAX_FILE_BYTES) {
@@ -206,6 +212,7 @@
 		}
 
 		file = next;
+		upload = startArtworkUpload(formToken, next);
 		if (next.type.startsWith('image/')) previewUrl = URL.createObjectURL(next);
 	}
 
@@ -238,6 +245,7 @@
 		marginColor = DEFAULT_MARGIN_COLOR;
 		quantity = '1';
 		file = null;
+		upload = null;
 		previewUrl = null;
 		fileError = '';
 		dragOver = false;
@@ -288,6 +296,9 @@
 			error = orderContent.form.errorCartFull;
 			return false;
 		}
+
+		const itemId = result.id;
+		upload?.promise.then((path) => cart.setArtworkPath(itemId, path)).catch(() => {});
 
 		trackEvent('add_to_cart', {
 			widthIn: activeSize.widthIn,
@@ -396,6 +407,15 @@
 					</button>
 				{/if}
 			</div>
+			{#if upload}
+				<Heading level={6} tag="p" tone="muted" class="mt-1">
+					{upload.status === 'uploading'
+						? orderContent.form.uploadProgressLabel.replace('{percent}', String(Math.round(upload.progress * 100)))
+						: upload.status === 'done'
+							? orderContent.form.uploadDoneLabel
+							: orderContent.form.uploadFailedLabel}
+				</Heading>
+			{/if}
 			{#if fileError}
 				<Heading level={6} tag="p" class="mt-1 text-danger">{fileError}</Heading>
 			{/if}
@@ -569,7 +589,9 @@
 					icon="bolt"
 					arrow={false}
 					fill="ink"
-					label={orderContent.form.checkoutNowLabel}
+					label={checkoutLoading && checkoutUploadProgress !== null
+						? orderContent.cart.checkoutUploadingLabel.replace('{percent}', String(Math.round(checkoutUploadProgress * 100)))
+						: orderContent.form.checkoutNowLabel}
 					loading={checkoutLoading}
 					disabled={checkoutLoading || checkoutStatus.awaitingPayment}
 					onclick={checkoutNow}

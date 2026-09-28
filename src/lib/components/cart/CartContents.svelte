@@ -4,16 +4,17 @@
 	import Icon from '$lib/components/ui/Icon.svelte';
 	import { orderContent } from '$lib/content';
 	import { cart } from '$lib/cart/cart.svelte';
-	import { submitCheckout } from '$lib/cart/checkout';
+	import { pendingUploadProgress, submitCheckout } from '$lib/cart/checkout';
 	import { checkoutStatus } from '$lib/cart/checkout-status.svelte';
 	import { trackEvent } from '$lib/analytics/track';
-	import { MAX_ITEM_QUANTITY, OUTPAINT_OPTION_ID } from '$lib/pricing/config';
+	import { MAX_ITEM_QUANTITY, OUTPAINT_OPTION_ID, STRETCH_SERVICE_OPTION_ID } from '$lib/pricing/config';
 	import { formatPrice } from '$lib/pricing/calculate';
 
 	let { formToken }: { formToken: string } = $props();
 
 	let company = $state('');
 	let loading = $state(false);
+	const uploadProgress = $derived(pendingUploadProgress());
 	let error = $state('');
 
 	let discountCode = $state('');
@@ -83,12 +84,15 @@
 
 						<div class="min-w-0 flex-1">
 							<Heading level={5} tag="p" weight="medium" class="truncate">
-								{item.projectName || orderContent.form.untitledLabel}
+								{item.projectName || orderContent.form.untitledLabel} ({(item.options.some((opt) => opt.id === STRETCH_SERVICE_OPTION_ID)
+									? orderContent.form.printTypeStretchedLabel
+									: orderContent.form.printTypeRolledLabel
+								).toLowerCase()})
 							</Heading>
 							<Heading level={6} tag="p" tone="muted" class="mt-0.5">
 								{item.widthIn} x {item.heightIn} in
 							</Heading>
-							{#each item.options.filter((opt) => opt.id !== OUTPAINT_OPTION_ID) as opt (opt.id)}
+							{#each item.options.filter((opt) => opt.id !== OUTPAINT_OPTION_ID && opt.id !== STRETCH_SERVICE_OPTION_ID) as opt (opt.id)}
 								<Heading level={6} tag="p" tone="muted" class="ml-3 flex items-center gap-1.5">
 									- {opt.label} ({formatPrice(opt.priceDeltaCents)})
 									{#if opt.color}
@@ -210,7 +214,11 @@
 			<ArrowLink
 				type="button"
 				variant="button"
-				label={loading ? orderContent.cart.checkoutLoadingLabel : orderContent.cart.checkoutLabel}
+				label={loading
+					? uploadProgress !== null
+						? orderContent.cart.checkoutUploadingLabel.replace('{percent}', String(Math.round(uploadProgress * 100)))
+						: orderContent.cart.checkoutLoadingLabel
+					: orderContent.cart.checkoutLabel}
 				{loading}
 				disabled={loading || cart.items.length === 0 || checkoutStatus.awaitingPayment}
 				onclick={checkout}
