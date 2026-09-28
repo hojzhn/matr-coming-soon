@@ -15,9 +15,7 @@ import {
 	COLORED_MARGIN_OPTION_ID,
 	MAX_PRINT_SIDE_IN,
 	MAX_CART_ITEMS,
-	MAX_ITEM_QUANTITY,
-	MARGIN_STEPS_IN,
-	MARGIN_DEFAULT_IN
+	MAX_ITEM_QUANTITY
 } from '$lib/pricing/config';
 import { createDraftOrder, lookupDiscountCode } from '$lib/server/shopify';
 import { computeDiscountCents } from '$lib/pricing/discount';
@@ -30,7 +28,6 @@ function fail(error: string, status = 400) {
 
 interface ValidatedItem {
 	projectName: string;
-	marginIn: number;
 	total: OrderTotal;
 	artworkPath: string;
 	artworkFileName: string;
@@ -61,24 +58,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		return fail(`You can order up to ${MAX_CART_ITEMS} prints at a time.`);
 	}
 
-	let supabase;
-	try {
-		supabase = getSupabaseAdmin();
-	} catch (err) {
-		console.error(err);
-		return fail('Server is not configured to accept orders yet.', 500);
-	}
-
-	const { data: shop, error: shopError } = await supabase
-		.from(SHOPS_TABLE)
-		.select('id')
-		.eq('shopify_domain', env.SHOPIFY_STORE_DOMAIN)
-		.single();
-	if (shopError || !shop) {
-		console.error('No shop for domain:', env.SHOPIFY_STORE_DOMAIN, shopError);
-		return fail('Server is not configured to accept orders yet.', 500);
-	}
-
 	const validated: ValidatedItem[] = [];
 	for (let i = 0; i < body.items.length; i++) {
 		const raw = body.items[i];
@@ -90,8 +69,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		const rawHeight = Number(raw?.rawHeight);
 		const rawUnit = raw?.rawUnit === 'cm' ? 'cm' : 'in';
 		const optionIds: string[] = Array.isArray(raw?.optionIds) ? raw.optionIds.map((id: unknown) => String(id)) : [];
-		const rawMarginIn = Number(raw?.marginIn);
-		const marginIn = MARGIN_STEPS_IN.includes(rawMarginIn) ? rawMarginIn : MARGIN_DEFAULT_IN;
 		const quantity = Math.min(MAX_ITEM_QUANTITY, Math.max(1, Math.round(Number(raw?.quantity) || 1)));
 
 		if (!Number.isFinite(rawWidth) || !Number.isFinite(rawHeight) || rawWidth <= 0 || rawHeight <= 0) {
@@ -128,107 +105,129 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
 		validated.push({
 			projectName,
-			marginIn,
 			total: calculateOrderTotal(widthIn, heightIn, optionIds, quantity, undefined, undefined, undefined, marginColor),
 			artworkPath: artworkPathClaim,
 			artworkFileName
 		});
 	}
 
+	let supabase;
 	try {
-		const uploadedNames = await listUploadedArtworkNames(orderId);
-		const allUploaded = validated.every((v) => uploadedNames.has(v.artworkPath.split('/').pop()!));
-		if (!allUploaded) {
-			return fail('Artwork upload did not complete. Please try again.');
-		}
+		supabase = getSupabaseAdmin();
 	} catch (err) {
-		console.error('Could not verify uploaded artwork:', err);
-		return fail('Could not verify uploaded artwork. Please try again.', 500);
+		console.error(err);
+		return fail('Server is not configured to accept orders yet.', 500);
 	}
-
-	const totalPriceCents = validated.reduce((sum, v) => sum + v.total.totalPriceCents, 0);
 
 	const discountCode = String(body.discountCode ?? '').trim();
-	let discount: (Awaited<ReturnType<typeof lookupDiscountCode>> & { code: string }) | undefined;
-	if (discountCode) {
-		try {
-			const info = await lookupDiscountCode(discountCode);
-			discount = { ...info, code: discountCode };
-		} catch (err) {
-			return fail(err instanceof Error ? err.message : "That discount code isn't valid.");
-		}
+
+	const [shopResult, uploadedResult, discountResult] = await Promise.allSettled([
+		supabase.from(SHOPS_TABLE).select('id').eq('shopify_domain', env.SHOPIFY_STORE_DOMAIN).single(),
+		listUploadedArtworkNames(orderId),
+		discountCode ? lookupDiscountCode(discountCode) : Promise.resolve(null)
+	]);
+
+	const shop = shopResult.status === 'fulfilled' ? shopResult.value.data : null;
+	if (!shop) {
+		console.error(
+			'No shop for domain:',
+			env.SHOPIFY_STORE_DOMAIN,
+			shopResult.status === 'fulfilled' ? shopResult.value.error : shopResult.reason
+		);
+		return fail('Server is not configured to accept orders yet.', 500);
 	}
+
+	if (uploadedResult.status === 'rejected') {
+		console.error('Could not verify uploaded artwork:', uploadedResult.reason);
+		return fail('Could not verify uploaded artwork. Please try again.', 500);
+	}
+	const uploadedNames = uploadedResult.value;
+	if (!validated.every((v) => uploadedNames.has(v.artworkPath.split('/').pop()!))) {
+		return fail('Artwork upload did not complete. Please try again.');
+	}
+
+	if (discountResult.status === 'rejected') {
+		const reason = discountResult.reason;
+		return fail(reason instanceof Error ? reason.message : "That discount code isn't valid.");
+	}
+	const discount = discountResult.value ? { ...discountResult.value, code: discountCode } : undefined;
+
+	const totalPriceCents = validated.reduce((sum, v) => sum + v.total.totalPriceCents, 0);
 	const discountCents = discount ? computeDiscountCents(totalPriceCents, discount) : 0;
 
-	const { data: inserted, error: insertError } = await supabase
-		.from(PRINT_ORDERS_TABLE)
-		.insert({
+	const saveOrder = async (): Promise<boolean> => {
+		const { error: insertError } = await supabase.from(PRINT_ORDERS_TABLE).insert({
 			id: orderId,
 			shop_id: shop.id,
 			total_price_cents: totalPriceCents,
 			discount_code: discount?.code ?? null,
 			discount_cents: discountCents,
 			status: 'pending'
-		})
-		.select('id')
-		.single();
+		});
+		if (insertError) {
+			console.error('Insert failed:', insertError);
+			return false;
+		}
 
-	if (insertError || !inserted) {
-		console.error('Insert failed:', insertError);
-		return fail('Could not save your order. Please try again.', 500);
-	}
+		const { error: itemsInsertError } = await supabase.from(ORDER_ITEMS_TABLE).insert(
+			validated.map((v) => ({
+				order_id: orderId,
+				project_name: v.projectName || null,
+				width_in: v.total.billableWidthIn,
+				height_in: v.total.billableHeightIn,
+				sq_in: v.total.sqIn,
+				base_price_cents: v.total.basePriceCents,
+				options: v.total.options,
+				quantity: v.total.quantity,
+				unit_price_cents: v.total.unitPriceCents,
+				total_price_cents: v.total.totalPriceCents,
+				artwork_path: v.artworkPath,
+				artwork_file_name: v.artworkFileName
+			}))
+		);
+		if (itemsInsertError) {
+			console.error('Order items insert failed:', itemsInsertError);
+			return false;
+		}
+		return true;
+	};
 
-	const { error: itemsInsertError } = await supabase.from(ORDER_ITEMS_TABLE).insert(
-		validated.map((v) => ({
-			order_id: orderId,
-			project_name: v.projectName || null,
-			width_in: v.total.billableWidthIn,
-			height_in: v.total.billableHeightIn,
-			sq_in: v.total.sqIn,
-			base_price_cents: v.total.basePriceCents,
-			options: v.total.options,
-			margin_in: v.marginIn,
-			quantity: v.total.quantity,
-			unit_price_cents: v.total.unitPriceCents,
-			total_price_cents: v.total.totalPriceCents,
-			artwork_path: v.artworkPath,
-			artwork_file_name: v.artworkFileName
-		}))
-	);
-
-	if (itemsInsertError) {
-		console.error('Order items insert failed:', itemsInsertError);
-		return fail('Could not save your order. Please try again.', 500);
-	}
-
-	try {
-		const draft = await createDraftOrder({
+	const [savedResult, draftResult] = await Promise.allSettled([
+		saveOrder(),
+		createDraftOrder({
 			items: validated.map((v) => ({
 				projectName: v.projectName,
 				widthIn: v.total.billableWidthIn,
 				heightIn: v.total.billableHeightIn,
 				options: v.total.options,
-				marginIn: v.marginIn,
 				quantity: v.total.quantity,
 				unitPriceCents: v.total.unitPriceCents,
 				artworkUrl: `${url.origin}/api/artwork/${v.artworkPath}`
 			})),
 			discount
-		});
+		})
+	]);
 
-		await supabase
-			.from(PRINT_ORDERS_TABLE)
-			.update({
-				status: 'draft_created',
-				shopify_draft_order_id: draft.id,
-				shopify_invoice_url: draft.invoiceUrl
-			})
-			.eq('id', inserted.id);
+	if (savedResult.status === 'rejected' || !savedResult.value) {
+		if (savedResult.status === 'rejected') console.error('Order save failed:', savedResult.reason);
+		return fail('Could not save your order. Please try again.', 500);
+	}
 
-		return json({ ok: true, invoiceUrl: draft.invoiceUrl, orderId: inserted.id });
-	} catch (err) {
-		console.error('Shopify draft order failed:', err);
-		await supabase.from(PRINT_ORDERS_TABLE).update({ status: 'failed' }).eq('id', inserted.id);
+	if (draftResult.status === 'rejected') {
+		console.error('Shopify draft order failed:', draftResult.reason);
+		await supabase.from(PRINT_ORDERS_TABLE).update({ status: 'failed' }).eq('id', orderId);
 		return fail('Could not start checkout. Please try again.', 500);
 	}
+
+	const draft = draftResult.value;
+	await supabase
+		.from(PRINT_ORDERS_TABLE)
+		.update({
+			status: 'draft_created',
+			shopify_draft_order_id: draft.id,
+			shopify_invoice_url: draft.invoiceUrl
+		})
+		.eq('id', orderId);
+
+	return json({ ok: true, invoiceUrl: draft.invoiceUrl, orderId });
 };

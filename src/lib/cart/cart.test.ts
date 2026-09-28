@@ -10,7 +10,6 @@ function makeInput(overrides: Partial<AddCartItemInput> = {}): AddCartItemInput 
 		widthIn: 8,
 		heightIn: 10,
 		optionIds: [],
-		marginIn: 3,
 		quantity: 1,
 		fileName: null,
 		previewUrl: null,

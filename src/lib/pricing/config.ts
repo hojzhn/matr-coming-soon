@@ -43,9 +43,6 @@ export const ACCEPTED_ARTWORK_TYPES = [
   "application/pdf",
 ];
 
-export const MARGIN_STEPS_IN = [0.5, 1, 1.5, 2, 3];
-export const MARGIN_DEFAULT_IN = 3;
-
 export const STRETCH_SERVICE_OPTION_ID = "stretch-service";
 export const OUTPAINT_OPTION_ID = "outpaint";
 export const COLORED_MARGIN_OPTION_ID = "colored-margin";
@@ -58,8 +55,7 @@ export const addOnOptions: AddOnOption[] = [
     label: "Stretched",
     priceDeltaCents: 4500,
     icon: "layers",
-    description:
-      "We stretch the piece onto a wooden frame for you.\nWe add a ¼″ outpaint to wrap the stretcher edge.",
+    description: "We stretch the piece onto a wooden frame for you.",
   },
   {
     id: OUTPAINT_OPTION_ID,

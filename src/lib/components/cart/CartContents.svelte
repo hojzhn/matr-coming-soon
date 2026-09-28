@@ -8,7 +8,7 @@
 	import { checkoutStatus } from '$lib/cart/checkout-status.svelte';
 	import { trackEvent } from '$lib/analytics/track';
 	import { MAX_ITEM_QUANTITY, OUTPAINT_OPTION_ID } from '$lib/pricing/config';
-	import { formatPrice, formatMarginStep } from '$lib/pricing/calculate';
+	import { formatPrice } from '$lib/pricing/calculate';
 
 	let { formToken }: { formToken: string } = $props();
 
@@ -86,7 +86,7 @@
 								{item.projectName || orderContent.form.untitledLabel}
 							</Heading>
 							<Heading level={6} tag="p" tone="muted" class="mt-0.5">
-								{item.widthIn} x {item.heightIn} in · {formatMarginStep(item.marginIn)}″ margin
+								{item.widthIn} x {item.heightIn} in
 							</Heading>
 							{#each item.options.filter((opt) => opt.id !== OUTPAINT_OPTION_ID) as opt (opt.id)}
 								<Heading level={6} tag="p" tone="muted" class="ml-3 flex items-center gap-1.5">

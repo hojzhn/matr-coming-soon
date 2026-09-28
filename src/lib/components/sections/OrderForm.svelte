@@ -14,12 +14,10 @@
 		COLORED_MARGIN_OPTION_ID,
 		DEFAULT_MARGIN_COLOR,
 		MAX_PRINT_SIDE_IN,
-		MARGIN_STEPS_IN,
-		MARGIN_DEFAULT_IN,
 		MAX_ARTWORK_FILE_BYTES,
 		ACCEPTED_ARTWORK_TYPES
 	} from '$lib/pricing/config';
-	import { calculateOrderTotal, formatPrice, formatMarginStep, priceAddOnCents, toInches } from '$lib/pricing/calculate';
+	import { calculateOrderTotal, formatPrice, priceAddOnCents, toInches } from '$lib/pricing/calculate';
 	import { cart } from '$lib/cart/cart.svelte';
 	import { submitCheckout } from '$lib/cart/checkout';
 	import { checkoutStatus } from '$lib/cart/checkout-status.svelte';
@@ -42,7 +40,6 @@
 	let customUnit = $state<'in' | 'cm'>('in');
 	let selectedOptionIds = $state<string[]>([]);
 	let marginColor = $state(DEFAULT_MARGIN_COLOR);
-	let marginIn = $state(MARGIN_DEFAULT_IN);
 	let quantity = $state('1');
 
 	let fileInput = $state<HTMLInputElement>();
@@ -143,9 +140,44 @@
 
 	const stretchSelected = $derived(selectedOptionIds.includes(STRETCH_SERVICE_OPTION_ID));
 
+	const stretchOption = addOnOptions.find((opt) => opt.id === STRETCH_SERVICE_OPTION_ID)!;
+
 	const visibleAddOnOptions = $derived(
-		addOnOptions.filter((opt) => opt.id !== OUTPAINT_OPTION_ID && opt.id !== COLORED_MARGIN_OPTION_ID)
+		addOnOptions.filter(
+			(opt) =>
+				opt.id !== OUTPAINT_OPTION_ID &&
+				opt.id !== COLORED_MARGIN_OPTION_ID &&
+				opt.id !== STRETCH_SERVICE_OPTION_ID
+		)
 	);
+
+	const printTypes = [
+		{
+			stretched: false,
+			label: orderContent.form.printTypeRolledLabel,
+			icon: 'texture' as IconName,
+			description: orderContent.form.printTypeRolledDescription,
+			shippingNote: orderContent.form.printTypeRolledShippingNote
+		},
+		{
+			stretched: true,
+			label: orderContent.form.printTypeStretchedLabel,
+			icon: stretchOption.icon,
+			description: stretchOption.description ?? '',
+			shippingNote: orderContent.form.printTypeStretchedShippingNote
+		}
+	];
+
+	function setStretched(stretched: boolean) {
+		if (stretched === stretchSelected) return;
+		if (stretched) {
+			toggleOption(STRETCH_SERVICE_OPTION_ID);
+			return;
+		}
+		selectedOptionIds = selectedOptionIds.filter(
+			(id) => id !== STRETCH_SERVICE_OPTION_ID && id !== OUTPAINT_OPTION_ID
+		);
+	}
 
 	function toggleOption(id: string) {
 		if (selectedOptionIds.includes(id)) {
@@ -154,18 +186,11 @@
 		}
 		selectedOptionIds = [...selectedOptionIds, id];
 		if (id === STRETCH_SERVICE_OPTION_ID) {
-			marginIn = MARGIN_DEFAULT_IN;
 			if (!selectedOptionIds.includes(OUTPAINT_OPTION_ID)) {
 				selectedOptionIds = [...selectedOptionIds, OUTPAINT_OPTION_ID];
 			}
 		}
 	}
-
-	$effect(() => {
-		if (stretchSelected && (marginIn !== MARGIN_DEFAULT_IN || !selectedOptionIds.includes(OUTPAINT_OPTION_ID))) {
-			selectedOptionIds = selectedOptionIds.filter((id) => id !== STRETCH_SERVICE_OPTION_ID);
-		}
-	});
 
 	function setFile(next: File | null) {
 		if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -211,7 +236,6 @@
 		customUnit = 'in';
 		selectedOptionIds = [];
 		marginColor = DEFAULT_MARGIN_COLOR;
-		marginIn = MARGIN_DEFAULT_IN;
 		quantity = '1';
 		file = null;
 		previewUrl = null;
@@ -253,7 +277,6 @@
 			widthIn: activeSize.widthIn,
 			heightIn: activeSize.heightIn,
 			optionIds: selectedOptionIds,
-			marginIn,
 			marginColor: selectedOptionIds.includes(COLORED_MARGIN_OPTION_ID) ? marginColor : null,
 			quantity: Number(quantity) || 1,
 			fileName: file?.name ?? null,
@@ -386,6 +409,33 @@
 				bind:value={projectName}
 			/>
 
+			<Field label={orderContent.form.printTypeLabel}>
+				<div class="mt-4 grid grid-cols-2 gap-2">
+					{#each printTypes as type (type.stretched)}
+						{@const selected = stretchSelected === type.stretched}
+						<button
+							type="button"
+							onclick={() => setStretched(type.stretched)}
+							aria-pressed={selected}
+							class={cn(
+								'flex flex-col items-start gap-2 border-2 p-3 text-left transition-colors',
+								selected ? 'border-ink' : 'border-line hover:border-ink-muted'
+							)}
+						>
+							<div class="flex items-center gap-3">
+								<Icon name={type.icon} class="h-6 w-6 text-ink" strokeWidth={1} />
+								<Heading level={4} tag="span" weight="medium">{type.label}</Heading>
+							</div>
+							<Heading level={6} tag="span" tone="muted">{type.description}</Heading>
+							<div class="mt-auto flex items-center gap-2">
+								<Icon name="truck" class="h-4 w-4 shrink-0 text-ink-faint" />
+								<Heading level={6} tag="span" tone="muted">{type.shippingNote}</Heading>
+							</div>
+						</button>
+					{/each}
+				</div>
+			</Field>
+
 			<Field label={orderContent.form.sizeLabel}>
 				<SizeInput bind:width={customWidth} bind:height={customHeight} bind:unit={customUnit} />
 
@@ -394,45 +444,6 @@
 						{orderContent.form.errorMaxSize}
 					</Heading>
 				{/if}
-			</Field>
-	<Field label={orderContent.form.marginLabel} description={orderContent.form.marginDescription}>
-				<div class="px-2 pt-4">
-					<div class="relative">
-						<div class="absolute inset-x-0 top-1.5 h-px bg-line"></div>
-						<div class="relative flex items-center justify-between">
-							{#each MARGIN_STEPS_IN as step (step)}
-								{@const active = marginIn === step}
-								<button
-									type="button"
-									onclick={() => (marginIn = step)}
-									aria-pressed={active}
-									aria-label={`${step} in`}
-									class={cn(
-										'flex h-4 w-4 items-center justify-center rounded-full border-2 bg-surface transition-colors',
-										active ? 'border-ink' : 'border-ink-faint hover:border-ink-muted'
-									)}
-								>
-									{#if active}
-										<span class="h-2 w-2 rounded-full bg-ink"></span>
-									{/if}
-								</button>
-							{/each}
-						</div>
-					</div>
-					<div class="mt-2 flex items-center justify-between">
-						{#each MARGIN_STEPS_IN as step (step)}
-						<div class="w-4 text-center">
-							<Heading
-								level={6}
-								tag="span"
-								weight={marginIn === step ? 'semibold' : 'normal'}
-								tone={marginIn === step ? 'ink' : 'muted'}
-							>
-								{formatMarginStep(step)}″
-							</Heading></div>
-						{/each}
-					</div>
-				</div>
 			</Field>
 			<Field label={orderContent.form.optionsLabel} description={orderContent.form.optionsDescription}>
 				<div class="flex flex-col gap-2 mt-4">

@@ -92,7 +92,6 @@ export async function submitCheckout(
 				rawHeight: item.rawHeight,
 				rawUnit: item.rawUnit,
 				optionIds: item.options.map((o) => o.id),
-				marginIn: item.marginIn,
 				marginColor: item.options.find((o) => o.id === COLORED_MARGIN_OPTION_ID)?.color ?? null,
 				quantity: item.quantity,
 				artworkPath: artworkPaths.get(index) ?? null,

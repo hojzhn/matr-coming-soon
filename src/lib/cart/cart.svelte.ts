@@ -14,7 +14,6 @@ export interface CartItem {
 	heightIn: number;
 	basePriceCents: number;
 	options: OrderLineItemOption[];
-	marginIn: number;
 	quantity: number;
 	unitPriceCents: number;
 	fileName: string | null;
@@ -30,7 +29,6 @@ export interface AddCartItemInput {
 	widthIn: number;
 	heightIn: number;
 	optionIds: string[];
-	marginIn: number;
 	marginColor?: string | null;
 	quantity: number;
 	fileName: string | null;
@@ -69,7 +67,6 @@ export class CartStore {
 				heightIn: item.heightIn,
 				basePriceCents: item.basePriceCents,
 				options: item.options,
-				marginIn: item.marginIn,
 				quantity: Math.min(MAX_ITEM_QUANTITY, Math.max(1, Math.round(item.quantity) || 1)),
 				unitPriceCents: item.unitPriceCents,
 				fileName: item.fileName,
@@ -144,7 +141,6 @@ export class CartStore {
 			heightIn: total.billableHeightIn,
 			basePriceCents: total.basePriceCents,
 			options: total.options,
-			marginIn: input.marginIn,
 			quantity: total.quantity,
 			unitPriceCents: total.unitPriceCents,
 			fileName: input.fileName,

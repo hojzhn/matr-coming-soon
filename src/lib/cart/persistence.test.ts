@@ -25,7 +25,6 @@ function makeItem(overrides: Partial<CartItem> = {}): CartItem {
 		heightIn: 10,
 		basePriceCents: 3900,
 		options: [],
-		marginIn: 3,
 		quantity: 1,
 		unitPriceCents: 3900,
 		fileName: null,

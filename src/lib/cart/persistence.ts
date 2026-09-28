@@ -18,7 +18,6 @@ export interface PersistedCartItemV1 {
 	heightIn: number;
 	basePriceCents: number;
 	options: OrderLineItemOption[];
-	marginIn: number;
 	quantity: number;
 	unitPriceCents: number;
 	fileName: string | null;
@@ -75,7 +74,6 @@ function isValidPersistedItem(value: unknown): value is PersistedCartItemV1 {
 		typeof v.basePriceCents === 'number' &&
 		Array.isArray(v.options) &&
 		v.options.every(isOrderLineItemOption) &&
-		typeof v.marginIn === 'number' &&
 		typeof v.quantity === 'number' &&
 		typeof v.unitPriceCents === 'number' &&
 		(typeof v.fileName === 'string' || v.fileName === null) &&
@@ -121,7 +119,6 @@ function serializeCart(items: CartItem[], discount: AppliedDiscount | null): Per
 			heightIn: item.heightIn,
 			basePriceCents: item.basePriceCents,
 			options: item.options,
-			marginIn: item.marginIn,
 			quantity: item.quantity,
 			unitPriceCents: item.unitPriceCents,
 			fileName: item.fileName,

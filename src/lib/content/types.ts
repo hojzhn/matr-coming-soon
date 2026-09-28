@@ -56,9 +56,13 @@ export interface FinePrintItem {
 export interface OrderFormContent {
 	projectNameLabel: string;
 	projectNamePlaceholder: string;
+	printTypeLabel: string;
+	printTypeRolledLabel: string;
+	printTypeRolledDescription: string;
+	printTypeRolledShippingNote: string;
+	printTypeStretchedLabel: string;
+	printTypeStretchedShippingNote: string;
 	sizeLabel: string;
-	marginLabel: string;
-	marginDescription: string;
 	optionsLabel: string;
 	optionsDescription: string;
 	optionsPlaceholder: string;

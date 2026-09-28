@@ -3,7 +3,10 @@ import { formatPrice } from "$lib/pricing/calculate";
 import { orderContent } from "$lib/content";
 import type { DiscountInfo } from "$lib/pricing/discount";
 import { calculateItemWeightLb } from "$lib/shipping/calculate";
-import { OUTPAINT_OPTION_ID } from "$lib/pricing/config";
+import {
+  OUTPAINT_OPTION_ID,
+  STRETCH_SERVICE_OPTION_ID,
+} from "$lib/pricing/config";
 
 const MUTATION = `
 	mutation DraftOrderCreate($input: DraftOrderInput!) {
@@ -49,7 +52,6 @@ export interface DraftOrderLineItem {
   widthIn: number;
   heightIn: number;
   options: DraftOrderLineItemOption[];
-  marginIn?: number;
   quantity: number;
   unitPriceCents: number;
   artworkUrl?: string | null;
@@ -76,6 +78,16 @@ function shopifyCredentials(): {
   const version = env.SHOPIFY_API_VERSION || "2025-01";
   if (!domain || !token) throw new Error("Shopify is not configured.");
   return { domain, token, version };
+}
+
+function printVariantGids(): { rolled: string; stretched: string } {
+  const rolled = env.SHOPIFY_ROLLED_VARIANT_ID;
+  const stretched = env.SHOPIFY_STRETCHED_VARIANT_ID;
+  if (!rolled || !stretched)
+    throw new Error("Shopify print variants are not configured.");
+  const toGid = (id: string) =>
+    id.startsWith("gid://") ? id : `gid://shopify/ProductVariant/${id}`;
+  return { rolled: toGid(rolled), stretched: toGid(stretched) };
 }
 
 export async function lookupDiscountCode(code: string): Promise<DiscountInfo> {
@@ -148,18 +160,21 @@ export async function createDraftOrder(
 
   const { domain, token, version } = shopifyCredentials();
 
+  const variants = printVariantGids();
+  const currencyCode = env.SHOPIFY_CURRENCY || "USD";
+
   const lineItems = args.items.map((item) => {
-    const title = item.projectName?.trim() || orderContent.form.untitledLabel;
-    const weightLb = calculateItemWeightLb(
-      item.widthIn,
-      item.heightIn,
-      item.options.map((o) => o.id),
-    );
+    const optionIds = item.options.map((o) => o.id);
+    const isStretched = optionIds.includes(STRETCH_SERVICE_OPTION_ID);
+    const weightLb = calculateItemWeightLb(item.widthIn, item.heightIn, optionIds);
 
     const customAttributes = [
+      {
+        key: "Project name",
+        value: item.projectName?.trim() || orderContent.form.untitledLabel,
+      },
       ...(item.artworkUrl ? [{ key: "Artwork preview", value: item.artworkUrl }] : []),
       { key: "Size", value: `${item.widthIn} x ${item.heightIn} in` },
-      { key: "Margin", value: `${item.marginIn ?? 3} in` },
       ...item.options
         .filter((o) => o.id !== OUTPAINT_OPTION_ID)
         .flatMap((o) => [
@@ -170,12 +185,12 @@ export async function createDraftOrder(
     ];
 
     return {
-      title,
+      variantId: isStretched ? variants.stretched : variants.rolled,
       quantity: item.quantity,
-      requiresShipping: true,
-      taxable: true,
-      originalUnitPrice: (item.unitPriceCents / 100).toFixed(2),
-      weight: { value: weightLb, unit: "POUNDS" },
+      priceOverride: {
+        amount: (item.unitPriceCents / 100).toFixed(2),
+        currencyCode,
+      },
       customAttributes,
     };
   });
