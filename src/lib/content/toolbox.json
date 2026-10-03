@@ -1,0 +1,84 @@
+{
+  "title": "The Matr Toolbox",
+  "eyebrow": "The Matr Toolbox",
+  "heading": "We build the machines that make the work.",
+  "lead": "Matr Labs designs, builds and runs its own printing machines: inkjet, plotter, airbrush and extrusion. We combine a deep knowledge of how paintings have been made for centuries with mechanical engineering and our own software, including machine learning and AI image tools. Artists use them to make physical work that no off-the-shelf printer can.",
+  "cta": "Commission a piece",
+  "ctaHref": "/#contact",
+  "techniquesHeading": "Printing techniques",
+  "techniques": [
+    {
+      "title": "Oil inkjet over hand-brushed texture",
+      "body": "We print a faint outline of the image, brush wet medium over it by hand to build the surface, then print the full image in oil-based ink on top. Every piece carries real brushwork under the picture.",
+      "video": "/videos/toolbox/hand-texture.mp4",
+      "image": "/images/toolbox/hand-texture.webp",
+      "alt": "A hand brushing medium over a printed outline"
+    },
+    {
+      "title": "Oil inkjet over machine-brushed texture",
+      "body": "Our software reads the image and drives a paintbrush in a plotter to work the wet medium, so the texture follows the picture. Then the image is printed in oil-based ink over it. Repeatable across an edition.",
+      "video": "/videos/toolbox/machine-texture.mp4",
+      "image": "/images/toolbox/machine-texture.webp",
+      "alt": "A machine brushing texture into wet medium on a panel"
+    },
+    {
+      "title": "Airbrush",
+      "body": "An airbrush head sprays oil-based ink instead of jetting it. Where inkjet reproduces precisely, airbrush interprets: the image comes out softer, with a more natural, hand-made feel.",
+      "video": "/videos/toolbox/airbrush.mp4",
+      "image": "/images/toolbox/airbrush.webp",
+      "alt": "A wall-mounted airbrush head spraying an image onto a panel"
+    },
+    {
+      "title": "UV printing",
+      "body": "Four-color UV ink, with white spot layers that can be stacked to build relief. It cures the instant it is printed, so it works on a very wide range of surfaces and is dry the moment it leaves the machine.",
+      "video": "/videos/toolbox/uv-oil.mp4",
+      "image": "/images/toolbox/uv-oil.webp",
+      "alt": "A printer passing over embossed prints"
+    },
+    {
+      "title": "Extrusion",
+      "body": "A micro valve on a plotter lays down raised lines of material, drawn directly onto the surface. It adds a physical line that sits on top of the image.",
+      "image": "/images/toolbox/extrusion.webp",
+      "alt": "Raised white lines extruded over a printed image"
+    },
+    {
+      "title": "Plotter and vector painting",
+      "body": "A plotter holding a real brush paints along paths we draw in software, stroke by stroke. It suits lettering, line work and anything that should look painted because it was.",
+      "video": "/videos/toolbox/plotter.mp4",
+      "image": "/images/toolbox/plotter.webp",
+      "alt": "A plotter painting letters with a brush"
+    }
+  ],
+  "combining": {
+    "eyebrow": "Combining techniques",
+    "heading": "One piece, several machines.",
+    "body": "The techniques stack. Here a relief is built up in layers of UV ink, then the color image is printed over it in oil-based ink. The UV gives exact texture; the oil gives the rich finish.",
+    "video": "/videos/toolbox/combined.mp4",
+    "image": "/images/toolbox/combined.webp",
+    "alt": "A sign image built as a UV relief, then printed over in oil-based ink"
+  },
+  "materials": {
+    "heading": "Surfaces, paint and mixed media",
+    "feature": {
+      "title": "Custom paint and grounds",
+      "body": "We mix our own: custom paints, spot color blends, and the medium that sits under the image. Additives such as marble dust, clay or ground glass change how the surface catches the light. Here, marble dust in the ground and in the wet medium gives a gritty, sparkling texture.",
+      "video": "/videos/toolbox/marble-dust.mp4",
+      "image": "/images/toolbox/marble-dust.webp",
+      "alt": "Close-up of a print with a gritty, sparkling marble dust surface"
+    },
+    "cards": [
+      {
+        "title": "Almost any surface",
+        "body": "We print on canvas, linen, wood, aluminum, fabric, burlap and plastic, among others. Tell us about the surface you have in mind."
+      },
+      {
+        "title": "Layered mixed media",
+        "body": "Paper, fabric, mesh and other materials can be laid onto the canvas or panel, with the image printed over the top. The result is a rich mixed-media piece."
+      }
+    ]
+  },
+  "closing": {
+    "heading": "Have a piece in mind?",
+    "body": "Tell us what you want to make and we will work out how to build it."
+  }
+}

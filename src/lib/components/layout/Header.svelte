@@ -84,7 +84,7 @@
 >
 	<Container width="full">
 		<div class="flex h-16 items-center justify-between">
-			<a href="#top" class="flex items-center" aria-label="matr labs, back to top" onclick={close}>
+			<a href="/#top" class="flex items-center" aria-label="matr labs, back to top" onclick={close}>
 				<Logo class={cn('h-7 w-auto transition-colors duration-300', inkClass, open && 'max-md:text-ink')} />
 			</a>
 

@@ -1,7 +1,8 @@
 {
 	"items": [
-		{ "label": "Top", "href": "#top" },
-		{ "label": "Order", "href": "#order" },
-		{ "label": "Contact", "href": "#contact" }
+		{ "label": "Top", "href": "/#top" },
+		{ "label": "Order", "href": "/#order" },
+		{ "label": "Toolbox", "href": "/toolbox" },
+		{ "label": "Contact", "href": "/#contact" }
 	]
 }

@@ -11,8 +11,8 @@
     {
       "title": "The Matr Toolbox",
       "text": "Brushed texture, airbrush, UV relief and more. Commission a piece made with everything our machines can do.",
-      "cta": "Commission a piece",
-      "href": "#contact",
+      "cta": "See the toolbox",
+      "href": "/toolbox",
       "image": "/images/doors/toolbox.webp",
       "primary": false
     }

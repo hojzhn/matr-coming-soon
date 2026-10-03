@@ -48,6 +48,38 @@ export interface DoorsContent {
 	items: Door[];
 }
 
+export interface Technique {
+	title: string;
+	body: string;
+	video?: string;
+	image: string;
+	alt: string;
+}
+export interface ToolboxContent {
+	title: string;
+	eyebrow: string;
+	heading: string;
+	lead: string;
+	cta: string;
+	ctaHref: string;
+	techniquesHeading: string;
+	techniques: Technique[];
+	combining: {
+		eyebrow: string;
+		heading: string;
+		body: string;
+		video: string;
+		image: string;
+		alt: string;
+	};
+	materials: {
+		heading: string;
+		feature: Technique;
+		cards: { title: string; body: string }[];
+	};
+	closing: { heading: string; body: string };
+}
+
 export interface CarouselItem {
 	src: string;
 	alt: string;
