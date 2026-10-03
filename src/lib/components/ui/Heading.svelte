@@ -5,7 +5,7 @@
 	export type HeadingWeight = 'normal' | 'medium' | 'semibold' | 'bold';
 	export type HeadingLeading = 'none' | 'tighter' | 'tight' | 'snug' | 'normal' | 'relaxed';
 	export type HeadingTracking = 'tighter' | 'tight' | 'normal' | 'wide' | 'widest';
-	export type HeadingTone = 'ink' | 'muted' | 'brand' | 'surface';
+	export type HeadingTone = 'ink' | 'muted' | 'dim' | 'brand' | 'surface';
 </script>
 
 <script lang="ts">
@@ -134,6 +134,7 @@
 	const tones: Record<HeadingTone, string> = {
 		ink: 'text-ink',
 		muted: 'text-ink-muted',
+		dim: 'text-ink-dim',
 		brand: 'text-brand',
 		surface: 'text-surface'
 	};

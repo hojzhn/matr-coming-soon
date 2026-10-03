@@ -1,66 +1,76 @@
 <script lang="ts">
 	import Section from '$lib/components/ui/Section.svelte';
+	import Container from '$lib/components/ui/Container.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import LazyImage from '$lib/components/ui/LazyImage.svelte';
-	import { heroContent, brandsContent } from '$lib/content';
-
-	const carouselImages = Array.from({ length: 10 }, (_, i) => `/images/hero/carousel_${i + 1}.webp`);
-
-	let activeIndex = $state(0);
-	let readyCount = $state(0);
-
-	$effect(() => {
-		carouselImages.forEach((src) => {
-			const img = new Image();
-			img.onload = img.onerror = () => (readyCount += 1);
-			img.src = src;
-		});
-	});
-
-	$effect(() => {
-		if (readyCount < carouselImages.length) return;
-		const id = setInterval(() => {
-			activeIndex = (activeIndex + 1) % carouselImages.length;
-		}, 750);
-		return () => clearInterval(id);
-	});
+	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
+	import PanCarousel from '$lib/components/ui/PanCarousel.svelte';
+	import { heroContent, brandsContent, doorsContent, carouselContent } from '$lib/content';
+	import { cn } from '$lib/cn';
 </script>
 
-<Section id="top" tone="ink" fullHeight contained={false} class="relative justify-between py-0">
-	
+<Section id="top" tone="ink" contained={false} class="pt-28 pb-12 md:pt-32">
+	<Container>
+		<Heading
+			level={5}
+			tag="p"
+			tone="surface"
+			tracking="wide"
+			trackingMd="widest"
+			uppercase
+			align="center"
+		>
+			{heroContent.tagline}
+		</Heading>
 
-
-		<div class="relative mb-20 w-full flex-1 min-h-0 ">
-			<img
-				src={carouselImages[activeIndex]}
-				alt=""
-				loading="eager"
-				decoding="async"
-				class="absolute inset-0 h-full w-full object-contain mt-20 md:mt-0"
-			/>
-		
-			<div class="absolute inset-0 hidden items-center mx-auto max-w-7xl justify-between  md:flex">
-				<Heading level={5} tag="span" tone="surface" tracking="widest" uppercase stroke>Engineering</Heading>
-				<Heading level={5} tag="span" tone="surface" tracking="widest" uppercase stroke>for art</Heading>
-			</div>
+		<div class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2">
+			{#each doorsContent.items as door (door.href)}
+				<article
+					class={cn(
+						'flex items-start gap-4 border p-4 md:items-center md:gap-6 md:p-5',
+						door.primary ? 'border-brand' : 'border-surface/25'
+					)}
+				>
+					<a href={door.href} tabindex="-1" aria-hidden="true" class="shrink-0">
+						<LazyImage
+							src={door.image}
+							alt=""
+							loading="eager"
+							class="h-20 w-20 object-cover md:h-36 md:w-36"
+						/>
+					</a>
+					<div class="flex min-w-0 flex-col items-start gap-2">
+						<Heading level={2} size="md" sizeMd="lg" tone="surface">{door.title}</Heading>
+						<Heading level={4} tag="p" size="sm" sizeMd="base" weight="medium" tone="dim">
+							{door.text}
+						</Heading>
+						<ArrowLink
+							href={door.href}
+							label={door.cta}
+							variant="button"
+							fill={door.primary ? 'ink' : 'surface'}
+							class={cn('mt-2 px-4 py-2', door.primary && 'border-brand bg-brand text-ink')}
+						/>
+					</div>
+				</article>
+			{/each}
 		</div>
+	</Container>
 
-		
-	<div class="mb-12 shrink-0">
-	<Heading level={5} tag="p" tone="surface"  uppercase stroke align="center" class="my-6 md:hidden">
-		Engineering for art
-	</Heading>
-		<Heading level={5} tag="h1" tone="muted"  align="center">
+	<PanCarousel items={carouselContent.items} label={carouselContent.label} class="mt-10 md:mt-12" />
+
+	<Container class="mt-12">
+		<Heading level={5} tag="h1" tone="muted" align="center">
 			{heroContent.logosLabel}
 		</Heading>
-		<div class="mt-12 flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
+		<div class="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
 			{#each brandsContent.items as brand (brand.src)}
 				<LazyImage
 					src={brand.src}
 					alt={brand.name}
-					class="h-4 md:h-6 w-auto shrink-0 opacity-60 brightness-0 invert transition-opacity hover:opacity-100"
+					class="h-4 w-auto shrink-0 opacity-60 brightness-0 invert transition-opacity hover:opacity-100 md:h-6"
 				/>
 			{/each}
 		</div>
-	</div>
+	</Container>
 </Section>

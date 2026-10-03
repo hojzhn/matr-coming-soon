@@ -11,7 +11,7 @@
 		{ icon: 'message', href: '#testimonials', label: 'Testimonials', external: false }
 	];
 
-	const subheroSrc = '/images/relaunch/subhero.webp';
+	const subheroSrc = '/images/relaunch/oil-edition-sheen.webp';
 
 	let revealed = $state(false);
 
@@ -26,7 +26,7 @@
 </script>
 
 <Section tone="surface" width="full" class="py-10 md:py-12">
-	<div class="flex flex-col gap-6 xl:flex-row xl:items-end lg:justify-between relative xl:-mt-80">
+	<div class="flex flex-col gap-6 xl:flex-row xl:items-end lg:justify-between relative">
 	<div class="flex flex-col xl:flex-row xl:items-end gap-12 xl:gap-20">
 	<div class="relative aspect-video overflow-hidden xl:aspect-3/5 xl:h-160">
 		<div

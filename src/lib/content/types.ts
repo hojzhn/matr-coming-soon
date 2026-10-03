@@ -30,9 +30,33 @@ export interface BrandLogo {
 	src: string;
 }
 export interface HeroContent {
+	tagline: string;
 	headline: string;
 	subheadline: string;
 	logosLabel: string;
+}
+
+export interface Door {
+	title: string;
+	text: string;
+	cta: string;
+	href: string;
+	image: string;
+	primary: boolean;
+}
+export interface DoorsContent {
+	items: Door[];
+}
+
+export interface CarouselItem {
+	src: string;
+	alt: string;
+	width: number;
+	height: number;
+}
+export interface CarouselContent {
+	label: string;
+	items: CarouselItem[];
 }
 export interface BrandsContent {
 	items: BrandLogo[];

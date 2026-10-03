@@ -4,6 +4,8 @@ import nav from './nav.json';
 import site from './site.json';
 import hero from './hero.json';
 import brands from './brands.json';
+import doors from './doors.json';
+import carousel from './carousel.json';
 import gallery from './gallery.json';
 import order from './order.json';
 import strengths from './strengths.json';
@@ -21,6 +23,8 @@ import type {
 	SiteContent,
 	HeroContent,
 	BrandsContent,
+	DoorsContent,
+	CarouselContent,
 	GalleryContent,
 	OrderContent,
 	StrengthsContent,
@@ -39,7 +43,9 @@ export const navContent = nav satisfies NavContent;
 export const siteContent = site satisfies SiteContent;
 export const heroContent = hero satisfies HeroContent;
 export const brandsContent = brands satisfies BrandsContent;
-export const galleryContent = gallery satisfies GalleryContent;
+export const doorsContent = doors satisfies DoorsContent;
+export const carouselContent = carousel satisfies CarouselContent;
+export const galleryContent =gallery satisfies GalleryContent;
 export const orderContent = order satisfies OrderContent;
 export const strengthsContent = strengths satisfies StrengthsContent;
 export const testimonialsContent = testimonials satisfies TestimonialsContent;
