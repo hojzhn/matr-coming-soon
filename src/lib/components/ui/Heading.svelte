@@ -1,11 +1,11 @@
 <script lang="ts" module>
 	export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 	export type HeadingTag = `h${HeadingLevel}` | 'p' | 'span' | 'div';
-	export type HeadingSize = 'xs' | 'sm' | 'base' | 'md' | 'lg' | 'xl' | '2xl' | 'hero';
+	export type HeadingSize = 'xs' | 'sm' | 'base' | 'md' | 'lg' | 'xl' | '2xl' | 'hero' | 'display';
 	export type HeadingWeight = 'normal' | 'medium' | 'semibold' | 'bold';
 	export type HeadingLeading = 'none' | 'tighter' | 'tight' | 'snug' | 'normal' | 'relaxed';
 	export type HeadingTracking = 'tighter' | 'tight' | 'normal' | 'wide' | 'widest';
-	export type HeadingTone = 'ink' | 'muted' | 'dim' | 'brand' | 'surface';
+	export type HeadingTone = 'ink' | 'muted' | 'faint' | 'dim' | 'brand' | 'surface';
 </script>
 
 <script lang="ts">
@@ -85,7 +85,8 @@
 		lg: 'text-lg',
 		xl: 'text-xl',
 		'2xl': 'text-2xl',
-		hero: 'text-hero'
+		hero: 'text-hero',
+		display: 'text-display'
 	};
 
 	const mdSizes: Record<HeadingSize, string> = {
@@ -96,7 +97,8 @@
 		lg: 'md:text-lg',
 		xl: 'md:text-xl',
 		'2xl': 'md:text-2xl',
-		hero: 'md:text-hero'
+		hero: 'md:text-hero',
+		display: 'md:text-display'
 	};
 
 	const weights: Record<HeadingWeight, string> = {
@@ -134,6 +136,7 @@
 	const tones: Record<HeadingTone, string> = {
 		ink: 'text-ink',
 		muted: 'text-ink-muted',
+		faint: 'text-ink-faint',
 		dim: 'text-ink-dim',
 		brand: 'text-brand',
 		surface: 'text-surface'

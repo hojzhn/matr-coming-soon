@@ -7,6 +7,7 @@ import brands from './brands.json';
 import doors from './doors.json';
 import carousel from './carousel.json';
 import toolbox from './toolbox.json';
+import collaborate from './collaborate.json';
 import gallery from './gallery.json';
 import order from './order.json';
 import strengths from './strengths.json';
@@ -27,6 +28,7 @@ import type {
 	DoorsContent,
 	CarouselContent,
 	ToolboxContent,
+	CollaborateContent,
 	GalleryContent,
 	OrderContent,
 	StrengthsContent,
@@ -48,6 +50,7 @@ export const brandsContent = brands satisfies BrandsContent;
 export const doorsContent = doors satisfies DoorsContent;
 export const carouselContent = carousel satisfies CarouselContent;
 export const toolboxContent = toolbox satisfies ToolboxContent;
+export const collaborateContent = collaborate satisfies CollaborateContent;
 export const galleryContent = gallery satisfies GalleryContent;
 export const orderContent = order satisfies OrderContent;
 export const strengthsContent = strengths satisfies StrengthsContent;

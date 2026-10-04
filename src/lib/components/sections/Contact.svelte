@@ -2,14 +2,12 @@
 	import Section from '$lib/components/ui/Section.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
-	import LazyImage from '$lib/components/ui/LazyImage.svelte';
-	import Icon from '$lib/components/ui/Icon.svelte';
-	import { contactContent } from '$lib/content';
+	import Field from '$lib/components/ui/Field.svelte';
+	import { contactContent, siteContent } from '$lib/content';
 	import { trackEvent } from '$lib/analytics/track';
+	import { isValidEmail, submitContact } from '$lib/contact/submit';
 
 	let { formToken }: { formToken: string } = $props();
-
-	const contactImageSrc = '/images/contact.webp';
 
 	let name = $state('');
 	let email = $state('');
@@ -23,57 +21,47 @@
 		e.preventDefault();
 		error = '';
 
-		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+		if (!isValidEmail(email)) {
 			error = contactContent.form.errorInvalidEmail;
 			return;
 		}
 
 		loading = true;
-		try {
-			const res = await fetch('/api/contact', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name, email, message, company, formToken })
-			});
-			const data = await res.json();
-			if (data.ok) {
-				success = true;
-				trackEvent('contact_form_submitted');
-			} else {
-				error = data.error || contactContent.form.errorGeneric;
-			}
-		} catch {
-			error = contactContent.form.errorGeneric;
-		} finally {
-			loading = false;
+		const result = await submitContact({ name, email, message, company, formToken });
+		loading = false;
+
+		if (result.ok) {
+			success = true;
+			trackEvent('contact_form_submitted');
+		} else {
+			error = result.error || contactContent.form.errorGeneric;
 		}
 	}
 </script>
 
-<Section id="contact" tone="surface" fullHeight class="md:mb-40">
-<div class="mb-8">
-	<Heading level={4} class="text-ink">Wanna collaborate?{'\n'}Our emails are open.</Heading>
-</div>
-	<div class="flex w-full flex-col py-0 h-full md:pb-20">
-
-	<div class="flex flex-row justify-between items-center mb-2">
-	<div>
-		<Icon name="mail" class="h-6 w-6 text-ink" /></div>
-		<Heading level={4}>hello@matr.art</Heading>
-	</div>
-		<LazyImage
-			src={contactImageSrc}
-			alt=""
-			class="w-full shrink-0 object-contain"
-		/>
-		{#if success}
-		<div class="mt-8 w-full text-right">
-			<Heading level={3}>
-				{contactContent.form.successMessage}
+<Section id="contact" tone="surface" class="py-16 md:py-24">
+	<div class="grid gap-10 md:grid-cols-2 md:gap-16">
+		<div class="flex flex-col items-start gap-4">
+			<Heading level={5} tag="p" tone="muted" uppercase>{contactContent.eyebrow}</Heading>
+			<Heading level={1} tag="h2">{contactContent.heading}</Heading>
+			<Heading level={3} tag="p" weight="medium" tone="muted" balance={false}>
+				{contactContent.intro}
 			</Heading>
+			<ArrowLink
+				href={`mailto:${siteContent.email}`}
+				label={siteContent.email}
+				icon="mail"
+				arrow={false}
+				size="base"
+				sizeMd="lg"
+				class="-ml-3"
+			/>
 		</div>
+
+		{#if success}
+			<Heading level={3}>{contactContent.form.successMessage}</Heading>
 		{:else}
-			<form class="flex flex-1 min-h-0 flex-col justify-center gap-8" {onsubmit}>
+			<form class="flex flex-col" {onsubmit}>
 				<input
 					type="text"
 					name="company"
@@ -83,48 +71,34 @@
 					class="hidden"
 					aria-hidden="true"
 				/>
-
-				<div class="flex flex-col gap-4 md:flex-row md:gap-8 mt-8">
-				<Heading level={3} tag="p" balance={false} class="flex flex-nowrap flex-col items-baseline gap-x-3 gap-y-2">
-					<input
-						type="text"
-						bind:value={name}
-						placeholder={contactContent.form.namePlaceholder}
+				<Field
+					label={contactContent.form.nameLabel}
+					bind:value={name}
+					placeholder={contactContent.form.namePlaceholder}
+					autocomplete="name"
+					required
+				/>
+				<Field
+					label={contactContent.form.emailLabel}
+					type="email"
+					bind:value={email}
+					placeholder={contactContent.form.emailPlaceholder}
+					autocomplete="email"
+					required
+				/>
+				<Field label={contactContent.form.messageLabel} required>
+					<textarea
+						bind:value={message}
+						placeholder={contactContent.form.messagePlaceholder}
 						required
-						autocomplete="name"
-						class="min-w-20 md:max-w-md bg-transparent px-0 outline-none transition-colors placeholder:text-ink-faint "
-					/>
-					<span>{'<'}
-					<input
-						type="email"
-						bind:value={email}
-						placeholder={contactContent.form.emailPlaceholder}
-						required
-						autocomplete="email"
-						class="field-sizing-content max-w-full min-w-20 bg-transparent px-0 outline-none transition-colors placeholder:text-ink-faint"
-					/>
-					{'>'}</span>
-					</Heading>
-<hr class="block md:hidden border"/>
-					<Heading level={3} tag="p" balance={false} class="w-full">
-						<textarea
-							bind:value={message}
-							placeholder={contactContent.form.messagePlaceholder}
-							required
-							rows={5}
-							class="w-full resize-none bg-transparent p-0 outline-none placeholder:text-ink-faint"
-						></textarea>
-					</Heading>
-					</div>
-
-					
+						rows={4}
+						class="w-full resize-none border-b-2 border-ink bg-transparent px-0 py-2.5 text-base font-medium text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
+					></textarea>
+				</Field>
 
 				{#if error}
-					<Heading level={6} tag="p" class="text-danger">{error}</Heading>
+					<Heading level={6} tag="p" class="mb-4 text-danger">{error}</Heading>
 				{/if}
-
-				<div class="flex flex-col gap-y-4 md:flex-row md:items-center md:justify-end">
-				
 
 				<ArrowLink
 					type="submit"
@@ -132,8 +106,8 @@
 					label={loading ? contactContent.form.submitLoadingLabel : contactContent.form.submitLabel}
 					{loading}
 					disabled={loading}
+					class="mt-2"
 				/>
-				</div>
 			</form>
 		{/if}
 	</div>

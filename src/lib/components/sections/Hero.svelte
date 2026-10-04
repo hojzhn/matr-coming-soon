@@ -5,6 +5,7 @@
 	import LazyImage from '$lib/components/ui/LazyImage.svelte';
 	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
 	import PanCarousel from '$lib/components/ui/PanCarousel.svelte';
+	import KineticText from '$lib/components/ui/KineticText.svelte';
 	import { heroContent, brandsContent, doorsContent, carouselContent } from '$lib/content';
 	import { cn } from '$lib/cn';
 </script>
@@ -12,18 +13,22 @@
 <Section id="top" tone="ink" contained={false} class="pt-28 pb-12 md:pt-32">
 	<Container>
 		<Heading
-			level={5}
+			level={2}
 			tag="p"
-			tone="surface"
+			size="xl"
+			sizeMd="display"
+			tone="faint"
+			weight="medium"
 			tracking="wide"
 			trackingMd="widest"
 			uppercase
 			align="center"
+			class="md:-mr-[1em] md:whitespace-nowrap"
 		>
-			{heroContent.tagline}
+			<KineticText text={heroContent.tagline} peakColor="var(--color-brand)" />
 		</Heading>
 
-		<div class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2">
+		<div class="mt-6 grid gap-4 md:mt-8 md:grid-cols-2">
 			{#each doorsContent.items as door (door.href)}
 				<article
 					class={cn(
@@ -60,7 +65,7 @@
 	<PanCarousel items={carouselContent.items} label={carouselContent.label} class="mt-10 md:mt-12" />
 
 	<Container class="mt-12">
-		<Heading level={5} tag="h1" tone="muted" align="center">
+		<Heading level={3} tag="h1" size="md" sizeMd="lg" weight="medium" tone="dim" align="center">
 			{heroContent.logosLabel}
 		</Heading>
 		<div class="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-6">

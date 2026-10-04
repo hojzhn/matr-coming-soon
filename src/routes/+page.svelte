@@ -10,6 +10,7 @@
 	import Faq from '$lib/components/sections/Faq.svelte';
 	import Gallery from '$lib/components/sections/Gallery.svelte';
 	import Testimonials from '$lib/components/sections/Testimonials.svelte';
+	import Collaborate from '$lib/components/sections/Collaborate.svelte';
 	import Contact from '$lib/components/sections/Contact.svelte';
 	import LazyImage from '$lib/components/ui/LazyImage.svelte';
 	import Toast from '$lib/components/ui/Toast.svelte';
@@ -51,6 +52,7 @@
 		class="h-screen w-full object-cover md:my-20 contrast-130 brightness-110"
 	></video>
 	<Testimonials />
+	<Collaborate />
 	<Contact formToken={data.formToken} />
 </main>
 

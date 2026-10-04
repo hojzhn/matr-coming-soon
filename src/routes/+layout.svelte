@@ -5,9 +5,11 @@
 	import CookieConsentBanner from '$lib/components/layout/CookieConsentBanner.svelte';
 	import { consentState } from '$lib/consent/consent-state.svelte';
 	import { siteContent } from '$lib/content';
+	import { page } from '$app/state';
 	import type { LayoutProps } from './$types';
 
-	const pageTitle = 'Matr Labs: Engineering for Art';
+	const defaultTitle = 'Matr Labs: Engineering for Art';
+	const pageTitle = $derived(page.data.title ?? defaultTitle);
 	const pageDescription = 'Oil prints made to order. Matr labs is coming back soon.';
 	const shareImage = `${siteContent.url}/images/og-share.webp`;
 

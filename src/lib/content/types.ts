@@ -77,7 +77,35 @@ export interface ToolboxContent {
 		feature: Technique;
 		cards: { title: string; body: string }[];
 	};
-	closing: { heading: string; body: string };
+	commission: {
+		heading: string;
+		body: string;
+		nameLabel: string;
+		namePlaceholder: string;
+		emailLabel: string;
+		emailPlaceholder: string;
+		techniquesLabel: string;
+		unsureLabel: string;
+		surfaceLabel: string;
+		surfacePlaceholder: string;
+		timelineLabel: string;
+		timelinePlaceholder: string;
+		messageLabel: string;
+		messagePlaceholder: string;
+		submitLabel: string;
+		submitLoadingLabel: string;
+		successMessage: string;
+		messageTitle: string;
+	};
+}
+
+export interface CollaborateContent {
+	heading: string;
+	body: string;
+	cta: string;
+	href: string;
+	image: string;
+	alt: string;
 }
 
 export interface CarouselItem {

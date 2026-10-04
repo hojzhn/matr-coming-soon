@@ -9,7 +9,9 @@
 	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
 	import LazyImage from '$lib/components/ui/LazyImage.svelte';
 	import LoopVideo from '$lib/components/ui/LoopVideo.svelte';
-	import { toolboxContent, siteContent } from '$lib/content';
+	import CommissionForm from '$lib/components/sections/CommissionForm.svelte';
+	import Contact from '$lib/components/sections/Contact.svelte';
+	import { toolboxContent } from '$lib/content';
 	import type { Technique } from '$lib/content/types';
 	import { cn } from '$lib/cn';
 
@@ -20,10 +22,6 @@
 
 	const { combining, materials } = toolboxContent;
 </script>
-
-<svelte:head>
-	<title>{toolboxContent.title} | {siteContent.name}</title>
-</svelte:head>
 
 {#snippet block(item: Technique, flip: boolean, label?: string)}
 	<article class="grid items-center gap-6 md:grid-cols-2 md:gap-12">
@@ -120,20 +118,8 @@
 		</div>
 	</Section>
 
-	<Section tone="ink" class="py-16 md:py-24">
-		<div class="flex max-w-3xl flex-col items-start gap-6">
-			<Heading level={1} tag="h2" tone="surface">{toolboxContent.closing.heading}</Heading>
-			<Heading level={3} tag="p" weight="medium" tone="dim" balance={false}>
-				{toolboxContent.closing.body}
-			</Heading>
-			<ArrowLink
-				href={toolboxContent.ctaHref}
-				label={toolboxContent.cta}
-				variant="button"
-				class="mt-2 border-brand bg-brand text-ink"
-			/>
-		</div>
-	</Section>
+	<CommissionForm formToken={data.formToken} />
+	<Contact formToken={data.formToken} />
 </main>
 
 <Footer formToken={data.formToken} />

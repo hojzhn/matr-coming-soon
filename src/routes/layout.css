@@ -15,6 +15,7 @@
   --text-xl: 2.25rem;
   --text-2xl: clamp(2.5rem, 5vw, 3.75rem);
   --text-hero: clamp(3rem, 8vw, 7rem);
+  --text-display: clamp(1.25rem, 2.7vw, 2.75rem);
 
   --leading-none: 0.85;
   --leading-tighter: 0.9;

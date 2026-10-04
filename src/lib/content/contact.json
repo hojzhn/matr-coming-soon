@@ -1,9 +1,9 @@
 {
   "eyebrow": "Get in touch",
-  "heading": "Let's talk.",
+  "heading": "Say hello.",
   "headingWithName": "Hi, {name}!",
   "headingWithEmail": "Can't wait.",
-  "intro": "Got a project in mind?\nBusiness propositions? \nTell us about it! \nWe'll get back to you as soon as we can.",
+  "intro": "Questions, press, partnerships or anything else. We read everything.",
   "form": {
     "madlibGreeting": "Hi",
     "madlibClosing": "We'll find you at",
@@ -12,7 +12,7 @@
     "emailLabel": "Email",
     "emailPlaceholder": "you@example.com",
     "messageLabel": "Message",
-    "messagePlaceholder": "Tell us about your project...",
+    "messagePlaceholder": "Your message",
     "submitLabel": "Send message",
     "submitLoadingLabel": "Sending...",
     "copyEmailLabel": "Copy email",

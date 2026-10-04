@@ -4,7 +4,7 @@
   "heading": "We build the machines that make the work.",
   "lead": "Matr Labs designs, builds and runs its own printing machines: inkjet, plotter, airbrush and extrusion. We combine a deep knowledge of how paintings have been made for centuries with mechanical engineering and our own software, including machine learning and AI image tools. Artists use them to make physical work that no off-the-shelf printer can.",
   "cta": "Commission a piece",
-  "ctaHref": "/#contact",
+  "ctaHref": "#commission",
   "techniquesHeading": "Printing techniques",
   "techniques": [
     {
@@ -77,8 +77,24 @@
       }
     ]
   },
-  "closing": {
+  "commission": {
     "heading": "Have a piece in mind?",
-    "body": "Tell us what you want to make and we will work out how to build it."
+    "body": "Tell us what you want to make and we will work out how to build it.",
+    "nameLabel": "Name",
+    "namePlaceholder": "Your name",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "techniquesLabel": "Techniques you are interested in",
+    "unsureLabel": "Not sure yet",
+    "surfaceLabel": "Surface and size",
+    "surfacePlaceholder": "For example: linen, 36 x 48 inches",
+    "timelineLabel": "Timeline",
+    "timelinePlaceholder": "When do you need it?",
+    "messageLabel": "About the piece",
+    "messagePlaceholder": "Describe the work, the edition size, and anything else we should know.",
+    "submitLabel": "Send enquiry",
+    "submitLoadingLabel": "Sending...",
+    "successMessage": "Thanks. We will be in touch about your piece soon.",
+    "messageTitle": "COMMISSION ENQUIRY"
   }
 }
