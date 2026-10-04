@@ -53,7 +53,7 @@
       }
     ],
     "errorInvalidSize": "Add a width and height first.",
-    "errorMaxSize": "45 in is the largest side we can print.",
+    "errorMaxSize": "48\" (121.9 cm) is the largest side we can print.",
     "errorInvalidFile": "That file's too big or not a supported type.",
     "errorCartFull": "Your cart is full. Remove an item to add another.",
     "errorProjectNameRequired": "Give this print a name first.",
