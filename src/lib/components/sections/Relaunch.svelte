@@ -11,7 +11,7 @@
 		{ icon: 'message', href: '#testimonials', label: 'Testimonials', external: false }
 	];
 
-	const subheroSrc = '/images/relaunch/subhero.webp';
+	const subheroSrc = '/images/relaunch/oil-edition-print.webp';
 
 	let revealed = $state(false);
 
