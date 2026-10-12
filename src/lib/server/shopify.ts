@@ -4,7 +4,6 @@ import { orderContent } from "$lib/content";
 import type { DiscountInfo } from "$lib/pricing/discount";
 import { calculateItemWeightLb } from "$lib/shipping/calculate";
 import {
-  OUTPAINT_OPTION_ID,
   STRETCH_SERVICE_OPTION_ID,
 } from "$lib/pricing/config";
 
@@ -44,7 +43,6 @@ export interface DraftOrderLineItemOption {
   id: string;
   label: string;
   priceDeltaCents: number;
-  color?: string;
 }
 
 export interface DraftOrderLineItem {
@@ -176,11 +174,8 @@ export async function createDraftOrder(
       ...(item.artworkUrl ? [{ key: "Artwork preview", value: item.artworkUrl }] : []),
       { key: "Size", value: `${item.widthIn} x ${item.heightIn} in` },
       ...item.options
-        .filter((o) => o.id !== OUTPAINT_OPTION_ID && o.id !== STRETCH_SERVICE_OPTION_ID)
-        .flatMap((o) => [
-          { key: o.label, value: formatPrice(o.priceDeltaCents) },
-          ...(o.color ? [{ key: `${o.label} color`, value: o.color }] : []),
-        ]),
+        .filter((o) => o.id !== STRETCH_SERVICE_OPTION_ID)
+        .map((o) => ({ key: o.label, value: formatPrice(o.priceDeltaCents) })),
       { key: "Weight", value: `${weightLb} lb` },
     ];
 

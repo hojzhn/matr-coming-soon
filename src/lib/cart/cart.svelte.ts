@@ -34,7 +34,6 @@ export interface AddCartItemInput {
 	widthIn: number;
 	heightIn: number;
 	optionIds: string[];
-	marginColor?: string | null;
 	quantity: number;
 	fileName: string | null;
 	previewUrl: string | null;
@@ -61,25 +60,31 @@ export class CartStore {
 		const stored = persistence.loadCartMeta();
 		if (!stored) return;
 
-		const sanitized = stored.items.slice(0, MAX_CART_ITEMS).map(
-			(item): CartItem => ({
+		const sanitized = stored.items.slice(0, MAX_CART_ITEMS).map((item): CartItem => {
+			const total = calculateOrderTotal(
+				item.widthIn,
+				item.heightIn,
+				item.options.map((o) => o.id),
+				Math.min(MAX_ITEM_QUANTITY, Math.max(1, Math.round(item.quantity) || 1))
+			);
+			return {
 				id: item.id,
 				projectName: item.projectName,
 				rawWidth: item.rawWidth,
 				rawHeight: item.rawHeight,
 				rawUnit: item.rawUnit,
-				widthIn: item.widthIn,
-				heightIn: item.heightIn,
-				basePriceCents: item.basePriceCents,
-				options: item.options,
-				quantity: Math.min(MAX_ITEM_QUANTITY, Math.max(1, Math.round(item.quantity) || 1)),
-				unitPriceCents: item.unitPriceCents,
+				widthIn: total.billableWidthIn,
+				heightIn: total.billableHeightIn,
+				basePriceCents: total.basePriceCents,
+				options: total.options,
+				quantity: total.quantity,
+				unitPriceCents: total.unitPriceCents,
 				fileName: item.fileName,
 				previewUrl: null,
 				file: null,
 				...freshArtwork(item.artworkPath ?? null, item.artworkUploadedAt ?? null)
-			})
-		);
+			};
+		});
 
 		this.items = sanitized;
 		this.discount = stored.discount;
@@ -125,16 +130,7 @@ export class CartStore {
 	add(input: AddCartItemInput): AddCartItemResult {
 		if (this.isFull) return { ok: false, error: 'max-items' };
 
-		const total = calculateOrderTotal(
-			input.widthIn,
-			input.heightIn,
-			input.optionIds,
-			input.quantity,
-			undefined,
-			undefined,
-			undefined,
-			input.marginColor
-		);
+		const total = calculateOrderTotal(input.widthIn, input.heightIn, input.optionIds, input.quantity);
 		const id = crypto.randomUUID();
 
 		this.items.push({

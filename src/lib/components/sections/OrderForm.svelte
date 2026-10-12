@@ -5,14 +5,10 @@
 	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import Icon, { type IconName } from '$lib/components/ui/Icon.svelte';
-	import StretchDiagram from '$lib/components/ui/StretchDiagram.svelte';
 	import { orderContent } from '$lib/content';
 	import {
 		addOnOptions,
 		STRETCH_SERVICE_OPTION_ID,
-		OUTPAINT_OPTION_ID,
-		COLORED_MARGIN_OPTION_ID,
-		DEFAULT_MARGIN_COLOR,
 		MAX_PRINT_SIDE_IN,
 		MAX_ARTWORK_FILE_BYTES,
 		ACCEPTED_ARTWORK_TYPES
@@ -40,7 +36,6 @@
 	let customHeight = $state('');
 	let customUnit = $state<'in' | 'cm'>('in');
 	let selectedOptionIds = $state<string[]>([]);
-	let marginColor = $state(DEFAULT_MARGIN_COLOR);
 	let quantity = $state('1');
 
 	let fileInput = $state<HTMLInputElement>();
@@ -70,11 +65,7 @@
 			activeSize.widthIn,
 			activeSize.heightIn,
 			selectedOptionIds,
-			Number(quantity) || 1,
-			undefined,
-			undefined,
-			undefined,
-			marginColor
+			Number(quantity) || 1
 		);
 	});
 
@@ -91,8 +82,7 @@
 			rawHeight: activeSize.heightIn,
 			rawUnit: 'in' as const,
 			optionIds: selectedOptionIds,
-			quantity: total.quantity,
-			marginColor
+			quantity: total.quantity
 		};
 
 		let cancelled = false;
@@ -146,14 +136,7 @@
 
 	const stretchOption = addOnOptions.find((opt) => opt.id === STRETCH_SERVICE_OPTION_ID)!;
 
-	const visibleAddOnOptions = $derived(
-		addOnOptions.filter(
-			(opt) =>
-				opt.id !== OUTPAINT_OPTION_ID &&
-				opt.id !== COLORED_MARGIN_OPTION_ID &&
-				opt.id !== STRETCH_SERVICE_OPTION_ID
-		)
-	);
+	const visibleAddOnOptions = addOnOptions.filter((opt) => opt.id !== STRETCH_SERVICE_OPTION_ID);
 
 	const printTypes = [
 		{
@@ -173,14 +156,7 @@
 	];
 
 	function setStretched(stretched: boolean) {
-		if (stretched === stretchSelected) return;
-		if (stretched) {
-			toggleOption(STRETCH_SERVICE_OPTION_ID);
-			return;
-		}
-		selectedOptionIds = selectedOptionIds.filter(
-			(id) => id !== STRETCH_SERVICE_OPTION_ID && id !== OUTPAINT_OPTION_ID
-		);
+		if (stretched !== stretchSelected) toggleOption(STRETCH_SERVICE_OPTION_ID);
 	}
 
 	function toggleOption(id: string) {
@@ -189,11 +165,6 @@
 			return;
 		}
 		selectedOptionIds = [...selectedOptionIds, id];
-		if (id === STRETCH_SERVICE_OPTION_ID) {
-			if (!selectedOptionIds.includes(OUTPAINT_OPTION_ID)) {
-				selectedOptionIds = [...selectedOptionIds, OUTPAINT_OPTION_ID];
-			}
-		}
 	}
 
 	function setFile(next: File | null) {
@@ -242,7 +213,6 @@
 		customHeight = '';
 		customUnit = 'in';
 		selectedOptionIds = [];
-		marginColor = DEFAULT_MARGIN_COLOR;
 		quantity = '1';
 		file = null;
 		upload = null;
@@ -285,7 +255,6 @@
 			widthIn: activeSize.widthIn,
 			heightIn: activeSize.heightIn,
 			optionIds: selectedOptionIds,
-			marginColor: selectedOptionIds.includes(COLORED_MARGIN_OPTION_ID) ? marginColor : null,
 			quantity: Number(quantity) || 1,
 			fileName: file?.name ?? null,
 			previewUrl,
@@ -482,12 +451,6 @@
 									<Heading level={4} tag="span" weight="medium">
 										{opt.label}
 									</Heading>
-									{#if opt.id === COLORED_MARGIN_OPTION_ID}
-										<span
-											class="h-4 w-4 shrink-0 rounded-full border border-line"
-											style={`background-color:${marginColor}`}
-										></span>
-									{/if}
 									{#if selected}
 										<span
 											class="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-ink"
@@ -506,17 +469,6 @@
 									<Heading level={5} tag="p" tone="muted">
 										{opt.description}
 									</Heading>
-								</div>
-							{/if}
-							{#if selected && opt.id === COLORED_MARGIN_OPTION_ID}
-								<div class="flex items-center gap-3 pt-1" transition:slide={{ duration: 250 }}>
-									<input
-										type="color"
-										bind:value={marginColor}
-										aria-label="Margin color"
-										class="h-9 w-14 shrink-0 cursor-pointer border border-line bg-transparent p-0.5"
-									/>
-									<Heading level={6} tag="span" tone="muted">{marginColor}</Heading>
 								</div>
 							{/if}
 						</div>
@@ -555,15 +507,9 @@
 					<Heading level={6} tag="p" tone="muted" class="mt-1">
 						{total.quantity} x {projectName.trim() || orderContent.form.untitledLabel} ({formatPrice(total.basePriceCents)})
 					</Heading>
-					{#each total.options.filter((opt) => opt.id !== OUTPAINT_OPTION_ID) as opt (opt.id)}
+					{#each total.options as opt (opt.id)}
 						<Heading level={6} tag="p" tone="muted" class="ml-3 flex items-center gap-1.5">
 							- {opt.label} ({formatPrice(opt.priceDeltaCents)})
-							{#if opt.color}
-								<span
-									class="h-2.5 w-2.5 shrink-0 rounded-full border border-line"
-									style={`background-color:${opt.color}`}
-								></span>
-							{/if}
 						</Heading>
 					{/each}
 				{/if}

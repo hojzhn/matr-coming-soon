@@ -44,9 +44,6 @@ export const ACCEPTED_ARTWORK_TYPES = [
 ];
 
 export const STRETCH_SERVICE_OPTION_ID = "stretch-service";
-export const OUTPAINT_OPTION_ID = "outpaint";
-export const COLORED_MARGIN_OPTION_ID = "colored-margin";
-export const DEFAULT_MARGIN_COLOR = "#ffffff";
 
 export const addOnOptions: AddOnOption[] = [
   { id: "varnish", label: "Varnish", priceDeltaCents: 3500, icon: "droplet" },
@@ -56,22 +53,6 @@ export const addOnOptions: AddOnOption[] = [
     priceDeltaCents: 4500,
     icon: "layers",
     description: "We stretch the piece onto a wooden frame for you.",
-  },
-  {
-    id: OUTPAINT_OPTION_ID,
-    label: "Outpaint (+ ¼″)",
-    priceDeltaCents: 0,
-    icon: "expand",
-    description:
-      "Add ¼″ outpaint to wrap the stretcher edge to avoid a hairline gap.\nRecommended if you want to stretch the project piece.",
-  },
-  {
-    id: COLORED_MARGIN_OPTION_ID,
-    label: "Colored margin",
-    priceDeltaCents: 1000,
-    icon: "palette",
-    description:
-      "The margin area is printed in the color you choose instead of raw canvas.",
   },
 ];
 
