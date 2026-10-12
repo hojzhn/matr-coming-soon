@@ -7,7 +7,7 @@
 	import { pendingUploadProgress, submitCheckout } from '$lib/cart/checkout';
 	import { checkoutStatus } from '$lib/cart/checkout-status.svelte';
 	import { trackEvent } from '$lib/analytics/track';
-	import { MAX_ITEM_QUANTITY, OUTPAINT_OPTION_ID, STRETCH_SERVICE_OPTION_ID } from '$lib/pricing/config';
+	import { MAX_ITEM_QUANTITY, STRETCH_SERVICE_OPTION_ID } from '$lib/pricing/config';
 	import { formatPrice } from '$lib/pricing/calculate';
 
 	let { formToken }: { formToken: string } = $props();
@@ -92,15 +92,9 @@
 							<Heading level={6} tag="p" tone="muted" class="mt-0.5">
 								{item.widthIn} x {item.heightIn} in
 							</Heading>
-							{#each item.options.filter((opt) => opt.id !== OUTPAINT_OPTION_ID && opt.id !== STRETCH_SERVICE_OPTION_ID) as opt (opt.id)}
+							{#each item.options.filter((opt) => opt.id !== STRETCH_SERVICE_OPTION_ID) as opt (opt.id)}
 								<Heading level={6} tag="p" tone="muted" class="ml-3 flex items-center gap-1.5">
 									- {opt.label} ({formatPrice(opt.priceDeltaCents)})
-									{#if opt.color}
-										<span
-											class="h-2.5 w-2.5 shrink-0 rounded-full border border-line"
-											style={`background-color:${opt.color}`}
-										></span>
-									{/if}
 								</Heading>
 							{/each}
 

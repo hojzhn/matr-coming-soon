@@ -241,10 +241,10 @@ describe("priceAddOnCents (varnish/stretch size-based engine)", () => {
     expect(
       priceAddOnCents(
         {
-          id: "outpaint",
-          label: "Outpaint",
+          id: "unconfigured",
+          label: "Unconfigured",
           priceDeltaCents: 0,
-          icon: "expand",
+          icon: "droplet",
         },
         40,
         40,

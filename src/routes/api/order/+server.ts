@@ -12,15 +12,12 @@ import { verifySession, MIN_SUBMIT_MS } from '$lib/server/security';
 import { calculateOrderTotal, toInches, type OrderTotal } from '$lib/pricing/calculate';
 import {
 	addOnOptions,
-	COLORED_MARGIN_OPTION_ID,
 	MAX_PRINT_SIDE_IN,
 	MAX_CART_ITEMS,
 	MAX_ITEM_QUANTITY
 } from '$lib/pricing/config';
 import { createDraftOrder, lookupDiscountCode } from '$lib/server/shopify';
 import { computeDiscountCents } from '$lib/pricing/discount';
-
-const HEX_COLOR_RE = /^#[0-9a-f]{6}$/i;
 
 function fail(error: string, status = 400) {
 	return json({ ok: false, error }, { status });
@@ -75,15 +72,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
 			return fail('Please choose valid options.');
 		}
 
-		let marginColor: string | null = null;
-		if (optionIds.includes(COLORED_MARGIN_OPTION_ID)) {
-			const rawColor = String(raw?.marginColor ?? '');
-			if (!HEX_COLOR_RE.test(rawColor)) {
-				return fail('Please choose a valid margin color.');
-			}
-			marginColor = rawColor.toLowerCase();
-		}
-
 		const widthIn = toInches(rawWidth, rawUnit);
 		const heightIn = toInches(rawHeight, rawUnit);
 
@@ -102,7 +90,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
 		validated.push({
 			projectName,
-			total: calculateOrderTotal(widthIn, heightIn, optionIds, quantity, undefined, undefined, undefined, marginColor),
+			total: calculateOrderTotal(widthIn, heightIn, optionIds, quantity),
 			artworkPath: artworkPathClaim,
 			artworkFileName
 		});

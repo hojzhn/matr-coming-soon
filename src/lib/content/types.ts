@@ -67,9 +67,6 @@ export interface OrderFormContent {
 	optionsDescription: string;
 	optionsPlaceholder: string;
 	optionsRemoveLabel: string;
-	stretchDiagramArtworkLabel: string;
-	stretchDiagramOutpaintLabel: string;
-	stretchDiagramMarginLabel: string;
 	quantityLabel: string;
 	uploadLabel: string;
 	uploadHint: string;

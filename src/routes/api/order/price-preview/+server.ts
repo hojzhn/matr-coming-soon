@@ -1,9 +1,8 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { calculateOrderTotal, toInches } from '$lib/pricing/calculate';
-import { addOnOptions, COLORED_MARGIN_OPTION_ID, MAX_PRINT_SIDE_IN, MAX_ITEM_QUANTITY } from '$lib/pricing/config';
+import { addOnOptions, MAX_PRINT_SIDE_IN, MAX_ITEM_QUANTITY } from '$lib/pricing/config';
 import { computeCompareAtTotalCents } from '$lib/server/pricing';
 
-const HEX_COLOR_RE = /^#[0-9a-f]{6}$/i;
 
 function fail(error: string, status = 400) {
 	return json({ ok: false, error }, { status });
@@ -28,19 +27,13 @@ export const POST: RequestHandler = async ({ request }) => {
 		return fail('Please choose valid options.');
 	}
 
-	let marginColor: string | null = null;
-	if (optionIds.includes(COLORED_MARGIN_OPTION_ID)) {
-		const rawColor = String(body?.marginColor ?? '');
-		if (HEX_COLOR_RE.test(rawColor)) marginColor = rawColor.toLowerCase();
-	}
-
 	const widthIn = toInches(rawWidth, rawUnit);
 	const heightIn = toInches(rawHeight, rawUnit);
 	if (widthIn > MAX_PRINT_SIDE_IN || heightIn > MAX_PRINT_SIDE_IN) {
 		return fail(`${MAX_PRINT_SIDE_IN} in is the largest side we can print.`);
 	}
 
-	const total = calculateOrderTotal(widthIn, heightIn, optionIds, quantity, undefined, undefined, undefined, marginColor);
+	const total = calculateOrderTotal(widthIn, heightIn, optionIds, quantity);
 
 	return json({ ok: true, compareAtTotalCents: computeCompareAtTotalCents(total) });
 };
