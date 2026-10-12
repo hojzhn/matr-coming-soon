@@ -49,16 +49,50 @@
 		if (!direction) return;
 
 		const root = document.documentElement;
-		root.dataset.heroDirection = direction;
 
 		return new Promise((resolve) => {
-			const transition = document.startViewTransition(async () => {
-				resolve();
-				await navigation.complete;
+			settleAtTop().then(() => {
+				root.dataset.heroDirection = direction;
+				const transition = document.startViewTransition(async () => {
+					resolve();
+					await navigation.complete;
+				});
+				transition.ready.catch(() => {});
+				transition.updateCallbackDone.catch(() => {});
+				transition.finished.catch(() => {}).finally(() => delete root.dataset.heroDirection);
 			});
-			transition.finished.finally(() => delete root.dataset.heroDirection);
 		});
 	});
+
+	function nextFrame() {
+		return new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+	}
+
+	async function settleAtTop() {
+		if (window.scrollY <= 0) return;
+		const viewport = window.visualViewport;
+		const startHeight = viewport?.height ?? window.innerHeight;
+		lenisState.instance?.scrollTo(0, { immediate: true, force: true });
+		window.scrollTo(0, 0);
+		await nextFrame();
+		await nextFrame();
+		if (!viewport || viewport.height === startHeight) return;
+		await new Promise<void>((resolve) => {
+			let timer = setTimeout(done, 150);
+			const cap = setTimeout(done, 600);
+			function onResize() {
+				clearTimeout(timer);
+				timer = setTimeout(done, 150);
+			}
+			function done() {
+				clearTimeout(timer);
+				clearTimeout(cap);
+				viewport!.removeEventListener('resize', onResize);
+				resolve();
+			}
+			viewport.addEventListener('resize', onResize);
+		});
+	}
 </script>
 
 <svelte:head>

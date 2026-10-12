@@ -160,7 +160,7 @@
 		</div>
 
 		<div class="absolute inset-x-0 bottom-0 px-container md:px-28">
-			<Heading level={1} size="display" leading="none" tracking="tighter" tone="surface" balance={false}>
+			<Heading level={1} size="hero" leading="none" tracking="tighter" tone="surface" balance={false} class="max-w-3xl">
 				{#each headlineLines as text, i (i)}
 					<span class="block w-fit" style={line(i + 1)}>{text}</span>
 				{/each}
@@ -168,7 +168,7 @@
 		</div>
 	</div>
 
-	<div class="pointer-events-none absolute inset-0 z-10 flex items-center justify-between px-4 md:px-6">
+	<div class="pointer-events-none absolute inset-0 z-10 hidden items-center justify-between px-6 md:flex">
 		{@render pagerLink(prevPage, 'prev')}
 		{@render pagerLink(nextPage, 'next')}
 	</div>
@@ -198,21 +198,42 @@
 				/>
 			</a>
 			</div>
-			<div style={line(contentStart + 1)}>
+			<div style={line(contentStart + 1)} class="flex items-center gap-4">
+				<a
+					href={prevPage.href}
+					aria-label={`Previous: ${prevPage.label}`}
+					onclick={() => trackEvent('hero_pager_click', { direction: 'prev', to: prevPage.href })}
+					class="flex h-10 w-10 items-center justify-center rounded-full border border-surface/40 text-surface transition-colors duration-300 active:border-brand active:bg-brand active:text-ink md:hidden"
+				>
+					<Icon name="arrow-right" class="h-4 w-4 rotate-180" />
+				</a>
 				<Heading level={6} tag="span" tone="muted" tracking="wide" uppercase>{counter}</Heading>
+				<a
+					href={nextPage.href}
+					aria-label={`Next: ${nextPage.label}`}
+					onclick={() => trackEvent('hero_pager_click', { direction: 'next', to: nextPage.href })}
+					class="flex h-10 w-10 items-center justify-center rounded-full border border-surface/40 text-surface transition-colors duration-300 active:border-brand active:bg-brand active:text-ink md:hidden"
+				>
+					<Icon name="arrow-right" class="h-4 w-4" />
+				</a>
 			</div>
 		</div>
 
 		<div class="mt-12" style={line(contentStart + 2)}>
 			<Heading level={5} tag="p" tone="muted">{hero.description}</Heading>
 		</div>
-		<div style={line(contentStart + 3)} class="mt-8 flex flex-wrap items-center justify-start gap-x-10 gap-y-6">
+		<div
+			style={line(contentStart + 3)}
+			class="mt-8 grid grid-cols-4 items-center gap-x-6 gap-y-5 md:flex md:flex-wrap md:justify-start md:gap-x-10 md:gap-y-6"
+		>
 			{#each brandsContent.items as brand (brand.src)}
-				<LazyImage
-					src={brand.src}
-					alt={brand.name}
-					class="h-4 md:h-6 w-auto shrink-0 opacity-60 brightness-0 invert transition-opacity hover:opacity-100"
-				/>
+				<div class="flex h-4 min-w-0 items-center md:h-6">
+					<LazyImage
+						src={brand.src}
+						alt={brand.name}
+						class="h-full w-auto max-w-full shrink-0 object-contain object-left opacity-60 brightness-0 invert transition-opacity hover:opacity-100"
+					/>
+				</div>
 			{/each}
 		</div>
 	</div>
