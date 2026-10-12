@@ -3,8 +3,6 @@
 	import Section from '$lib/components/ui/Section.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import Icon from '$lib/components/ui/Icon.svelte';
-	import LazyImage from '$lib/components/ui/LazyImage.svelte';
-	import { brandsContent } from '$lib/content';
 	import { heroPages, heroPageIndex } from '$lib/hero/pages';
 	import { trackEvent } from '$lib/analytics/track';
 	import { cn } from '$lib/cn';
@@ -221,20 +219,6 @@
 
 		<div class="mt-12" style={line(contentStart + 2)}>
 			<Heading level={5} tag="p" tone="muted">{hero.description}</Heading>
-		</div>
-		<div
-			style={line(contentStart + 3)}
-			class="mt-8 grid grid-cols-4 items-center gap-x-6 gap-y-5 md:flex md:flex-wrap md:justify-start md:gap-x-10 md:gap-y-6"
-		>
-			{#each brandsContent.items as brand (brand.src)}
-				<div class="flex h-4 min-w-0 items-center md:h-6">
-					<LazyImage
-						src={brand.src}
-						alt={brand.name}
-						class="h-full w-auto max-w-full shrink-0 object-contain object-left opacity-60 brightness-0 invert transition-opacity hover:opacity-100"
-					/>
-				</div>
-			{/each}
 		</div>
 	</div>
 </Section>
