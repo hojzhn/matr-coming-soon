@@ -1,0 +1,66 @@
+{
+  "eyebrow": "Our work",
+  "heading": "From the studio floor.",
+  "items": [
+    {
+      "src": "/images/gallery/brushstrokes.webp",
+      "alt": "Detail of an oil print titled Brushstrokes",
+      "caption": "Brushstrokes"
+    },
+    {
+      "src": "/images/gallery/ack-2.webp",
+      "alt": "Detail of an oil print by ACK II",
+      "caption": "ACK II"
+    },
+    {
+      "src": "/images/gallery/aversano.webp",
+      "alt": "Detail of an oil print by Aversano",
+      "caption": "Aversano"
+    },
+    {
+      "src": "/images/gallery/clownvamp.webp",
+      "alt": "Detail of an oil print by Clownvamp",
+      "caption": "Clownvamp"
+    },
+    {
+      "src": "/images/gallery/doc-t.webp",
+      "alt": "Detail of an oil print by Doc T",
+      "caption": "Doc T"
+    },
+    {
+      "src": "/images/gallery/esherick.webp",
+      "alt": "Detail of an oil print by Esherick",
+      "caption": "Esherick"
+    },
+    {
+      "src": "/images/gallery/gretchen.webp",
+      "alt": "Detail of an oil print by Gretchen",
+      "caption": "Gretchen Andrew"
+    },
+    {
+      "src": "/images/gallery/jon-ai.webp",
+      "alt": "Detail of an oil print by Jon AI",
+      "caption": "Jon AI"
+    },
+    {
+      "src": "/images/gallery/kenny.webp",
+      "alt": "Detail of an oil print by Kenny",
+      "caption": "Kenny"
+    },
+    {
+      "src": "/images/gallery/semenovich.webp",
+      "alt": "Detail of an oil print by Semenovich",
+      "caption": "Semenovich"
+    },
+    {
+      "src": "/images/gallery/snowfro.webp",
+      "alt": "Detail of an oil print by SnowFro",
+      "caption": "SnowFro"
+    },
+    {
+      "src": "/images/gallery/oil-on-paper.webp",
+      "alt": "Detail of an oil print on paper",
+      "caption": "Oil on Paper"
+    }
+  ]
+}

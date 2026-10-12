@@ -107,6 +107,7 @@
 		target={external ? '_blank' : undefined}
 		rel={external ? 'noreferrer' : undefined}
 		data-sveltekit-preload-data={samepage ? 'off' : undefined}
+		{onclick}
 		onmouseenter={onEnter}
 		onmouseleave={onLeave}
 		class={cn('group relative inline-flex w-fit items-center overflow-hidden', variantClass, className)}

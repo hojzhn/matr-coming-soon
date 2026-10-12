@@ -1,5 +1,46 @@
 {
-  "headline": "Wait for it...",
-  "subheadline": "We've spent years working for galleries and practicing artists. Now we're bringing it straight to you.",
-  "logosLabel": "Matr Labs brings Artists and Engineers together\nto invent new ways of making physical art."
+  "home": {
+    "headline": "Engineering\nfor art.",
+    "description": "Matr Labs brings Artists and Engineers together\nto invent new ways of making physical art.",
+    "cta": {
+      "label": "Order your Oil Edition™",
+      "href": "/oil-edition"
+    }
+  },
+  "oilEdition": {
+    "headline": "Oil\nEdition™",
+    "images": [
+      "/images/hero/carousel_1.webp",
+      "/images/hero/carousel_2.webp",
+      "/images/hero/carousel_3.webp",
+      "/images/hero/carousel_4.webp",
+      "/images/hero/carousel_5.webp",
+      "/images/hero/carousel_6.webp",
+      "/images/hero/carousel_7.webp",
+      "/images/hero/carousel_8.webp",
+      "/images/hero/carousel_9.webp",
+      "/images/hero/carousel_10.webp"
+    ],
+    "description": "Real oil-based color on artist-grade linen,\nmade to order from your image.",
+    "cta": {
+      "label": "Are you ready?",
+      "href": "#order"
+    }
+  },
+  "studioPlus": {
+    "headline": "Studio+\nComing soon.",
+    "description": "Something new is taking shape in our Brooklyn studio.\nDetails soon.",
+    "cta": {
+      "label": "Get in touch",
+      "href": "/contact"
+    }
+  },
+  "contact": {
+    "headline": "Say\nhello.",
+    "description": "Wanna collaborate? Our emails are open.\nWe usually reply within a day or two.",
+    "cta": {
+      "label": "Send us a message",
+      "href": "#contact"
+    }
+  }
 }

@@ -7,6 +7,7 @@ export interface FaqItem {
 	answer: string;
 }
 export interface FaqContent {
+	heading: string;
 	items: FaqItem[];
 }
 
@@ -29,10 +30,17 @@ export interface BrandLogo {
 	name: string;
 	src: string;
 }
-export interface HeroContent {
+export interface HeroVariant {
 	headline: string;
-	subheadline: string;
-	logosLabel: string;
+	images?: string[];
+	description: string;
+	cta: { label: string; href: string };
+}
+export interface HeroContent {
+	home: HeroVariant;
+	oilEdition: HeroVariant;
+	studioPlus: HeroVariant;
+	contact: HeroVariant;
 }
 export interface BrandsContent {
 	items: BrandLogo[];
@@ -46,6 +54,10 @@ export interface GalleryItem {
 export interface GalleryContent {
 	eyebrow: string;
 	heading: string;
+	trustedLabel: string;
+	trustedDefault: string;
+	moreLabel: string;
+	lessLabel: string;
 	items: GalleryItem[];
 }
 
@@ -131,10 +143,10 @@ export interface StrengthsContent {
 	heading: string;
 	intro: string;
 	items: Strength[];
-	process: {
-		heading: string;
-		body: string;
-	};
+}
+export interface HandcraftedContent {
+	heading: string;
+	body: string;
 }
 
 export interface SocialPost {
@@ -187,6 +199,19 @@ export interface ContactContent {
 	headingWithEmail: string;
 	intro: string;
 	form: ContactFormContent;
+	modesLabel: string;
+	modes: { general: string; commission: string };
+	commission: {
+		techniquesLabel: string;
+		unsureLabel: string;
+		surfaceLabel: string;
+		surfacePlaceholder: string;
+		timelineLabel: string;
+		timelinePlaceholder: string;
+		messagePlaceholder: string;
+		messageTitle: string;
+	};
+	banner: { heading: string; body: string; cta: string; href: string };
 }
 
 export interface LegalBlock {
@@ -227,4 +252,44 @@ export interface CookieConsentContent {
 		policyLinkLabel: string;
 	};
 	footerLinkLabel: string;
+}
+export interface Technique {
+	title: string;
+	body: string;
+	video?: string;
+	image: string;
+	alt: string;
+}
+export interface ToolboxContent {
+	title: string;
+	heading: string;
+	lead: string;
+	cta: string;
+	ctaHref: string;
+	techniquesHeading: string;
+	techniques: Technique[];
+	combining: {
+		heading: string;
+		body: string;
+		video: string;
+		image: string;
+		alt: string;
+	};
+	materials: {
+		heading: string;
+		feature: Technique;
+		cards: { title: string; body: string }[];
+	};
+}
+export interface Banner {
+	heading: string;
+	body: string;
+	href: string;
+	image: string;
+	video?: string;
+	alt: string;
+}
+export interface BannersContent {
+	ctaPrefix: string;
+	items: Banner[];
 }

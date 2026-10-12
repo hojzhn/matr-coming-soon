@@ -1,7 +1,8 @@
 {
 	"items": [
-		{ "label": "Top", "href": "#top" },
-		{ "label": "Order", "href": "#order" },
-		{ "label": "Contact", "href": "#contact" }
+		{ "label": "Home", "href": "/" },
+		{ "label": "Oil Edition™", "href": "/oil-edition" },
+		{ "label": "Studio+", "href": "/studio-plus" },
+		{ "label": "Contact", "href": "/contact" }
 	]
 }

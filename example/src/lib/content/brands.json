@@ -1,0 +1,11 @@
+{
+	"items": [
+		{ "name": "Christie's", "src": "/images/logos/christies.svg" },
+		{ "name": "Sotheby's", "src": "/images/logos/sothebys.svg" },
+		{ "name": "Artnet", "src": "/images/logos/artnet.svg" },
+		{ "name": "Vice", "src": "/images/logos/vice.svg" },
+		{ "name": "Pace Gallery", "src": "/images/logos/pace-gallery.svg" },
+		{ "name": "Every.to", "src": "/images/logos/every-to.svg" },
+		{ "name": "Whitney", "src": "/images/logos/whitney.png" }
+	]
+}

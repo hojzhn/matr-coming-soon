@@ -1,0 +1,24 @@
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { env } from '$env/dynamic/private';
+
+let client: SupabaseClient | null = null;
+
+export function getSupabaseAdmin(): SupabaseClient {
+	if (client) return client;
+
+	const url = env.SUPABASE_URL;
+	const key = env.SUPABASE_SERVICE_ROLE_KEY;
+	if (!url || !key) {
+		throw new Error('Supabase is not configured: set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.');
+	}
+
+	client = createClient(url, key, { auth: { persistSession: false } });
+	return client;
+}
+
+export const PRINT_ORDERS_TABLE = 'print_orders';
+export const ORDER_ITEMS_TABLE = 'print_order_items';
+export const SHOPS_TABLE = 'shops';
+export const NEWSLETTER_TABLE = 'newsletter_subscribers';
+export const CONTACT_MESSAGES_TABLE = 'contact_messages';
+export const ORDER_ARTWORK_BUCKET = 'order-artwork';

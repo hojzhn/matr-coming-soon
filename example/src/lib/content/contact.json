@@ -1,0 +1,24 @@
+{
+  "eyebrow": "Get in touch",
+  "heading": "Say hello.",
+  "headingWithName": "Hi, {name}!",
+  "headingWithEmail": "Can't wait.",
+  "intro": "Questions, press, partnerships or anything else. We read everything.",
+  "form": {
+    "madlibGreeting": "Hi",
+    "madlibClosing": "We'll find you at",
+    "nameLabel": "Name",
+    "namePlaceholder": "Your Name",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Your message",
+    "submitLabel": "Send message",
+    "submitLoadingLabel": "Sending...",
+    "copyEmailLabel": "Copy email",
+    "copiedLabel": "Copied!",
+    "successMessage": "Thanks. We'll be in touch soon.",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errorInvalidEmail": "That email doesn't look right!"
+  }
+}

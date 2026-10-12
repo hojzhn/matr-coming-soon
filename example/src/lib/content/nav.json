@@ -1,0 +1,20 @@
+{
+  "items": [
+    {
+      "label": "Home",
+      "href": "/#top"
+    },
+    {
+      "label": "Order",
+      "href": "/#order"
+    },
+    {
+      "label": "Toolbox",
+      "href": "/toolbox"
+    },
+    {
+      "label": "Contact",
+      "href": "#contact"
+    }
+  ]
+}

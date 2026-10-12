@@ -1,0 +1,654 @@
+<script lang="ts">
+	import { fade, slide } from 'svelte/transition';
+	import Field from '$lib/components/ui/Field.svelte';
+	import SizeInput from '$lib/components/ui/SizeInput.svelte';
+	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
+	import Heading from '$lib/components/ui/Heading.svelte';
+	import Icon, { type IconName } from '$lib/components/ui/Icon.svelte';
+	import StretchDiagram from '$lib/components/ui/StretchDiagram.svelte';
+	import { orderContent } from '$lib/content';
+	import {
+		addOnOptions,
+		STRETCH_SERVICE_OPTION_ID,
+		OUTPAINT_OPTION_ID,
+		COLORED_MARGIN_OPTION_ID,
+		DEFAULT_MARGIN_COLOR,
+		MAX_PRINT_SIDE_IN,
+		MAX_ARTWORK_FILE_BYTES,
+		ACCEPTED_ARTWORK_TYPES
+	} from '$lib/pricing/config';
+	import { calculateOrderTotal, formatPrice, priceAddOnCents, toInches } from '$lib/pricing/calculate';
+	import { cart } from '$lib/cart/cart.svelte';
+	import { pendingUploadProgress, submitCheckout } from '$lib/cart/checkout';
+	import { releaseArtworkUpload, startArtworkUpload, type ArtworkUpload } from '$lib/cart/artwork-upload.svelte';
+	import { checkoutStatus } from '$lib/cart/checkout-status.svelte';
+	import { toast } from '$lib/toast/toast.svelte';
+	import { trackEvent } from '$lib/analytics/track';
+	import { cn } from '$lib/cn';
+
+	let { formToken }: { formToken: string } = $props();
+
+	const MAX_FILE_BYTES = MAX_ARTWORK_FILE_BYTES;
+	const ACCEPTED_TYPES = ACCEPTED_ARTWORK_TYPES;
+
+	let projectName = $state('');
+	let error = $state('');
+	let checkoutLoading = $state(false);
+	let showConfirmation = $state(false);
+
+	let customWidth = $state('');
+	let customHeight = $state('');
+	let customUnit = $state<'in' | 'cm'>('in');
+	let selectedOptionIds = $state<string[]>([]);
+	let marginColor = $state(DEFAULT_MARGIN_COLOR);
+	let quantity = $state('1');
+
+	let fileInput = $state<HTMLInputElement>();
+	let file = $state<File | null>(null);
+	let previewUrl = $state<string | null>(null);
+	let imageAspect = $state<number | null>(null);
+	let fileError = $state('');
+	let upload = $state<ArtworkUpload | null>(null);
+	let dragOver = $state(false);
+
+	const activeSize = $derived.by(() => {
+		const w = Number(customWidth);
+		const h = Number(customHeight);
+		if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) return null;
+		return { widthIn: toInches(w, customUnit), heightIn: toInches(h, customUnit) };
+	});
+
+	const exceedsMaxSize = $derived(
+		activeSize
+			? activeSize.widthIn > MAX_PRINT_SIDE_IN || activeSize.heightIn > MAX_PRINT_SIDE_IN
+			: false
+	);
+
+	const total = $derived.by(() => {
+		if (!activeSize || exceedsMaxSize) return null;
+		return calculateOrderTotal(
+			activeSize.widthIn,
+			activeSize.heightIn,
+			selectedOptionIds,
+			Number(quantity) || 1,
+			undefined,
+			undefined,
+			undefined,
+			marginColor
+		);
+	});
+
+	let compareAtTotalCents = $state<number | null>(null);
+
+	$effect(() => {
+		if (!total || !activeSize) {
+			compareAtTotalCents = null;
+			return;
+		}
+
+		const requestBody = {
+			rawWidth: activeSize.widthIn,
+			rawHeight: activeSize.heightIn,
+			rawUnit: 'in' as const,
+			optionIds: selectedOptionIds,
+			quantity: total.quantity,
+			marginColor
+		};
+
+		let cancelled = false;
+		const timer = setTimeout(async () => {
+			try {
+				const res = await fetch('/api/order/price-preview', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(requestBody)
+				});
+				const data = await res.json();
+				if (!cancelled && data.ok) compareAtTotalCents = data.compareAtTotalCents;
+			} catch {
+				/* preview is best-effort; leave the last known value in place */
+			}
+		}, 150);
+
+		return () => {
+			cancelled = true;
+			clearTimeout(timer);
+		};
+	});
+
+	const boundingBoxStyle = $derived.by(() => {
+		if (!activeSize) return 'width:100%;height:100%;';
+		const { widthIn: w, heightIn: h } = activeSize;
+		const printAspect = w / h;
+
+		if (!imageAspect) {
+			const ratio = `aspect-ratio:${w}/${h};`;
+			return printAspect >= 1 ? `width:100%;${ratio}` : `height:100%;${ratio}`;
+		}
+
+		const imgW = imageAspect >= 1 ? 100 : 100 * imageAspect;
+		const imgH = imageAspect >= 1 ? 100 / imageAspect : 100;
+		const boxW = printAspect >= imageAspect ? imgW : imgH * printAspect;
+		const boxH = printAspect >= imageAspect ? imgW / printAspect : imgH;
+
+		return `width:${boxW}%;height:${boxH}%;`;
+	});
+
+	const formHeading = $derived(
+		projectName.trim()
+			? orderContent.form.formHeadingProjectTemplate.replace('{name}', projectName.trim())
+			: orderContent.form.formHeading
+	);
+
+	const checkoutUploadProgress = $derived(pendingUploadProgress());
+
+	const stretchSelected = $derived(selectedOptionIds.includes(STRETCH_SERVICE_OPTION_ID));
+
+	const stretchOption = addOnOptions.find((opt) => opt.id === STRETCH_SERVICE_OPTION_ID)!;
+
+	const visibleAddOnOptions = $derived(
+		addOnOptions.filter(
+			(opt) =>
+				opt.id !== OUTPAINT_OPTION_ID &&
+				opt.id !== COLORED_MARGIN_OPTION_ID &&
+				opt.id !== STRETCH_SERVICE_OPTION_ID
+		)
+	);
+
+	const printTypes = [
+		{
+			stretched: false,
+			label: orderContent.form.printTypeRolledLabel,
+			icon: 'texture' as IconName,
+			description: orderContent.form.printTypeRolledDescription,
+			shippingNote: orderContent.form.printTypeRolledShippingNote
+		},
+		{
+			stretched: true,
+			label: orderContent.form.printTypeStretchedLabel,
+			icon: stretchOption.icon,
+			description: stretchOption.description ?? '',
+			shippingNote: orderContent.form.printTypeStretchedShippingNote
+		}
+	];
+
+	function setStretched(stretched: boolean) {
+		if (stretched === stretchSelected) return;
+		if (stretched) {
+			toggleOption(STRETCH_SERVICE_OPTION_ID);
+			return;
+		}
+		selectedOptionIds = selectedOptionIds.filter(
+			(id) => id !== STRETCH_SERVICE_OPTION_ID && id !== OUTPAINT_OPTION_ID
+		);
+	}
+
+	function toggleOption(id: string) {
+		if (selectedOptionIds.includes(id)) {
+			selectedOptionIds = selectedOptionIds.filter((optionId) => optionId !== id);
+			return;
+		}
+		selectedOptionIds = [...selectedOptionIds, id];
+		if (id === STRETCH_SERVICE_OPTION_ID) {
+			if (!selectedOptionIds.includes(OUTPAINT_OPTION_ID)) {
+				selectedOptionIds = [...selectedOptionIds, OUTPAINT_OPTION_ID];
+			}
+		}
+	}
+
+	function setFile(next: File | null) {
+		if (previewUrl) URL.revokeObjectURL(previewUrl);
+		if (file && !cart.items.some((item) => item.file === file)) releaseArtworkUpload(file);
+		previewUrl = null;
+		imageAspect = null;
+		fileError = '';
+		file = null;
+		upload = null;
+		if (!next) return;
+
+		if (!ACCEPTED_TYPES.includes(next.type) || next.size > MAX_FILE_BYTES) {
+			fileError = orderContent.form.errorInvalidFile;
+			return;
+		}
+
+		file = next;
+		upload = startArtworkUpload(formToken, next);
+		if (next.type.startsWith('image/')) previewUrl = URL.createObjectURL(next);
+	}
+
+	function onPreviewLoad(e: Event) {
+		const img = e.currentTarget as HTMLImageElement;
+		imageAspect = img.naturalWidth / img.naturalHeight;
+	}
+
+	function onFileChange(e: Event) {
+		setFile((e.currentTarget as HTMLInputElement).files?.[0] ?? null);
+	}
+
+	function onDrop(e: DragEvent) {
+		e.preventDefault();
+		dragOver = false;
+		setFile(e.dataTransfer?.files?.[0] ?? null);
+	}
+
+	function removeFile() {
+		setFile(null);
+		if (fileInput) fileInput.value = '';
+	}
+
+	function resetForm() {
+		projectName = '';
+		customWidth = '';
+		customHeight = '';
+		customUnit = 'in';
+		selectedOptionIds = [];
+		marginColor = DEFAULT_MARGIN_COLOR;
+		quantity = '1';
+		file = null;
+		upload = null;
+		previewUrl = null;
+		fileError = '';
+		dragOver = false;
+		if (fileInput) fileInput.value = '';
+	}
+
+	function validate(): boolean {
+		error = '';
+
+		if (!projectName.trim()) {
+			error = orderContent.form.errorProjectNameRequired;
+			return false;
+		}
+		if (!file) {
+			error = orderContent.form.errorFileRequired;
+			return false;
+		}
+		if (!activeSize) {
+			error = orderContent.form.errorInvalidSize;
+			return false;
+		}
+		if (exceedsMaxSize) {
+			error = orderContent.form.errorMaxSize;
+			return false;
+		}
+		return true;
+	}
+
+	function addItemToCart(): boolean {
+		if (!validate() || !activeSize) return false;
+
+		const result = cart.add({
+			projectName,
+			rawWidth: Number(customWidth),
+			rawHeight: Number(customHeight),
+			rawUnit: customUnit,
+			widthIn: activeSize.widthIn,
+			heightIn: activeSize.heightIn,
+			optionIds: selectedOptionIds,
+			marginColor: selectedOptionIds.includes(COLORED_MARGIN_OPTION_ID) ? marginColor : null,
+			quantity: Number(quantity) || 1,
+			fileName: file?.name ?? null,
+			previewUrl,
+			file
+		});
+
+		if (!result.ok) {
+			error = orderContent.form.errorCartFull;
+			return false;
+		}
+
+		const itemId = result.id;
+		upload?.promise.then((path) => cart.setArtworkPath(itemId, path)).catch(() => {});
+
+		trackEvent('add_to_cart', {
+			widthIn: activeSize.widthIn,
+			heightIn: activeSize.heightIn,
+			quantity: Number(quantity) || 1,
+			optionCount: selectedOptionIds.length,
+			totalCents: total?.totalPriceCents ?? null
+		});
+
+		return true;
+	}
+
+	function onsubmit(e: SubmitEvent) {
+		e.preventDefault();
+		if (!addItemToCart()) return;
+		toast.show(orderContent.form.addedToCartToast);
+		showConfirmation = true;
+		setTimeout(() => {
+			resetForm();
+			showConfirmation = false;
+		}, 1300);
+	}
+
+	async function checkoutNow() {
+		if (!addItemToCart()) return;
+		resetForm();
+		checkoutLoading = true;
+		const paymentWindow = window.open('about:blank', '_blank');
+		const result = await submitCheckout(formToken, '', paymentWindow);
+		if (!result.ok) error = result.error;
+		checkoutLoading = false;
+	}
+</script>
+
+<div class="relative">
+	<form
+		class={cn(
+			'mt-8 grid gap-10 transition-all duration-500 ease-out md:grid-cols-2',
+			showConfirmation ? 'pointer-events-none blur-md opacity-0' : 'blur-none opacity-100'
+		)}
+		{onsubmit}
+	>
+		<div>
+			<Heading level={5} tag="p" tone="muted" class="mb-4">Artwork *</Heading>
+			<div class="relative aspect-square w-full overflow-hidden bg-fill-soft/60">
+				<button
+					type="button"
+					onclick={() => fileInput?.click()}
+					ondragover={(e) => {
+						e.preventDefault();
+						dragOver = true;
+					}}
+					ondragleave={() => (dragOver = false)}
+					ondrop={onDrop}
+					class={cn(
+						'group absolute inset-0 flex flex-col items-center justify-center gap-3 overflow-hidden p-4 text-center transition-colors',
+						previewUrl ? 'bg-fill-soft' : 'border-2 border-dashed border-line bg-fill-soft',
+						dragOver && !previewUrl && 'border-brand bg-surface'
+					)}
+				>
+					{#if previewUrl}
+						<img
+							src={previewUrl}
+							alt=""
+							onload={onPreviewLoad}
+							class="absolute inset-0 h-full w-full object-contain"
+						/>
+					{:else if file}
+						<Icon name="file" class="h-8 w-8 text-ink-muted" />
+						<Heading level={6} tag="span" tone="muted" class="max-w-[80%] truncate">
+							{file.name}
+						</Heading>
+					{:else}
+						<Icon
+							name="upload"
+							class="h-7 w-7 text-ink-faint transition-colors group-hover:text-brand"
+						/>
+						<Heading level={5} tag="span" weight="medium" tone="muted">
+							{orderContent.form.uploadLabel}
+						</Heading>
+						<Heading level={6} tag="span" tone="muted">{orderContent.form.uploadHint}</Heading>
+					{/if}
+				</button>
+
+				<div class="pointer-events-none absolute inset-0 flex items-center justify-center">
+					<div class="border-2 border-dashed border-brand" style={boundingBoxStyle}></div>
+				</div>
+			</div>
+			<input
+				bind:this={fileInput}
+				type="file"
+				accept="image/jpeg,image/png,application/pdf"
+				class="hidden"
+				onchange={onFileChange}
+			/>
+
+			<div class="mt-3 flex items-center justify-between gap-3">
+				<Heading level={6} tag="p" tone="muted">{orderContent.form.uploadDpiNote}</Heading>
+				{#if file}
+					<button
+						type="button"
+						onclick={removeFile}
+						class="shrink-0 text-xs font-medium text-ink-muted underline hover:text-ink"
+					>
+						{orderContent.form.uploadRemoveLabel}
+					</button>
+				{/if}
+			</div>
+			{#if upload}
+				<Heading level={6} tag="p" tone="muted" class="mt-1">
+					{upload.status === 'uploading'
+						? orderContent.form.uploadProgressLabel.replace('{percent}', String(Math.round(upload.progress * 100)))
+						: upload.status === 'done'
+							? orderContent.form.uploadDoneLabel
+							: orderContent.form.uploadFailedLabel}
+				</Heading>
+			{/if}
+			{#if fileError}
+				<Heading level={6} tag="p" class="mt-1 text-danger">{fileError}</Heading>
+			{/if}
+		</div>
+
+		<div class="flex flex-col gap-6">
+			<Field
+				label={orderContent.form.projectNameLabel}
+				placeholder={orderContent.form.projectNamePlaceholder}
+				required
+				bind:value={projectName}
+			/>
+
+			<Field label={orderContent.form.printTypeLabel}>
+				<div class="mt-4 grid grid-cols-2 gap-2">
+					{#each printTypes as type (type.stretched)}
+						{@const selected = stretchSelected === type.stretched}
+						<button
+							type="button"
+							onclick={() => setStretched(type.stretched)}
+							aria-pressed={selected}
+							class={cn(
+								'flex flex-col items-start gap-2 border-2 p-3 text-left transition-colors',
+								selected ? 'border-ink' : 'border-line hover:border-ink-muted'
+							)}
+						>
+							<div class="flex items-center gap-3">
+								<Icon name={type.icon} class="h-6 w-6 text-ink" strokeWidth={1} />
+								<Heading level={4} tag="span" weight="medium">{type.label}</Heading>
+							</div>
+							<Heading level={6} tag="span" tone="muted">{type.description}</Heading>
+							<div class="mt-auto flex items-center gap-2">
+								<Icon name="truck" class="h-4 w-4 shrink-0 text-ink-faint" />
+								<Heading level={6} tag="span" tone="muted">{type.shippingNote}</Heading>
+							</div>
+						</button>
+					{/each}
+				</div>
+			</Field>
+
+			<Field label={orderContent.form.sizeLabel}>
+				<SizeInput bind:width={customWidth} bind:height={customHeight} bind:unit={customUnit} />
+
+				{#if exceedsMaxSize}
+					<Heading level={6} tag="p" class="mt-1.5 text-danger">
+						{orderContent.form.errorMaxSize}
+					</Heading>
+				{/if}
+			</Field>
+			<Field label={orderContent.form.optionsLabel} description={orderContent.form.optionsDescription}>
+				<div class="flex flex-col gap-2 mt-4">
+					{#each visibleAddOnOptions as opt (opt.id)}
+						{@const selected = selectedOptionIds.includes(opt.id)}
+						{@const optPriceCents = priceAddOnCents(opt, activeSize?.widthIn ?? 0, activeSize?.heightIn ?? 0)}
+						<div
+							class={cn(
+								'flex flex-col gap-2 border-2 p-3 text-center transition-colors',
+								selected ? 'border-ink' : 'border-line hover:border-ink-muted'
+							)}
+						>
+							<button type="button" onclick={() => toggleOption(opt.id)} aria-pressed={selected} class="flex items-center justify-between gap-2">
+								<div class="flex items-center gap-4">
+									<Icon name={opt.icon} class="h-6 w-6 text-ink" strokeWidth={1} />
+									<Heading level={4} tag="span" weight="medium">
+										{opt.label}
+									</Heading>
+									{#if opt.id === COLORED_MARGIN_OPTION_ID}
+										<span
+											class="h-4 w-4 shrink-0 rounded-full border border-line"
+											style={`background-color:${marginColor}`}
+										></span>
+									{/if}
+									{#if selected}
+										<span
+											class="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-ink"
+											transition:fade={{ duration: 150 }}
+										>
+											<Icon name="check" class="h-2.5 w-2.5 text-surface" strokeWidth={3} />
+										</span>
+									{/if}
+								</div>
+								<Heading level={4} size="md">
+									{optPriceCents ? ` +${formatPrice(optPriceCents)}` : ''}
+								</Heading>
+							</button>
+							{#if selected && opt.description}
+								<div class="text-left" transition:slide={{ duration: 250 }}>
+									<Heading level={5} tag="p" tone="muted">
+										{opt.description}
+									</Heading>
+								</div>
+							{/if}
+							{#if selected && opt.id === COLORED_MARGIN_OPTION_ID}
+								<div class="flex items-center gap-3 pt-1" transition:slide={{ duration: 250 }}>
+									<input
+										type="color"
+										bind:value={marginColor}
+										aria-label="Margin color"
+										class="h-9 w-14 shrink-0 cursor-pointer border border-line bg-transparent p-0.5"
+									/>
+									<Heading level={6} tag="span" tone="muted">{marginColor}</Heading>
+								</div>
+							{/if}
+						</div>
+					{/each}
+				</div>
+
+			</Field>
+
+		
+
+			<Field label={orderContent.form.quantityLabel}>
+				<input
+					type="number"
+					min="1"
+					inputmode="numeric"
+					bind:value={quantity}
+					class="w-full border-b-2 border-ink bg-transparent px-0 py-2.5 text-base font-medium text-ink outline-none transition-colors [appearance:textfield] focus:border-brand [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+				/>
+			</Field>
+
+			<div class="border-t border-line pt-4">
+				<div class="flex items-center justify-between">
+					<Heading level={5} tag="span" tone="muted">{orderContent.form.totalLabel}</Heading>
+					<div class="flex items-baseline gap-2">
+						{#if compareAtTotalCents && total && compareAtTotalCents > total.totalPriceCents}
+							<Heading level={4} tag="span" tone="muted" strike>
+								{formatPrice(compareAtTotalCents)}
+							</Heading>
+						{/if}
+						<Heading level={2} tag="span">
+							{total ? formatPrice(total.totalPriceCents) : '—'}
+						</Heading>
+					</div>
+				</div>
+				{#if total}
+					<Heading level={6} tag="p" tone="muted" class="mt-1">
+						{total.quantity} x {projectName.trim() || orderContent.form.untitledLabel} ({formatPrice(total.basePriceCents)})
+					</Heading>
+					{#each total.options.filter((opt) => opt.id !== OUTPAINT_OPTION_ID) as opt (opt.id)}
+						<Heading level={6} tag="p" tone="muted" class="ml-3 flex items-center gap-1.5">
+							- {opt.label} ({formatPrice(opt.priceDeltaCents)})
+							{#if opt.color}
+								<span
+									class="h-2.5 w-2.5 shrink-0 rounded-full border border-line"
+									style={`background-color:${opt.color}`}
+								></span>
+							{/if}
+						</Heading>
+					{/each}
+				{/if}
+			</div>
+
+			{#if error}
+				<Heading level={6} tag="p" class="text-danger">{error}</Heading>
+			{/if}
+
+			<div class="flex flex-col gap-3 sm:flex-row">
+				<ArrowLink
+					type="submit"
+					variant="button"
+					icon="cart"
+					arrow={false}
+					label={orderContent.form.addToCartLabel}
+					disabled={checkoutLoading}
+					class="w-full sm:flex-1"
+				/>
+				<ArrowLink
+					type="button"
+					variant="button"
+					icon="bolt"
+					arrow={false}
+					fill="ink"
+					label={checkoutLoading && checkoutUploadProgress !== null
+						? orderContent.cart.checkoutUploadingLabel.replace('{percent}', String(Math.round(checkoutUploadProgress * 100)))
+						: orderContent.form.checkoutNowLabel}
+					loading={checkoutLoading}
+					disabled={checkoutLoading || checkoutStatus.awaitingPayment}
+					onclick={checkoutNow}
+					class="w-full bg-brand sm:flex-1"
+				/>
+			</div>
+
+			{#if checkoutStatus.awaitingPayment}
+				<Heading level={6} tag="p" tone="muted">{orderContent.cart.awaitingPaymentLabel}</Heading>
+			{/if}
+
+			<div class="flex flex-col gap-2">
+				{#each orderContent.form.finePrint as item (item.text)}
+					<div class="flex items-center gap-2">
+						<Icon name={item.icon as IconName} class="mt-0.5 h-4 w-4 shrink-0 text-ink-faint" />
+						<Heading level={6} tag="p" tone="muted">{item.text}</Heading>
+					</div>
+				{/each}
+			</div>
+		</div>
+	</form>
+
+	{#if showConfirmation}
+		<div
+			class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-4"
+			transition:fade={{ duration: 300 }}
+		>
+			<svg
+				viewBox="0 0 24 24"
+				class="h-14 w-14 text-ink"
+				fill="none"
+				stroke="currentColor"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<circle cx="12" cy="12" r="10" stroke-width="2" class="confirm-circle" />
+				<path d="M8 12l3 3 5-6" stroke-width="2" class="confirm-check" />
+			</svg>
+			<Heading level={2}>{orderContent.form.addedToCartConfirmation}</Heading>
+		</div>
+	{/if}
+</div>
+
+<style>
+	.confirm-circle {
+		stroke-dasharray: 63;
+		stroke-dashoffset: 63;
+		animation: confirm-draw 450ms ease-out forwards;
+	}
+	.confirm-check {
+		stroke-dasharray: 13;
+		stroke-dashoffset: 13;
+		animation: confirm-draw 300ms ease-out 400ms forwards;
+	}
+	@keyframes confirm-draw {
+		to {
+			stroke-dashoffset: 0;
+		}
+	}
+</style>

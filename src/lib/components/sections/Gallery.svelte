@@ -1,112 +1,42 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
 	import Section from '$lib/components/ui/Section.svelte';
 	import Container from '$lib/components/ui/Container.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import Icon from '$lib/components/ui/Icon.svelte';
-	import { galleryContent } from '$lib/content';
-	import { fade } from 'svelte/transition';
+	import LazyImage from '$lib/components/ui/LazyImage.svelte';
+	import SwapText from '$lib/components/ui/SwapText.svelte';
+	import { galleryContent, testimonialsContent } from '$lib/content';
 	import { lenisState } from '$lib/lenis.svelte';
+	import { cn } from '$lib/cn';
 
-	let isDesktop = $state(false);
+	const items = galleryContent.items;
 
-	$effect(() => {
-		const mq = window.matchMedia('(min-width: 768px)');
-		function update() {
-			isDesktop = mq.matches;
-		}
-		update();
-		mq.addEventListener('change', update);
-		return () => mq.removeEventListener('change', update);
-	});
+	const people = testimonialsContent.artists;
 
-	const columnCount = $derived(isDesktop ? 3 : 2);
-
-	const columns = $derived.by(() => {
-		const cols: { item: (typeof galleryContent.items)[number]; i: number }[][] = Array.from(
-			{ length: columnCount },
-			() => []
-		);
-		galleryContent.items.forEach((item, i) => {
-			cols[i % columnCount].push({ item, i });
-		});
-		return cols;
-	});
-
-	function columnBase(col: number): number {
-		return col % 2 === 0 ? 0 : 56;
-	}
-
-	function columnDuration(col: number): number {
-		return 22 + col * 7;
-	}
-
-	function columnDirection(col: number): 'normal' | 'reverse' {
-		return col % 2 === 0 ? 'normal' : 'reverse';
-	}
-
-	function columnParallaxSpeed(col: number): number {
-		return (col % 2 === 0 ? -1 : 1) * (180 + col * 60);
-	}
-
-	let galleryEl = $state<HTMLElement>();
-	let scrollY = $state(0);
-	let reduceMotion = $state(false);
-
-	const scrollProgress = $derived.by(() => {
-		scrollY;
-		if (!galleryEl || reduceMotion) return 0.5;
-		const rect = galleryEl.getBoundingClientRect();
-		const vh = window.innerHeight;
-		const total = rect.height + vh;
-		return Math.min(1, Math.max(0, (vh - rect.top) / total));
-	});
-
-	$effect(() => {
-		reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-		let ticking = false;
-		function onScroll() {
-			if (ticking) return;
-			ticking = true;
-			requestAnimationFrame(() => {
-				scrollY = window.scrollY;
-				ticking = false;
-			});
-		}
-
-		window.addEventListener('scroll', onScroll, { passive: true });
-		onScroll();
-
-		return () => window.removeEventListener('scroll', onScroll);
-	});
-
-	let failed = $state<boolean[]>(galleryContent.items.map(() => false));
-	let loaded = $state<boolean[]>(galleryContent.items.map(() => false));
-	let aspectRatios = $state<number[]>(galleryContent.items.map(() => 1));
+	let listOpen = $state(false);
+	let hoveredIndex = $state<number | null>(null);
+	let hoveredPerson = $state<string | null>(null);
 	let openIndex = $state<number | null>(null);
 
-	$effect(() => {
-		if (!galleryEl) return;
+	function workIndex(person: string) {
+		return items.findIndex((item) => person.toLowerCase().includes(item.caption.toLowerCase()));
+	}
 
-		const io = new IntersectionObserver(
-			(entries) => {
-				if (!entries[0]?.isIntersecting) return;
-				io.disconnect();
-				galleryContent.items.forEach((item, i) => {
-					const img = new Image();
-					img.onload = () => {
-						aspectRatios[i] = img.naturalWidth / img.naturalHeight;
-						loaded[i] = true;
-					};
-					img.onerror = () => (failed[i] = true);
-					img.src = item.src;
-				});
-			},
-			{ rootMargin: '600px' }
-		);
-		io.observe(galleryEl);
-		return () => io.disconnect();
-	});
+	const highlightIndex = $derived(hoveredPerson === null ? hoveredIndex : workIndex(hoveredPerson));
+
+	const trustedName = $derived(
+		hoveredPerson ?? (hoveredIndex === null ? galleryContent.trustedDefault : items[hoveredIndex].caption)
+	);
+
+	const lineDelay = (i: number) => 300 + i * 18;
+	const textDelay = (i: number) => 650 + i * 15;
+
+	function toggleView() {
+		listOpen = !listOpen;
+		hoveredIndex = null;
+		hoveredPerson = null;
+	}
 
 	function open(i: number) {
 		openIndex = i;
@@ -118,12 +48,12 @@
 
 	function next() {
 		if (openIndex === null) return;
-		openIndex = (openIndex + 1) % galleryContent.items.length;
+		openIndex = (openIndex + 1) % items.length;
 	}
 
 	function prev() {
 		if (openIndex === null) return;
-		openIndex = (openIndex - 1 + galleryContent.items.length) % galleryContent.items.length;
+		openIndex = (openIndex - 1 + items.length) % items.length;
 	}
 
 	$effect(() => {
@@ -148,54 +78,100 @@
 	});
 </script>
 
-<Section id="gallery" tone="surface" contained={false} class="my-20">
-	<div bind:this={galleryEl} class="gallery-grid">
-		<div class="flex gap-3 md:gap-4">
-			{#each columns as column, col (col)}
+<Section id="gallery" tone="surface" contained={false} class="pt-0">
+	<Container class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
+		<Heading level={4} tag="h2" balance={false}>
+			{galleryContent.trustedLabel}
+			<span class="sr-only" aria-live="polite">{trustedName}</span>
+			<Heading level={4} tag="span" weight="medium" balance={false}><SwapText text={trustedName} /></Heading>
+		</Heading>
+		<button type="button" onclick={toggleView} aria-expanded={listOpen} aria-controls="gallery-view">
+			<Heading level={4} tag="span" weight="medium" underline>
+				{listOpen ? galleryContent.lessLabel : galleryContent.moreLabel}
+			</Heading>
+		</button>
+	</Container>
+
+	<Container width="full">
+	<div
+		id="gallery-view"
+		class="relative mt-6 flex aspect-16/27 flex-col md:aspect-64/27 md:flex-row"
+	>
+		<div
+			data-lenis-prevent
+			aria-hidden={!listOpen}
+			inert={!listOpen}
+			class={cn(
+				'min-h-0 shrink-0 overflow-x-hidden transition-[width,height,margin] duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] md:h-full',
+				listOpen ? 'mb-2 h-1/2 overflow-y-auto overscroll-contain md:mr-4 md:mb-0 md:w-5/12' : 'h-0 overflow-y-hidden md:w-0'
+			)}
+		>
+			<div class="min-w-64">
 				<div
-					class="h-screen md:h-[150vh] flex-1 overflow-hidden"
-					style="transform: translateY({columnBase(col) +
-						(scrollProgress - 0.5) * columnParallaxSpeed(col)}px)"
+					class="pb-2 transition-opacity duration-300"
+					style={listOpen ? `opacity: 1; transition-delay: ${textDelay(0)}ms` : 'opacity: 0'}
+				>
+					<Heading level={5} tag="p" >{testimonialsContent.artistsLabel}</Heading>
+				</div>
+				<ul>
+					{#each people as person, i (person)}
+						<li
+							class="relative py-1"
+							onmouseenter={() => (hoveredPerson = person)}
+							onmouseleave={() => (hoveredPerson = null)}
+						>
+							<span
+								aria-hidden="true"
+								class="absolute inset-x-0 bottom-0 h-0.5 origin-left bg-line transition-transform duration-500 ease-out"
+								style={listOpen ? `transform: scaleX(1); transition-delay: ${lineDelay(i)}ms` : 'transform: scaleX(0)'}
+							></span>
+							<span
+								class="block whitespace-nowrap transition-[opacity,translate] duration-300 ease-out"
+								style={listOpen
+									? `opacity: 1; translate: 0 0; transition-delay: ${textDelay(i)}ms`
+									: 'opacity: 0; translate: 0 6px'}
+							>
+								<Heading level={5} tag="span" weight="medium" tone={hoveredPerson === person ? 'ink' : 'muted'}>
+									{person}
+								</Heading>
+							</span>
+						</li>
+					{/each}
+				</ul>
+			</div>
+		</div>
+
+		<div class="grid min-h-0 min-w-0 flex-1 grid-cols-2 grid-rows-6 gap-2 md:grid-cols-4 md:grid-rows-3 md:gap-4">
+			{#each items as item, i (item.src)}
+				<button
+					type="button"
+					onclick={() => open(i)}
+					onmouseenter={() => (hoveredIndex = i)}
+					onmouseleave={() => (hoveredIndex = null)}
+					onfocus={() => (hoveredIndex = i)}
+					onblur={() => (hoveredIndex = null)}
+					aria-label={item.caption}
+					class="relative min-h-0 overflow-hidden bg-fill"
 				>
 					<div
-						class="marquee-track flex flex-col gap-3 md:gap-4"
-						style="--marquee-duration: {columnDuration(col)}s; --marquee-direction: {columnDirection(
-							col
-						)}"
+						class={cn(
+							'absolute inset-0 transition-[filter] duration-500',
+							highlightIndex === i ? 'grayscale-0 contrast-100 brightness-100' : 'grayscale contrast-50 brightness-125'
+						)}
 					>
-						{#each [...column, ...column] as { item, i }, dupIndex (item.src + '-' + dupIndex)}
-							<button
-								type="button"
-								onclick={() => open(i)}
-								style="aspect-ratio: {aspectRatios[i]}"
-								class="group relative shrink-0 overflow-hidden bg-fill-soft/60 transition-all duration-300"
-							>
-								{#if loaded[i]}
-									<img
-										src={item.src}
-										alt={item.alt}
-										transition:fade={{ duration: 300 }}
-										class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-									/>
-								{:else}
-									<div class="absolute inset-0 flex items-center justify-center bg-gray-400">
-										<Heading level={5} tag="p" >Image placeholder</Heading>
-									</div>
-								{/if}
-
-							</button>
-						{/each}
+						<LazyImage src={item.src} alt={item.alt} class="absolute inset-0 h-full w-full object-cover" />
 					</div>
-				</div>
+				</button>
 			{/each}
 		</div>
 	</div>
+	</Container>
 </Section>
 
 {#if openIndex !== null}
-	{@const item = galleryContent.items[openIndex]}
+	{@const item = items[openIndex]}
 	<div
-		class="fixed inset-0 z-[100] flex flex-col bg-surface p-4 md:p-10"
+		class="fixed inset-0 z-100 flex flex-col bg-surface p-4 md:p-10"
 		role="dialog"
 		aria-modal="true"
 		aria-label={item.caption || item.alt}
@@ -204,6 +180,7 @@
 		onkeydown={(e) => {
 			if (e.key === 'Escape') close();
 		}}
+		transition:fade={{ duration: 200 }}
 	>
 		<button
 			type="button"
@@ -217,7 +194,7 @@
 			<Icon name="close" class="h-7 w-7" />
 		</button>
 
-		{#if galleryContent.items.length > 1}
+		{#if items.length > 1}
 			<button
 				type="button"
 				onclick={(e) => {
@@ -242,25 +219,17 @@
 			</button>
 		{/if}
 
-		<div class="flex flex-1 items-center justify-center overflow-hidden">
-			{#if loaded[openIndex]}
-				<div
+		<div class="flex min-h-0 flex-1 items-center justify-center">
+			{#key openIndex}
+				<img
+					src={item.src}
+					alt={item.alt}
+					in:fade={{ duration: 300 }}
 					role="presentation"
 					onclick={(e) => e.stopPropagation()}
-					onkeydown={(e) => e.stopPropagation()}
-				>
-					<img
-						src={item.src}
-						alt={item.alt}
-						transition:fade={{ duration: 300 }}
-						class="max-h-full max-w-full object-contain"
-					/>
-				</div>
-			{:else}
-				<div class="flex aspect-4/5 max-h-full w-[70vw] items-center justify-center bg-gray-400">
-					<Heading level={5} tag="p" >Image placeholder</Heading>
-				</div>
-			{/if}
+					class="max-h-full max-w-full object-contain"
+				/>
+			{/key}
 		</div>
 
 		{#if item.caption}
@@ -270,34 +239,3 @@
 		{/if}
 	</div>
 {/if}
-
-<style>
-	.marquee-track {
-		width: 100%;
-		animation: marquee-loop var(--marquee-duration, 30s) linear infinite;
-		animation-direction: var(--marquee-direction, normal);
-	}
-
-	.marquee-track:hover {
-		animation-play-state: paused;
-	}
-
-	@keyframes marquee-loop {
-		from {
-			transform: translateY(0);
-		}
-		to {
-			transform: translateY(-50%);
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.marquee-track {
-			animation: none;
-		}
-	}
-
-	.gallery-grid:has(button:hover) button:not(:hover) {
-		opacity: 0.8;
-	}
-</style>

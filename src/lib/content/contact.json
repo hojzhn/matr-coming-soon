@@ -1,6 +1,6 @@
 {
   "eyebrow": "Get in touch",
-  "heading": "Let's talk.",
+  "heading": "Wanna collaborate?\nOur emails are open.",
   "headingWithName": "Hi, {name}!",
   "headingWithEmail": "Can't wait.",
   "intro": "Got a project in mind?\nBusiness propositions? \nTell us about it! \nWe'll get back to you as soon as we can.",
@@ -20,5 +20,26 @@
     "successMessage": "Thanks. We'll be in touch soon.",
     "errorGeneric": "Something went wrong. Please try again.",
     "errorInvalidEmail": "That email doesn't look right!"
+  },
+  "modesLabel": "Type of enquiry",
+  "modes": {
+    "general": "General inquiry",
+    "commission": "Commission a piece"
+  },
+  "commission": {
+    "techniquesLabel": "Techniques you are interested in",
+    "unsureLabel": "Not sure yet",
+    "surfaceLabel": "Surface and size",
+    "surfacePlaceholder": "Surface and size, e.g. linen, 36 x 48 in",
+    "timelineLabel": "Timeline",
+    "timelinePlaceholder": "When do you need it?",
+    "messagePlaceholder": "Describe the piece, the edition size and anything else we should know.",
+    "messageTitle": "COMMISSION ENQUIRY"
+  },
+  "banner": {
+    "heading": "Have something in mind?",
+    "body": "A question, a collaboration or a piece only a machine we build can make. Tell us about it.",
+    "cta": "Get in touch",
+    "href": "/contact"
   }
 }

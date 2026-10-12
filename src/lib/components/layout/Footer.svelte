@@ -7,6 +7,7 @@
 	import LegalModal from './LegalModal.svelte';
 	import { navContent, siteContent, footerContent, newsletterContent, legalContent, cookieConsentContent } from '$lib/content';
 	import { consentState } from '$lib/consent/consent-state.svelte';
+	import { smoothScrollIfSamePage } from '$lib/scroll';
 
 	let { formToken }: { formToken: string } = $props();
 
@@ -82,7 +83,7 @@
 	}
 </script>
 
-<footer class="border-t border-line bg-shade text-surface">
+<footer class=" bg-shade text-surface">
 	<Container width="full" class="py-16">
 		<div class="grid grid-cols-2 gap-x-8 gap-y-12 md:grid-cols-4">
 			<FooterColumn heading={footerContent.headings.connect}>
@@ -122,7 +123,7 @@
 				<ul class="flex flex-col gap-2">
 					{#each navContent.items as item (item.href)}
 						<li>
-							<ArrowLink href={item.href} label={item.label} samepage arrow={false} fill="surface" size="base" sizeMd="lg" class="-ml-3" />
+							<ArrowLink href={item.href} label={item.label} samepage onclick={(e) => smoothScrollIfSamePage(e, item.href)} arrow={false} fill="surface" size="base" sizeMd="lg" class="-ml-3" />
 						</li>
 					{/each}
 				</ul>

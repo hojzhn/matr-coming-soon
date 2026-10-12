@@ -62,5 +62,9 @@
       "alt": "Detail of an oil print on paper",
       "caption": "Oil on Paper"
     }
-  ]
+  ],
+  "trustedLabel": "Trusted by",
+  "trustedDefault": "artists and collectors",
+  "moreLabel": "and much more",
+  "lessLabel": "back to the work"
 }

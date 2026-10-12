@@ -8,7 +8,7 @@
 	const links: { icon: IconName; href: string; label: string; external: boolean }[] = [
 		{ icon: 'instagram', href: siteContent.social.instagram, label: 'Instagram', external: true },
 		{ icon: 'twitter', href: siteContent.social.twitter, label: 'X / Twitter', external: true },
-		{ icon: 'message', href: '#testimonials', label: 'Testimonials', external: false }
+		{ icon: 'message', href: '/#testimonials', label: 'Testimonials', external: false }
 	];
 
 	const subheroSrc = '/images/relaunch/oil-edition-print.webp';
@@ -25,7 +25,7 @@
 	});
 </script>
 
-<Section tone="surface" width="full" class="py-10 md:py-12">
+<Section tone="surface" width="full" class="md:py-12">
 	<div class="flex flex-col gap-6 xl:flex-row xl:items-end lg:justify-between relative xl:-mt-80">
 	<div class="flex flex-col xl:flex-row xl:items-end gap-12 xl:gap-20">
 	<div class="relative aspect-video overflow-hidden xl:aspect-3/5 xl:h-160">

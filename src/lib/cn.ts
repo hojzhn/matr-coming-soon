@@ -3,8 +3,11 @@ import { extendTailwindMerge } from 'tailwind-merge';
 
 const twMerge = extendTailwindMerge({
 	extend: {
+		theme: {
+			spacing: ['section', 'container']
+		},
 		classGroups: {
-			'font-size': [{ text: ['hero'] }]
+			'font-size': [{ text: ['hero', 'display'] }]
 		}
 	}
 });
