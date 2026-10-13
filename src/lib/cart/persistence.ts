@@ -24,6 +24,7 @@ export interface PersistedCartItemV1 {
 	hasFile: boolean;
 	artworkPath?: string | null;
 	artworkUploadedAt?: number | null;
+	promoOptOut?: boolean;
 }
 
 export interface PersistedCartV1 {
@@ -81,7 +82,8 @@ function isValidPersistedItem(value: unknown): value is PersistedCartItemV1 {
 		(typeof v.fileName === 'string' || v.fileName === null) &&
 		typeof v.hasFile === 'boolean' &&
 		(v.artworkPath === undefined || v.artworkPath === null || typeof v.artworkPath === 'string') &&
-		(v.artworkUploadedAt === undefined || v.artworkUploadedAt === null || typeof v.artworkUploadedAt === 'number')
+		(v.artworkUploadedAt === undefined || v.artworkUploadedAt === null || typeof v.artworkUploadedAt === 'number') &&
+		(v.promoOptOut === undefined || typeof v.promoOptOut === 'boolean')
 	);
 }
 
@@ -128,7 +130,8 @@ function serializeCart(items: CartItem[], discount: AppliedDiscount | null): Per
 			fileName: item.fileName,
 			hasFile: item.file !== null,
 			artworkPath: item.artworkPath,
-			artworkUploadedAt: item.artworkUploadedAt
+			artworkUploadedAt: item.artworkUploadedAt,
+			promoOptOut: item.promoOptOut
 		})),
 		discount
 	};

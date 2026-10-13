@@ -28,6 +28,7 @@ interface ValidatedItem {
 	total: OrderTotal;
 	artworkPath: string;
 	artworkFileName: string;
+	promoOptOut: boolean;
 }
 
 export const POST: RequestHandler = async ({ request, url }) => {
@@ -92,7 +93,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
 			projectName,
 			total: calculateOrderTotal(widthIn, heightIn, optionIds, quantity),
 			artworkPath: artworkPathClaim,
-			artworkFileName
+			artworkFileName,
+			promoOptOut: raw?.promoOptOut === true
 		});
 	}
 
@@ -166,7 +168,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
 				unit_price_cents: v.total.unitPriceCents,
 				total_price_cents: v.total.totalPriceCents,
 				artwork_path: v.artworkPath,
-				artwork_file_name: v.artworkFileName
+				artwork_file_name: v.artworkFileName,
+				promo_opt_out: v.promoOptOut
 			}))
 		);
 		if (itemsInsertError) {
@@ -186,7 +189,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
 				options: v.total.options,
 				quantity: v.total.quantity,
 				unitPriceCents: v.total.unitPriceCents,
-				artworkUrl: `${url.origin}/api/artwork/${v.artworkPath}`
+				artworkUrl: `${url.origin}/api/artwork/${v.artworkPath}`,
+				promoOptOut: v.promoOptOut
 			})),
 			discount
 		})

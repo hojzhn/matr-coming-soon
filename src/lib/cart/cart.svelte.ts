@@ -24,6 +24,7 @@ export interface CartItem {
 	file: File | null;
 	artworkPath: string | null;
 	artworkUploadedAt: number | null;
+	promoOptOut: boolean;
 }
 
 export interface AddCartItemInput {
@@ -38,6 +39,7 @@ export interface AddCartItemInput {
 	fileName: string | null;
 	previewUrl: string | null;
 	file: File | null;
+	promoOptOut: boolean;
 }
 
 export type AddCartItemResult = { ok: true; id: string } | { ok: false; error: 'max-items' };
@@ -82,6 +84,7 @@ export class CartStore {
 				fileName: item.fileName,
 				previewUrl: null,
 				file: null,
+				promoOptOut: item.promoOptOut === true,
 				...freshArtwork(item.artworkPath ?? null, item.artworkUploadedAt ?? null)
 			};
 		});
@@ -149,7 +152,8 @@ export class CartStore {
 			previewUrl: input.previewUrl,
 			file: input.file,
 			artworkPath: null,
-			artworkUploadedAt: null
+			artworkUploadedAt: null,
+			promoOptOut: input.promoOptOut
 		});
 
 		if (input.file) void persistence.saveFile(id, input.file);

@@ -83,6 +83,8 @@ export interface OrderFormContent {
 	totalLabel: string;
 	untitledLabel: string;
 	finePrint: FinePrintItem[];
+	promoNotice: string;
+	promoOptOutLabel: string;
 	formHeading: string;
 	formHeadingProjectTemplate: string;
 	errorInvalidSize: string;
@@ -116,6 +118,7 @@ export interface OrderCartContent {
 	artworkRestoreFailedToast: string;
 	awaitingPaymentLabel: string;
 	paymentConfirmedToast: string;
+	promoOptOutLabel: string;
 }
 export interface OrderContent {
 	form: OrderFormContent;

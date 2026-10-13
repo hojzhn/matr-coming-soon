@@ -97,6 +97,11 @@
 									- {opt.label} ({formatPrice(opt.priceDeltaCents)})
 								</Heading>
 							{/each}
+							{#if item.promoOptOut}
+								<Heading level={6} tag="p" tone="muted" class="ml-3 flex items-center gap-1.5">
+									- {orderContent.cart.promoOptOutLabel}
+								</Heading>
+							{/if}
 
 							<div class="mt-3 flex items-center justify-between gap-2">
 								<label class="flex items-center gap-1">

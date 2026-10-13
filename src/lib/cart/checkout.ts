@@ -53,7 +53,8 @@ export async function submitCheckout(
 				optionIds: item.options.map((o) => o.id),
 				quantity: item.quantity,
 				artworkPath: artworkPaths[index],
-				artworkFileName: item.file?.name ?? null
+				artworkFileName: item.file?.name ?? null,
+				promoOptOut: item.promoOptOut
 			})),
 			company,
 			formToken,

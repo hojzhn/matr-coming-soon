@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { calculateItemWeightLb, calculateRolledWeightLb, calculateStretchedWeightLb } from './calculate';
+import {
+	calculateDimensionalWeightLb,
+	calculateItemWeightLb,
+	calculateRolledWeightLb,
+	calculateStretchedWeightLb,
+	selectWeightVariant
+} from './calculate';
 import { STRETCH_SERVICE_OPTION_ID } from '$lib/pricing/config';
 import type { ShippingConfig } from './config';
 
@@ -17,6 +23,11 @@ const cfg: ShippingConfig = {
 		{ upTo: 200, weightLb: 2 },
 		{ upTo: Infinity, weightLb: 4 }
 	],
+	tubeDiameterIn: 4,
+	tubeExtraLengthIn: 4,
+	boxPaddingIn: 4,
+	boxDepthIn: 4,
+	dimDivisor: 139,
 	roundToLb: 0.5
 };
 
@@ -44,6 +55,23 @@ describe('calculateStretchedWeightLb', () => {
 	});
 });
 
+describe('calculateDimensionalWeightLb', () => {
+	it('sizes a rolled tube from the longest side plus extra length', () => {
+		// tube 64x4x4 = 1024 cuin / 139 = 7.37 -> 8
+		expect(calculateDimensionalWeightLb(60, 1, false, cfg)).toBe(8);
+	});
+
+	it('sizes a stretched box from the padded print and box depth', () => {
+		// box 52x40x4 = 8320 cuin / 139 = 59.86 -> 60
+		expect(calculateDimensionalWeightLb(48, 36, true, cfg)).toBe(60);
+	});
+
+	it('rounds fractional package sides up to whole inches', () => {
+		// box 15x15x4 = 900 cuin / 139 = 6.47 -> 7
+		expect(calculateDimensionalWeightLb(10.5, 10.5, true, cfg)).toBe(7);
+	});
+});
+
 describe('calculateItemWeightLb', () => {
 	it('uses the rolled calculation when the stretch add-on is not selected', () => {
 		expect(calculateItemWeightLb(10, 10, [], cfg)).toBe(calculateRolledWeightLb(10, 10, cfg));
@@ -53,5 +81,34 @@ describe('calculateItemWeightLb', () => {
 		expect(calculateItemWeightLb(10, 10, [STRETCH_SERVICE_OPTION_ID], cfg)).toBe(
 			calculateStretchedWeightLb(10, 10, cfg)
 		);
+	});
+
+	it('charges dimensional weight when it exceeds the actual weight', () => {
+		expect(calculateItemWeightLb(60, 1, [], cfg)).toBe(8);
+		expect(calculateItemWeightLb(48, 36, [STRETCH_SERVICE_OPTION_ID], cfg)).toBe(60);
+	});
+});
+
+describe('selectWeightVariant', () => {
+	const variants = [
+		{ id: 'c', weightLb: 20 },
+		{ id: 'a', weightLb: 5 },
+		{ id: 'none', weightLb: 0 },
+		{ id: 'b', weightLb: 10 }
+	];
+
+	it('picks the lightest tier that covers the weight', () => {
+		expect(selectWeightVariant(variants, 3)?.id).toBe('a');
+		expect(selectWeightVariant(variants, 5)?.id).toBe('a');
+		expect(selectWeightVariant(variants, 5.5)?.id).toBe('b');
+		expect(selectWeightVariant(variants, 12)?.id).toBe('c');
+	});
+
+	it('falls back to the heaviest tier when the weight exceeds every tier', () => {
+		expect(selectWeightVariant(variants, 99)?.id).toBe('c');
+	});
+
+	it('returns null when no variant has a weight', () => {
+		expect(selectWeightVariant([{ id: 'x', weightLb: 0 }], 3)).toBeNull();
 	});
 });

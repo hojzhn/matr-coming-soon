@@ -14,6 +14,7 @@ function makeInput(overrides: Partial<AddCartItemInput> = {}): AddCartItemInput 
 		fileName: null,
 		previewUrl: null,
 		file: null,
+		promoOptOut: false,
 		...overrides
 	};
 }

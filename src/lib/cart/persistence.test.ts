@@ -32,6 +32,7 @@ function makeItem(overrides: Partial<CartItem> = {}): CartItem {
 		file: null,
 		artworkPath: null,
 		artworkUploadedAt: null,
+		promoOptOut: false,
 		...overrides
 	};
 }
