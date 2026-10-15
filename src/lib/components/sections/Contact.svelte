@@ -59,7 +59,7 @@
 	<div class="flex flex-row justify-between items-center mb-2">
 	<div>
 		<Icon name="mail" class="h-6 w-6 text-ink" /></div>
-		<Heading level={4}>hello@matr.art</Heading>
+		<Heading level={4}>studio@matr.art</Heading>
 	</div>
 		<LazyImage
 			src={contactImageSrc}
