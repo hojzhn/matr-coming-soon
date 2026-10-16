@@ -34,7 +34,7 @@ export interface HeroVariant {
 	headline: string;
 	lines?: string[][];
 	emphasis?: string;
-	beats?: { text: string; strong?: boolean }[];
+	beats?: { lines: string[]; words: number; strong?: boolean }[];
 	images?: string[];
 	description: string;
 	cta: { label: string; href: string };

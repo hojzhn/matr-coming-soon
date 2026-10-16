@@ -13,29 +13,32 @@
 		lines: string[][];
 		emphasis?: string;
 		answer: string;
-		beats?: { text: string; strong?: boolean }[];
+		beats?: { lines: string[]; words: number; strong?: boolean }[];
 	} = $props();
 
 	type Placement = { x: number; y: number; s: number };
 
 	const cycles = 2;
 	const questionBeatMs = 520;
-	const answerBeatMs = 560;
-	const strongBeatMs = 680;
+	const weakHoldMs = 380;
+	const strongHoldMs = 650;
+	const stackHoldMs = 950;
+	const flyMs = 650;
 	const lineTightness = 0.8;
 	const easeOut = 'cubic-bezier(0.22, 1, 0.36, 1)';
 	const easeInOut = 'cubic-bezier(0.76, 0, 0.24, 1)';
 
 	const words = $derived(lines.flatMap((line, li) => line.map((text, wi) => ({ text, li, wi }))));
-	const answerLines = $derived(answer.split('\n'));
+	const answerWords = $derived(answer.split(/\s+/).filter(Boolean));
+	const beatsFit = $derived(beats.length > 0 && beats.reduce((n, b) => n + b.words, 0) === answerWords.length);
 
 	let innerEl = $state<HTMLDivElement>();
 	let bigEl = $state<HTMLDivElement>();
 	let smallEl = $state<HTMLDivElement>();
 	let answerEl = $state<HTMLDivElement>();
 	let wordEls = $state<HTMLSpanElement[]>([]);
-	let flashEl = $state<HTMLSpanElement>();
-	let flashText = $state('');
+	let flashEl = $state<HTMLDivElement>();
+	let flashLines = $state<string[]>([]);
 	let answerTop = $state(0);
 
 	function tf(p: Placement, dy = 0) {
@@ -50,7 +53,7 @@
 		const small = smallEl;
 		const answerBox = answerEl;
 		const els = wordEls.slice(0, words.length);
-		const answerSpans = Array.from(answerBox.querySelectorAll<HTMLElement>('[data-line]'));
+		const answerSpans = Array.from(answerBox.querySelectorAll<HTMLElement>('[data-aw]'));
 		const emphasisIndex = words.findIndex((w) => w.text === emphasis);
 		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -166,37 +169,69 @@
 			);
 		}
 
-		async function flashBeats() {
-			const box = inner.getBoundingClientRect();
-			const width = Math.min(box.width, 1200);
-			const regionTop = answerTop;
-			const regionHeight = Math.max(80, box.height - regionTop);
+		function rel(r: DOMRect, box: DOMRect) {
+			return { left: r.left - box.left, top: r.top - box.top, width: r.width, height: r.height };
+		}
+
+		async function flyBeats() {
+			answerBox.style.opacity = '1';
+			answerSpans.forEach((span) => (span.style.opacity = '0'));
+			let index = 0;
 			for (const beat of beats) {
 				if (!alive) return;
-				flashText = beat.text;
+				flashLines = beat.lines;
 				await tick();
+				const box = inner.getBoundingClientRect();
+				const width = Math.min(box.width, 1200);
+				const sentence = (answerBox.firstElementChild as HTMLElement).getBoundingClientRect();
+				const regionTop = sentence.bottom - box.top + 24;
+				const regionHeight = Math.max(120, box.height - regionTop);
 				flash.style.transform = 'none';
 				const outer = flash.getBoundingClientRect();
 				const text = (flash.firstElementChild as HTMLElement).getBoundingClientRect();
-				const cap = beat.strong ? 0.85 : 0.4;
+				const stacked = beat.lines.length > 1;
+				const cap = stacked ? 0.95 : beat.strong ? 0.6 : 0.3;
 				const s = Math.min(width / text.width, (regionHeight * cap) / text.height);
-				const place = {
-					x: -(text.left - outer.left) * s,
-					y: regionTop + (regionHeight - text.height * s) / 2 - (text.top - outer.top) * s,
-					s
+				const dx = text.left - outer.left;
+				const dy = text.top - outer.top;
+				const start = { x: -dx * s, y: regionTop + (regionHeight - text.height * s) / 2 - dy * s, s };
+
+				const targets = answerSpans.slice(index, index + beat.words);
+				const first = rel(targets[0].getBoundingClientRect(), box);
+				const k = first.height / (text.height / beat.lines.length);
+				const end = { x: first.left - dx * k, y: first.top - dy * k, s: k };
+				const mid = {
+					x: start.x + (end.x - start.x) * 0.6,
+					y: start.y + (end.y - start.y) * 0.6,
+					s: start.s + (end.s - start.s) * 0.6
 				};
+
 				await anim(
 					flash,
 					[
-						{ transform: tf({ ...place, s: s * 1.1 }), opacity: 0, filter: 'blur(8px)' },
-						{ transform: tf(place), opacity: 1, filter: 'blur(0px)', offset: 0.25 },
-						{ transform: tf(place), opacity: 1, filter: 'blur(0px)', offset: 0.85 },
-						{ transform: tf(place), opacity: 0, filter: 'blur(0px)' }
+						{ transform: tf({ ...start, s: s * 1.1 }), opacity: 0, filter: 'blur(8px)' },
+						{ transform: tf(start), opacity: 1, filter: 'blur(0px)' }
 					],
-					{ duration: beat.strong ? strongBeatMs : answerBeatMs, easing: 'linear' }
+					{ duration: 300, easing: easeOut }
 				);
+				await wait(stacked ? stackHoldMs : beat.strong ? strongHoldMs : weakHoldMs);
+				await Promise.all([
+					anim(
+						flash,
+						[
+							{ transform: tf(start), opacity: 1 },
+							{ transform: tf(mid), opacity: 1, offset: 0.6 },
+							{ transform: tf(end), opacity: 0 }
+						],
+						{ duration: flyMs, easing: easeInOut }
+					),
+					...targets.map((span, j) =>
+						anim(span, [{ opacity: 0 }, { opacity: 1 }], { duration: 320, delay: flyMs * 0.55 + j * 45, easing: 'ease-out' })
+					)
+				]);
+				flash.style.opacity = '0';
+				index += beat.words;
 			}
-			flash.style.opacity = '0';
 		}
 
 		function blink() {
@@ -265,12 +300,13 @@
 				await blink();
 				await wait(1000);
 				await morph('small', 850);
-				if (beats.length) await flashBeats();
-				await showAnswer();
+				if (beatsFit) await flyBeats();
+				else await showAnswer();
 				if (c < cycles - 1) {
 					await wait(5000);
 					await hideAnswer();
 					answerSpans.forEach((span) => (span.style.opacity = '0'));
+					answerBox.style.opacity = '1';
 				}
 			}
 		}
@@ -333,15 +369,17 @@
 			</span>
 		{/each}
 
-		<span bind:this={flashEl} class="absolute top-0 left-0 origin-top-left whitespace-nowrap will-change-transform" style="opacity: 0">
-			<Heading level={2} tag="span" size="hero" weight="bold" leading="none" tracking="tighter" tone="surface" balance={false}>{flashText}</Heading>
-		</span>
-
-		<div bind:this={answerEl} class="absolute left-0 w-full" style={`top: ${answerTop}px; opacity: 0`}>
-			<Heading level={2} tag="p" size="lg" sizeMd="xl" weight="bold" leading="tight" tracking="tight" tone="surface">
-				{#each answerLines as text, i (i)}
-					<span data-line class="block" style="opacity: 0">{text}</span>
+		<div bind:this={flashEl} class="absolute top-0 left-0 w-max origin-top-left will-change-transform" style="opacity: 0">
+			<Heading level={2} tag="div" size="hero" weight="bold" leading="none" tracking="tighter" tone="surface" balance={false} class="w-max">
+				{#each flashLines as text, i (i)}
+					<span class="block whitespace-nowrap">{text}</span>
 				{/each}
+			</Heading>
+		</div>
+
+		<div bind:this={answerEl} class="absolute left-0 w-full max-w-5xl" style={`top: ${answerTop}px; opacity: 0`}>
+			<Heading level={2} tag="p" size="lg" sizeMd="xl" weight="bold" leading="tight" tracking="tight" tone="surface">
+				{#each answerWords as text, i (i)}<span data-aw={i} style="opacity: 0">{text}</span>{i < answerWords.length - 1 ? ' ' : ''}{/each}
 			</Heading>
 		</div>
 	</div>
