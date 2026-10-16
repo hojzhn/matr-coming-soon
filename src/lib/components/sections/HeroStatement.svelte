@@ -6,28 +6,50 @@
 		lines,
 		emphasis,
 		answer,
-		answerLines
+		answerLines,
+		answerPunch = []
 	}: {
 		question: string;
 		lines: string[][];
 		emphasis?: string;
 		answer: string;
 		answerLines: string[];
+		answerPunch?: number[];
 	} = $props();
 
 	type Placement = { x: number; y: number; s: number };
+	type Token = { text: string; li: number; wi: number };
 
 	const cycles = 4;
 	const beatMs = 520;
+	const punchMs = 300;
 	const enterMs = 340;
 	const questionHoldMs = 900;
 	const answerHoldMs = 3600;
-	const lineTightness = 0.8;
+	const gapRatio = 0.035;
 	const easeOut = 'cubic-bezier(0.22, 1, 0.36, 1)';
 	const easeIn = 'cubic-bezier(0.64, 0, 0.78, 0)';
 	const easeInOut = 'cubic-bezier(0.76, 0, 0.24, 1)';
 
-	const words = $derived(lines.flatMap((line, li) => line.map((text, wi) => ({ text, li, wi }))));
+	function tokenize(source: string[][]): Token[] {
+		return source.flatMap((line, li) => line.map((text, wi) => ({ text, li, wi })));
+	}
+
+	function splitAnswerLine(line: string) {
+		const parts = line.split(' ');
+		const out: string[] = [];
+		for (let i = 0; i < parts.length; i++) {
+			if (parts[i] === '+' && i + 1 < parts.length) {
+				out.push(`+ ${parts[i + 1]}`);
+				i++;
+			} else out.push(parts[i]);
+		}
+		return out;
+	}
+
+	const words = $derived(tokenize(lines));
+	const answerGrid = $derived(answerLines.map((line, i) => (answerPunch.includes(i) ? splitAnswerLine(line) : [line])));
+	const answerTokens = $derived(tokenize(answerGrid));
 
 	let innerEl = $state<HTMLDivElement>();
 	let bigEl = $state<HTMLDivElement>();
@@ -47,9 +69,10 @@
 		const small = smallEl;
 		const answerMeasure = answerMeasureEl;
 		const els = wordEls.slice(0, words.length);
-		const aEls = answerEls.slice(0, answerLines.length);
+		const aEls = answerEls.slice(0, answerTokens.length);
 		const emphasisIndex = words.findIndex((w) => w.text === emphasis);
 		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const ctx = document.createElement('canvas').getContext('2d')!;
 
 		let bigPlaces: Placement[] = [];
 		let smallPlaces: Placement[] = [];
@@ -70,19 +93,48 @@
 			});
 		}
 
-		function fitBlock(lineRects: DOMRect[], width: number, height: number, anchor: 'top' | 'bottom', top: number) {
-			const pitch = lineRects.map((r) => r.height * lineTightness);
-			let scales = lineRects.map((r) => width / r.width);
-			const total = pitch.reduce((sum, p, i) => sum + p * scales[i], 0) + (lineRects.at(-1)!.height - pitch.at(-1)!) * scales.at(-1)!;
+		function ink(el: HTMLElement) {
+			const cs = getComputedStyle(el);
+			ctx.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+			const m = ctx.measureText((el.textContent ?? '').trim());
+			return { top: m.fontBoundingBoxAscent - m.actualBoundingBoxAscent, bottom: m.fontBoundingBoxAscent + m.actualBoundingBoxDescent };
+		}
+
+		function layoutBlock(
+			container: HTMLElement,
+			tokens: Token[],
+			nodes: HTMLElement[],
+			width: number,
+			height: number,
+			anchor: 'top' | 'bottom',
+			top: number
+		) {
+			const lineEls = Array.from(container.querySelectorAll<HTMLElement>('[data-line]')).map((l) => l.firstElementChild as HTMLElement);
+			const rects = lineEls.map((l) => l.getBoundingClientRect());
+			const inks = lineEls.map(ink);
+			let scales = rects.map((r) => width / r.width);
+			let gap = width * gapRatio;
+			const total = inks.reduce((sum, k, i) => sum + (k.bottom - k.top) * scales[i], 0) + gap * (rects.length - 1);
 			const fit = Math.min(1, height / total);
 			scales = scales.map((s) => s * fit);
-			let y = anchor === 'bottom' ? top + height - total * fit : top;
-			const tops = lineRects.map((_, i) => {
-				const t = y;
-				y += pitch[i] * scales[i];
+			gap *= fit;
+			let cursor = anchor === 'bottom' ? top + height - total * fit : top;
+			const lineTops = inks.map((k, i) => {
+				const t = cursor - k.top * scales[i];
+				cursor += (k.bottom - k.top) * scales[i] + gap;
 				return t;
 			});
-			return { scales, tops };
+			const offsets = offsetsOf(nodes);
+			return tokens.map((t, i) => {
+				const r = container.querySelector<HTMLElement>(`[data-tok="${t.li}-${t.wi}"]`)!.getBoundingClientRect();
+				const line = rects[t.li];
+				const s = scales[t.li];
+				return {
+					x: (r.left - line.left) * s - offsets[i].x * s,
+					y: lineTops[t.li] + (r.top - line.top) * s - offsets[i].y * s,
+					s
+				};
+			});
 		}
 
 		function measure() {
@@ -90,22 +142,9 @@
 			const width = Math.min(box.width, 1200);
 			const height = box.height;
 
-			const wordOffsets = offsetsOf(els);
-			const lineRects = Array.from(big.querySelectorAll<HTMLElement>('[data-big-line]')).map((l) =>
-				(l.firstElementChild as HTMLElement).getBoundingClientRect()
-			);
-			const q = fitBlock(lineRects, width, height, 'bottom', 0);
-			bigPlaces = words.map((w, i) => {
-				const r = big.querySelector<HTMLElement>(`[data-word="${w.li}-${w.wi}"]`)!.getBoundingClientRect();
-				const line = lineRects[w.li];
-				const s = q.scales[w.li];
-				return {
-					x: (r.left - line.left) * s - wordOffsets[i].x * s,
-					y: q.tops[w.li] + (r.top - line.top) * s - wordOffsets[i].y * s,
-					s
-				};
-			});
+			bigPlaces = layoutBlock(big, words, els, width, height, 'bottom', 0);
 
+			const wordOffsets = offsetsOf(els);
 			const baseSize = parseFloat(getComputedStyle(els[0].firstElementChild as Element).fontSize);
 			const smallBox = small.getBoundingClientRect();
 			const smallSize = parseFloat(getComputedStyle(small.firstElementChild as Element).fontSize);
@@ -116,16 +155,7 @@
 			});
 
 			const answerTop = smallBox.height + Math.max(16, smallSize * 1.1);
-			const answerOffsets = offsetsOf(aEls);
-			const answerRects = Array.from(answerMeasure.querySelectorAll<HTMLElement>('[data-answer-line]')).map((l) =>
-				(l.firstElementChild as HTMLElement).getBoundingClientRect()
-			);
-			const a = fitBlock(answerRects, width, height - answerTop, 'top', answerTop);
-			answerPlaces = aEls.map((_, i) => ({
-				x: -answerOffsets[i].x * a.scales[i],
-				y: a.tops[i] - answerOffsets[i].y * a.scales[i],
-				s: a.scales[i]
-			}));
+			answerPlaces = layoutBlock(answerMeasure, answerTokens, aEls, width, height - answerTop, 'top', answerTop);
 		}
 
 		function show(which: typeof state) {
@@ -182,6 +212,20 @@
 			);
 		}
 
+		function punch(el: Element, p: Placement, delay: number) {
+			const grow = (f: number) => ({ ...p, s: p.s * f });
+			return anim(
+				el,
+				[
+					{ transform: tf(grow(1.6)), opacity: 0 },
+					{ transform: tf(grow(0.92)), opacity: 1, offset: 0.45 },
+					{ transform: tf(grow(1.04)), opacity: 1, offset: 0.75 },
+					{ transform: tf(p), opacity: 1 }
+				],
+				{ duration: 380, delay, easing: easeOut }
+			);
+		}
+
 		function buildQuestion() {
 			state = 'big';
 			return Promise.all(els.map((el, i) => enter(el, bigPlaces[i], words[i].li * beatMs)));
@@ -209,7 +253,20 @@
 
 		function buildAnswer() {
 			state = 'answer';
-			return Promise.all(aEls.map((el, i) => enter(el, answerPlaces[i], i * beatMs)));
+			const starts: number[] = [];
+			let t = 0;
+			answerGrid.forEach((line, li) => {
+				starts[li] = t;
+				t += answerPunch.includes(li) ? line.length * punchMs + 200 : beatMs;
+			});
+			return Promise.all(
+				aEls.map((el, i) => {
+					const tok = answerTokens[i];
+					return answerPunch.includes(tok.li)
+						? punch(el, answerPlaces[i], starts[tok.li] + tok.wi * punchMs)
+						: enter(el, answerPlaces[i], starts[tok.li]);
+				})
+			);
 		}
 
 		function reset() {
@@ -224,7 +281,7 @@
 				);
 			state = 'empty';
 			return Promise.all([
-				...aEls.map((el, i) => out(el, answerPlaces[i], i * 70)),
+				...aEls.map((el, i) => out(el, answerPlaces[i], answerTokens[i].li * 70)),
 				...els.map((el, i) => out(el, smallPlaces[i], 0))
 			]);
 		}
@@ -282,19 +339,27 @@
 	});
 </script>
 
+{#snippet measureBlock(grid: string[][])}
+	{#each grid as line, li (li)}
+		<div data-line class="w-max whitespace-nowrap">
+			<Heading level={2} tag="span" size="hero" weight="bold" leading="none" tracking="tighter" tone="surface" balance={false} class="whitespace-nowrap">
+				{#each line as word, wi (wi)}<span data-tok={`${li}-${wi}`}>{word}</span>{wi < line.length - 1 ? ' ' : ''}{/each}
+			</Heading>
+		</div>
+	{/each}
+{/snippet}
+
+{#snippet token(text: string)}
+	<Heading level={2} tag="span" size="hero" weight="bold" leading="none" tracking="tighter" tone="surface" balance={false} class="whitespace-nowrap">{text}</Heading>
+{/snippet}
+
 <div class="absolute inset-0 px-container pt-24 pb-2 md:px-28 md:pt-28">
 	<Heading level={1} class="sr-only">{question}</Heading>
 	<Heading level={2} tag="p" class="sr-only">{answer}</Heading>
 
 	<div bind:this={innerEl} aria-hidden="true" class="relative h-full w-full">
 		<div bind:this={bigEl} class="invisible absolute top-0 left-0">
-			{#each lines as line, li (li)}
-				<div data-big-line class="w-max whitespace-nowrap">
-					<Heading level={2} tag="span" size="hero" weight="bold" leading="none" tracking="tighter" tone="surface" balance={false}>
-						{#each line as word, wi (wi)}<span data-word={`${li}-${wi}`}>{word}</span>{wi < line.length - 1 ? ' ' : ''}{/each}
-					</Heading>
-				</div>
-			{/each}
+			{@render measureBlock(lines)}
 		</div>
 
 		<div bind:this={smallEl} class="invisible absolute top-0 left-0 w-full max-w-5xl">
@@ -304,22 +369,18 @@
 		</div>
 
 		<div bind:this={answerMeasureEl} class="invisible absolute top-0 left-0">
-			{#each answerLines as text, i (i)}
-				<div data-answer-line class="w-max whitespace-nowrap">
-					<Heading level={2} tag="span" size="hero" weight="bold" leading="none" tracking="tighter" tone="surface" balance={false} class="whitespace-nowrap">{text}</Heading>
-				</div>
-			{/each}
+			{@render measureBlock(answerGrid)}
 		</div>
 
 		{#each words as word, i (i)}
-			<span bind:this={wordEls[i]} class="absolute top-0 left-0 origin-top-left whitespace-nowrap will-change-transform" style="opacity: 0">
-				<Heading level={2} tag="span" size="hero" weight="bold" leading="none" tracking="tighter" tone="surface" balance={false}>{word.text}</Heading>
+			<span bind:this={wordEls[i]} class="absolute top-0 left-0 w-max origin-top-left whitespace-nowrap will-change-transform" style="opacity: 0">
+				{@render token(word.text)}
 			</span>
 		{/each}
 
-		{#each answerLines as text, i (i)}
+		{#each answerTokens as tok, i (i)}
 			<span bind:this={answerEls[i]} class="absolute top-0 left-0 w-max origin-top-left whitespace-nowrap will-change-transform" style="opacity: 0">
-				<Heading level={2} tag="span" size="hero" weight="bold" leading="none" tracking="tighter" tone="surface" balance={false} class="whitespace-nowrap">{text}</Heading>
+				{@render token(tok.text)}
 			</span>
 		{/each}
 	</div>
