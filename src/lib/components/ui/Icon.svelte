@@ -23,6 +23,7 @@
 		| 'chevron-down'
 		| 'mail'
 		| 'hand'
+		| 'image'
 		| 'cookie';
 
 	type IconDef = { body: string; fill?: boolean; strokeWidth?: number };
@@ -88,6 +89,10 @@
 		mail: {
 			strokeWidth: 1.75,
 			body: '<rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" />'
+		},
+		image: {
+			strokeWidth: 1.75,
+			body: '<rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="9" cy="9" r="2" /><path d="M21 15l-5-5L5 21" />'
 		},
 		hand: {
 			strokeWidth: 1.75,

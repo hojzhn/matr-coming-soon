@@ -49,6 +49,8 @@
         "text": "Custom prints are final sale and not eligible for return."
       }
     ],
+    "promoNotice": "Part of our promotional pricing: we may feature your print in our marketing and social posts.",
+    "promoOptOutLabel": "Don't use my artwork for promotion",
     "errorInvalidSize": "Add a width and height first.",
     "errorMaxSize": "48\" (121 cm) is the largest side we can print.",
     "errorInvalidFile": "That file's too big or not a supported type.",
@@ -79,6 +81,7 @@
     "errorGeneric": "Something broke on our end. Try again?",
     "artworkRestoreFailedToast": "Some artwork couldn't be restored and was removed from your cart.",
     "awaitingPaymentLabel": "Payment window opened in a new tab.",
+    "promoOptOutLabel": "Not used for promotion",
     "paymentConfirmedToast": "Payment confirmed. Thanks for your order!"
   }
 }

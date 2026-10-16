@@ -2,7 +2,11 @@ import { env } from "$env/dynamic/private";
 import { formatPrice } from "$lib/pricing/calculate";
 import { orderContent } from "$lib/content";
 import type { DiscountInfo } from "$lib/pricing/discount";
-import { calculateItemWeightLb } from "$lib/shipping/calculate";
+import {
+  calculateItemWeightLb,
+  selectWeightVariant,
+  type WeightVariant,
+} from "$lib/shipping/calculate";
 import {
   STRETCH_SERVICE_OPTION_ID,
 } from "$lib/pricing/config";
@@ -39,6 +43,30 @@ const DISCOUNT_QUERY = `
 	}
 `;
 
+const VARIANT_TIERS_QUERY = `
+	query VariantTiers($id: ID!) {
+		productVariant(id: $id) {
+			product {
+				variants(first: 100) {
+					nodes {
+						id
+						inventoryItem { measurement { weight { value unit } } }
+					}
+				}
+			}
+		}
+	}
+`;
+
+const LB_PER_UNIT: Record<string, number> = {
+  POUNDS: 1,
+  OUNCES: 1 / 16,
+  KILOGRAMS: 2.20462,
+  GRAMS: 0.00220462,
+};
+
+const VARIANT_TIERS_TTL_MS = 5 * 60 * 1000;
+
 export interface DraftOrderLineItemOption {
   id: string;
   label: string;
@@ -53,6 +81,7 @@ export interface DraftOrderLineItem {
   quantity: number;
   unitPriceCents: number;
   artworkUrl?: string | null;
+  promoOptOut?: boolean;
 }
 
 export interface DraftOrderArgs {
@@ -86,6 +115,87 @@ function printVariantGids(): { rolled: string; stretched: string } {
   const toGid = (id: string) =>
     id.startsWith("gid://") ? id : `gid://shopify/ProductVariant/${id}`;
   return { rolled: toGid(rolled), stretched: toGid(stretched) };
+}
+
+const variantTiersCache = new Map<
+  string,
+  { expiresAt: number; tiers: Promise<WeightVariant[]> }
+>();
+
+async function fetchVariantTiers(variantGid: string): Promise<WeightVariant[]> {
+  const { domain, token, version } = shopifyCredentials();
+  const res = await fetch(
+    `https://${domain}/admin/api/${version}/graphql.json`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": token,
+      },
+      body: JSON.stringify({
+        query: VARIANT_TIERS_QUERY,
+        variables: { id: variantGid },
+      }),
+    },
+  );
+  if (!res.ok)
+    throw new Error(`Shopify request failed: ${res.status} ${res.statusText}`);
+
+  const json = await res.json();
+  if (json.errors?.length) {
+    throw new Error(
+      `Shopify variant tier lookup failed: ${JSON.stringify(json.errors)}`,
+    );
+  }
+
+  const nodes = json?.data?.productVariant?.product?.variants?.nodes ?? [];
+  return nodes.map(
+    (node: {
+      id: string;
+      inventoryItem?: {
+        measurement?: { weight?: { value: number; unit: string } | null };
+      };
+    }) => {
+      const weight = node.inventoryItem?.measurement?.weight;
+      return {
+        id: node.id,
+        weightLb: weight ? weight.value * (LB_PER_UNIT[weight.unit] ?? 0) : 0,
+      };
+    },
+  );
+}
+
+function variantTiers(variantGid: string): Promise<WeightVariant[]> {
+  const cached = variantTiersCache.get(variantGid);
+  if (cached && cached.expiresAt > Date.now()) return cached.tiers;
+  const tiers = fetchVariantTiers(variantGid);
+  variantTiersCache.set(variantGid, {
+    expiresAt: Date.now() + VARIANT_TIERS_TTL_MS,
+    tiers,
+  });
+  tiers.catch(() => variantTiersCache.delete(variantGid));
+  return tiers;
+}
+
+async function resolveTierVariant(
+  baseVariantGid: string,
+  weightLb: number,
+): Promise<string> {
+  let tiers: WeightVariant[];
+  try {
+    tiers = await variantTiers(baseVariantGid);
+  } catch (error) {
+    console.error("Falling back to base print variant:", error);
+    return baseVariantGid;
+  }
+  const tier = selectWeightVariant(tiers, weightLb);
+  if (!tier) return baseVariantGid;
+  if (tier.weightLb < weightLb) {
+    console.warn(
+      `No shipping tier covers ${weightLb} lb; using heaviest tier (${tier.weightLb} lb).`,
+    );
+  }
+  return tier.id;
 }
 
 export async function lookupDiscountCode(code: string): Promise<DiscountInfo> {
@@ -161,7 +271,7 @@ export async function createDraftOrder(
   const variants = printVariantGids();
   const currencyCode = env.SHOPIFY_CURRENCY || "USD";
 
-  const lineItems = args.items.map((item) => {
+  const lineItems = await Promise.all(args.items.map(async (item) => {
     const optionIds = item.options.map((o) => o.id);
     const isStretched = optionIds.includes(STRETCH_SERVICE_OPTION_ID);
     const weightLb = calculateItemWeightLb(item.widthIn, item.heightIn, optionIds);
@@ -177,10 +287,17 @@ export async function createDraftOrder(
         .filter((o) => o.id !== STRETCH_SERVICE_OPTION_ID)
         .map((o) => ({ key: o.label, value: formatPrice(o.priceDeltaCents) })),
       { key: "Weight", value: `${weightLb} lb` },
+      {
+        key: "Promotional use",
+        value: item.promoOptOut ? "Opted out" : "Allowed",
+      },
     ];
 
     return {
-      variantId: isStretched ? variants.stretched : variants.rolled,
+      variantId: await resolveTierVariant(
+        isStretched ? variants.stretched : variants.rolled,
+        weightLb,
+      ),
       quantity: item.quantity,
       priceOverride: {
         amount: (item.unitPriceCents / 100).toFixed(2),
@@ -188,7 +305,7 @@ export async function createDraftOrder(
       },
       customAttributes,
     };
-  });
+  }));
 
   const note =
     args.note ??
@@ -224,7 +341,12 @@ export async function createDraftOrder(
         variables: {
           input: {
             note,
-            tags: ["coming-soon-site"],
+            tags: [
+              "coming-soon-site",
+              ...(args.items.some((item) => item.promoOptOut)
+                ? ["promo-opt-out"]
+                : []),
+            ],
             ...(appliedDiscount ? { appliedDiscount } : {}),
             useCustomerDefaultAddress: false,
             lineItems,

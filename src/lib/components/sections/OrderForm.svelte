@@ -37,6 +37,7 @@
 	let customUnit = $state<'in' | 'cm'>('in');
 	let selectedOptionIds = $state<string[]>([]);
 	let quantity = $state('1');
+	let promoOptOut = $state(false);
 
 	let fileInput = $state<HTMLInputElement>();
 	let file = $state<File | null>(null);
@@ -214,6 +215,7 @@
 		customUnit = 'in';
 		selectedOptionIds = [];
 		quantity = '1';
+		promoOptOut = false;
 		file = null;
 		upload = null;
 		previewUrl = null;
@@ -258,7 +260,8 @@
 			quantity: Number(quantity) || 1,
 			fileName: file?.name ?? null,
 			previewUrl,
-			file
+			file,
+			promoOptOut
 		});
 
 		if (!result.ok) {
@@ -550,6 +553,14 @@
 			{/if}
 
 			<div class="flex flex-col gap-2">
+				<div class="flex items-center gap-2">
+					<Icon name="image" class="mt-0.5 h-4 w-4 shrink-0 text-ink-faint" />
+					<Heading level={6} tag="p" tone="muted">{orderContent.form.promoNotice}</Heading>
+				</div>
+				<label class="ml-6 flex cursor-pointer items-center gap-2">
+					<input type="checkbox" bind:checked={promoOptOut} class="h-3.5 w-3.5 shrink-0 cursor-pointer accent-ink" />
+					<Heading level={6} tag="span" tone="muted">{orderContent.form.promoOptOutLabel}</Heading>
+				</label>
 				{#each orderContent.form.finePrint as item (item.text)}
 					<div class="flex items-center gap-2">
 						<Icon name={item.icon as IconName} class="mt-0.5 h-4 w-4 shrink-0 text-ink-faint" />

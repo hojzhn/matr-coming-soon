@@ -11,6 +11,11 @@ export interface ShippingConfig {
   stretcherBarWeightLbPerIn: number;
   stretchedHardwareLb: number;
   boxWeightTiers: WeightTier[];
+  tubeDiameterIn: number;
+  tubeExtraLengthIn: number;
+  boxPaddingIn: number;
+  boxDepthIn: number;
+  dimDivisor: number;
   roundToLb: number;
 }
 
@@ -34,5 +39,10 @@ export const shippingConfig: ShippingConfig = {
     { upTo: 1600, weightLb: 4 },
     { upTo: Infinity, weightLb: 6 },
   ],
+  tubeDiameterIn: 4,
+  tubeExtraLengthIn: 4,
+  boxPaddingIn: 4,
+  boxDepthIn: 4,
+  dimDivisor: 139,
   roundToLb: 0.5,
 };

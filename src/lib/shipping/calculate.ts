@@ -37,6 +37,19 @@ export function calculateStretchedWeightLb(
 	return roundUpToIncrement(canvasWeight + barWeight + cfg.stretchedHardwareLb + boxWeight, cfg.roundToLb);
 }
 
+export function calculateDimensionalWeightLb(
+	widthIn: number,
+	heightIn: number,
+	isStretched: boolean,
+	cfg: ShippingConfig = shippingConfig
+): number {
+	const dims = isStretched
+		? [widthIn + cfg.boxPaddingIn, heightIn + cfg.boxPaddingIn, cfg.boxDepthIn]
+		: [Math.max(widthIn, heightIn) + cfg.tubeExtraLengthIn, cfg.tubeDiameterIn, cfg.tubeDiameterIn];
+	const volume = dims.reduce((total, side) => total * Math.ceil(side), 1);
+	return roundUpToIncrement(Math.ceil(volume / cfg.dimDivisor), cfg.roundToLb);
+}
+
 export function calculateItemWeightLb(
 	widthIn: number,
 	heightIn: number,
@@ -44,7 +57,19 @@ export function calculateItemWeightLb(
 	cfg: ShippingConfig = shippingConfig
 ): number {
 	const isStretched = optionIds.includes(STRETCH_SERVICE_OPTION_ID);
-	return isStretched
+	const actual = isStretched
 		? calculateStretchedWeightLb(widthIn, heightIn, cfg)
 		: calculateRolledWeightLb(widthIn, heightIn, cfg);
+	return Math.max(actual, calculateDimensionalWeightLb(widthIn, heightIn, isStretched, cfg));
+}
+
+export interface WeightVariant {
+	id: string;
+	weightLb: number;
+}
+
+export function selectWeightVariant(variants: WeightVariant[], weightLb: number): WeightVariant | null {
+	const sorted = variants.filter((v) => v.weightLb > 0).sort((a, b) => a.weightLb - b.weightLb);
+	if (sorted.length === 0) return null;
+	return sorted.find((v) => v.weightLb >= weightLb) ?? sorted[sorted.length - 1];
 }
