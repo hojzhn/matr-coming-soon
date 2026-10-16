@@ -78,6 +78,7 @@
 		let smallPlaces: Placement[] = [];
 		let answerPlaces: Placement[] = [];
 		let state: 'empty' | 'big' | 'answer' = 'empty';
+		let dirty = false;
 		let alive = true;
 		let paused = false;
 		const running = new Set<Animation>();
@@ -158,6 +159,12 @@
 			answerPlaces = layoutBlock(answerMeasure, answerTokens, aEls, width, height - answerTop, 'top', answerTop);
 		}
 
+		function refresh() {
+			if (!dirty) return;
+			dirty = false;
+			measure();
+		}
+
 		function show(which: typeof state) {
 			state = which;
 			els.forEach((el, i) => {
@@ -217,10 +224,10 @@
 			return anim(
 				el,
 				[
-					{ transform: tf(grow(1.6)), opacity: 0 },
-					{ transform: tf(grow(0.92)), opacity: 1, offset: 0.45 },
-					{ transform: tf(grow(1.04)), opacity: 1, offset: 0.75 },
-					{ transform: tf(p), opacity: 1 }
+					{ transform: tf(grow(1.6)), opacity: 0, filter: 'blur(0px)' },
+					{ transform: tf(grow(0.92)), opacity: 1, filter: 'blur(0px)', offset: 0.45 },
+					{ transform: tf(grow(1.04)), opacity: 1, filter: 'blur(0px)', offset: 0.75 },
+					{ transform: tf(p), opacity: 1, filter: 'blur(0px)' }
 				],
 				{ duration: 380, delay, easing: easeOut }
 			);
@@ -287,6 +294,8 @@
 		}
 
 		async function run() {
+			const cs = getComputedStyle(els[0].firstElementChild as Element);
+			await document.fonts.load(`${cs.fontWeight} 16px ${cs.fontFamily}`).catch(() => {});
 			await document.fonts.ready;
 			if (!alive) return;
 			measure();
@@ -296,10 +305,16 @@
 			}
 			show('empty');
 			for (let c = 0; c < cycles && alive; c++) {
+				if (c > 0) {
+					measure();
+					dirty = false;
+				}
 				await buildQuestion();
 				await blink();
 				await wait(questionHoldMs);
+				refresh();
 				await fold();
+				refresh();
 				await buildAnswer();
 				if (c === cycles - 1) break;
 				await wait(answerHoldMs);
@@ -319,10 +334,19 @@
 		}
 
 		const observer = new ResizeObserver(() => {
-			if (!bigPlaces.length || running.size) return;
+			if (!bigPlaces.length) return;
+			if (running.size) {
+				dirty = true;
+				return;
+			}
 			measure();
 			show(state);
 		});
+
+		function onFontsLoaded() {
+			dirty = true;
+		}
+		document.fonts.addEventListener('loadingdone', onFontsLoaded);
 
 		inner.addEventListener('mouseenter', onEnter);
 		inner.addEventListener('mouseleave', onLeave);
@@ -332,6 +356,7 @@
 		return () => {
 			alive = false;
 			observer.disconnect();
+			document.fonts.removeEventListener('loadingdone', onFontsLoaded);
 			inner.removeEventListener('mouseenter', onEnter);
 			inner.removeEventListener('mouseleave', onLeave);
 			running.forEach((a) => a.cancel());
