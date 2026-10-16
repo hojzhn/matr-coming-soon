@@ -16,7 +16,7 @@
 			lines={heroContent.home.lines ?? [[heroContent.home.headline]]}
 			emphasis={heroContent.home.emphasis}
 			answer={heroContent.home.description}
-			beats={heroContent.home.beats}
+			answerLines={heroContent.home.answerLines ?? [heroContent.home.description]}
 		/>
 	{/snippet}
 </Hero>

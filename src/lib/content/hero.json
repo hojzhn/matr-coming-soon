@@ -3,13 +3,7 @@
     "headline": "Obsessed with making your digital art... physical?",
     "lines": [["OBSESSED"], ["with", "making", "your"], ["DIGITAL", "ART..."], ["PHYSICAL?"]],
     "emphasis": "PHYSICAL?",
-    "beats": [
-      { "lines": ["We have reinvented"], "words": 3 },
-      { "lines": ["PRINTING TECH"], "words": 2, "strong": true },
-      { "lines": ["to give your art the"], "words": 5 },
-      { "lines": ["SURFACE", "DEPTH", "FINISH"], "words": 4, "strong": true },
-      { "lines": ["of PAINTING"], "words": 2, "strong": true }
-    ],
+    "answerLines": ["We have reinvented", "PRINTING TECH", "to give your art the", "SURFACE, DEPTH + FINISH", "of PAINTING"],
     "description": "We have reinvented printing tech to give your art the surface, depth and finish of painting.",
     "cta": {
       "label": "Order your Oil Edition™",

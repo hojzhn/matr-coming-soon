@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { tick } from 'svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 
 	let {
@@ -7,70 +6,61 @@
 		lines,
 		emphasis,
 		answer,
-		beats = []
+		answerLines
 	}: {
 		question: string;
 		lines: string[][];
 		emphasis?: string;
 		answer: string;
-		beats?: { lines: string[]; words: number; strong?: boolean }[];
+		answerLines: string[];
 	} = $props();
 
 	type Placement = { x: number; y: number; s: number };
 
-	const cycles = 2;
-	const questionBeatMs = 520;
-	const weakHoldMs = 380;
-	const strongHoldMs = 650;
-	const stackHoldMs = 950;
-	const flyMs = 650;
+	const cycles = 4;
+	const beatMs = 520;
+	const enterMs = 340;
+	const questionHoldMs = 900;
+	const answerHoldMs = 3600;
 	const lineTightness = 0.8;
 	const easeOut = 'cubic-bezier(0.22, 1, 0.36, 1)';
+	const easeIn = 'cubic-bezier(0.64, 0, 0.78, 0)';
 	const easeInOut = 'cubic-bezier(0.76, 0, 0.24, 1)';
 
 	const words = $derived(lines.flatMap((line, li) => line.map((text, wi) => ({ text, li, wi }))));
-	const answerWords = $derived(answer.split(/\s+/).filter(Boolean));
-	const beatsFit = $derived(beats.length > 0 && beats.reduce((n, b) => n + b.words, 0) === answerWords.length);
 
 	let innerEl = $state<HTMLDivElement>();
 	let bigEl = $state<HTMLDivElement>();
 	let smallEl = $state<HTMLDivElement>();
-	let answerEl = $state<HTMLDivElement>();
+	let answerMeasureEl = $state<HTMLDivElement>();
 	let wordEls = $state<HTMLSpanElement[]>([]);
-	let flashEl = $state<HTMLDivElement>();
-	let flashLines = $state<string[]>([]);
-	let answerTop = $state(0);
+	let answerEls = $state<HTMLSpanElement[]>([]);
 
 	function tf(p: Placement, dy = 0) {
 		return `translate(${p.x}px, ${p.y + dy}px) scale(${p.s})`;
 	}
 
 	$effect(() => {
-		if (!innerEl || !bigEl || !smallEl || !answerEl || !flashEl) return;
-		const flash = flashEl;
+		if (!innerEl || !bigEl || !smallEl || !answerMeasureEl) return;
 		const inner = innerEl;
 		const big = bigEl;
 		const small = smallEl;
-		const answerBox = answerEl;
+		const answerMeasure = answerMeasureEl;
 		const els = wordEls.slice(0, words.length);
-		const answerSpans = Array.from(answerBox.querySelectorAll<HTMLElement>('[data-aw]'));
+		const aEls = answerEls.slice(0, answerLines.length);
 		const emphasisIndex = words.findIndex((w) => w.text === emphasis);
 		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 		let bigPlaces: Placement[] = [];
 		let smallPlaces: Placement[] = [];
-		let state: 'big' | 'small' = 'big';
+		let answerPlaces: Placement[] = [];
+		let state: 'empty' | 'big' | 'answer' = 'empty';
 		let alive = true;
 		let paused = false;
 		const running = new Set<Animation>();
 
-		function measure() {
-			const box = inner.getBoundingClientRect();
-			const width = Math.min(box.width, 1200);
-			const height = box.height;
-			const baseSize = parseFloat(getComputedStyle(els[0].firstElementChild as Element).fontSize);
-
-			const offsets = els.map((el) => {
+		function offsetsOf(nodes: HTMLElement[]) {
+			return nodes.map((el) => {
 				const saved = el.style.transform;
 				el.style.transform = 'none';
 				const outer = el.getBoundingClientRect();
@@ -78,51 +68,78 @@
 				el.style.transform = saved;
 				return { x: text.left - outer.left, y: text.top - outer.top };
 			});
+		}
 
-			const lineEls = Array.from(big.querySelectorAll<HTMLElement>('[data-big-line]'));
-			const lineRects = lineEls.map((l) => (l.firstElementChild as HTMLElement).getBoundingClientRect());
+		function fitBlock(lineRects: DOMRect[], width: number, height: number, anchor: 'top' | 'bottom', top: number) {
 			const pitch = lineRects.map((r) => r.height * lineTightness);
 			let scales = lineRects.map((r) => width / r.width);
 			const total = pitch.reduce((sum, p, i) => sum + p * scales[i], 0) + (lineRects.at(-1)!.height - pitch.at(-1)!) * scales.at(-1)!;
 			const fit = Math.min(1, height / total);
 			scales = scales.map((s) => s * fit);
-			let y = height - total * fit;
-			const lineTops = lineRects.map((_, i) => {
-				const top = y;
+			let y = anchor === 'bottom' ? top + height - total * fit : top;
+			const tops = lineRects.map((_, i) => {
+				const t = y;
 				y += pitch[i] * scales[i];
-				return top;
+				return t;
 			});
+			return { scales, tops };
+		}
 
+		function measure() {
+			const box = inner.getBoundingClientRect();
+			const width = Math.min(box.width, 1200);
+			const height = box.height;
+
+			const wordOffsets = offsetsOf(els);
+			const lineRects = Array.from(big.querySelectorAll<HTMLElement>('[data-big-line]')).map((l) =>
+				(l.firstElementChild as HTMLElement).getBoundingClientRect()
+			);
+			const q = fitBlock(lineRects, width, height, 'bottom', 0);
 			bigPlaces = words.map((w, i) => {
-				const span = big.querySelector<HTMLElement>(`[data-word="${w.li}-${w.wi}"]`)!;
-				const r = span.getBoundingClientRect();
+				const r = big.querySelector<HTMLElement>(`[data-word="${w.li}-${w.wi}"]`)!.getBoundingClientRect();
 				const line = lineRects[w.li];
-				const s = scales[w.li];
+				const s = q.scales[w.li];
 				return {
-					x: (r.left - line.left) * s - offsets[i].x * s,
-					y: lineTops[w.li] + (r.top - line.top) * s - offsets[i].y * s,
+					x: (r.left - line.left) * s - wordOffsets[i].x * s,
+					y: q.tops[w.li] + (r.top - line.top) * s - wordOffsets[i].y * s,
 					s
 				};
 			});
 
+			const baseSize = parseFloat(getComputedStyle(els[0].firstElementChild as Element).fontSize);
 			const smallBox = small.getBoundingClientRect();
 			const smallSize = parseFloat(getComputedStyle(small.firstElementChild as Element).fontSize);
 			const k = smallSize / baseSize;
 			smallPlaces = words.map((_, i) => {
 				const r = small.querySelector<HTMLElement>(`[data-small="${i}"]`)!.getBoundingClientRect();
-				return {
-					x: r.left - smallBox.left - offsets[i].x * k,
-					y: r.top - smallBox.top - offsets[i].y * k,
-					s: k
-				};
+				return { x: r.left - smallBox.left - wordOffsets[i].x * k, y: r.top - smallBox.top - wordOffsets[i].y * k, s: k };
 			});
 
-			answerTop = smallBox.height + Math.max(16, smallSize * 0.9);
+			const answerTop = smallBox.height + Math.max(16, smallSize * 1.1);
+			const answerOffsets = offsetsOf(aEls);
+			const answerRects = Array.from(answerMeasure.querySelectorAll<HTMLElement>('[data-answer-line]')).map((l) =>
+				(l.firstElementChild as HTMLElement).getBoundingClientRect()
+			);
+			const a = fitBlock(answerRects, width, height - answerTop, 'top', answerTop);
+			answerPlaces = aEls.map((_, i) => ({
+				x: -answerOffsets[i].x * a.scales[i],
+				y: a.tops[i] - answerOffsets[i].y * a.scales[i],
+				s: a.scales[i]
+			}));
 		}
 
-		function place(which: 'big' | 'small') {
-			const places = which === 'big' ? bigPlaces : smallPlaces;
-			els.forEach((el, i) => (el.style.transform = tf(places[i])));
+		function show(which: typeof state) {
+			state = which;
+			els.forEach((el, i) => {
+				el.style.transform = tf(which === 'answer' ? smallPlaces[i] : bigPlaces[i]);
+				el.style.opacity = which === 'empty' ? '0' : '1';
+				el.style.filter = 'none';
+			});
+			aEls.forEach((el, i) => {
+				el.style.transform = tf(answerPlaces[i]);
+				el.style.opacity = which === 'answer' ? '1' : '0';
+				el.style.filter = 'none';
+			});
 		}
 
 		function anim(el: Element, keyframes: Keyframe[], options: KeyframeAnimationOptions) {
@@ -154,84 +171,20 @@
 			});
 		}
 
-		function enterWords() {
-			return Promise.all(
-				els.map((el, i) =>
-					anim(
-						el,
-						[
-							{ transform: tf({ ...bigPlaces[i], s: bigPlaces[i].s * 1.12 }, -20 * bigPlaces[i].s), opacity: 0, filter: 'blur(10px)' },
-							{ transform: tf(bigPlaces[i]), opacity: 1, filter: 'blur(0px)' }
-						],
-						{ duration: 340, delay: words[i].li * questionBeatMs, easing: easeOut }
-					)
-				)
+		function enter(el: Element, p: Placement, delay: number) {
+			return anim(
+				el,
+				[
+					{ transform: tf({ ...p, s: p.s * 1.12 }, -20 * p.s), opacity: 0, filter: 'blur(10px)' },
+					{ transform: tf(p), opacity: 1, filter: 'blur(0px)' }
+				],
+				{ duration: enterMs, delay, easing: easeOut }
 			);
 		}
 
-		function rel(r: DOMRect, box: DOMRect) {
-			return { left: r.left - box.left, top: r.top - box.top, width: r.width, height: r.height };
-		}
-
-		async function flyBeats() {
-			answerBox.style.opacity = '1';
-			answerSpans.forEach((span) => (span.style.opacity = '0'));
-			let index = 0;
-			for (const beat of beats) {
-				if (!alive) return;
-				flashLines = beat.lines;
-				await tick();
-				const box = inner.getBoundingClientRect();
-				const width = Math.min(box.width, 1200);
-				const sentence = (answerBox.firstElementChild as HTMLElement).getBoundingClientRect();
-				const regionTop = sentence.bottom - box.top + 24;
-				const regionHeight = Math.max(120, box.height - regionTop);
-				flash.style.transform = 'none';
-				const outer = flash.getBoundingClientRect();
-				const text = (flash.firstElementChild as HTMLElement).getBoundingClientRect();
-				const stacked = beat.lines.length > 1;
-				const cap = stacked ? 0.95 : beat.strong ? 0.6 : 0.3;
-				const s = Math.min(width / text.width, (regionHeight * cap) / text.height);
-				const dx = text.left - outer.left;
-				const dy = text.top - outer.top;
-				const start = { x: -dx * s, y: regionTop + (regionHeight - text.height * s) / 2 - dy * s, s };
-
-				const targets = answerSpans.slice(index, index + beat.words);
-				const first = rel(targets[0].getBoundingClientRect(), box);
-				const k = first.height / (text.height / beat.lines.length);
-				const end = { x: first.left - dx * k, y: first.top - dy * k, s: k };
-				const mid = {
-					x: start.x + (end.x - start.x) * 0.6,
-					y: start.y + (end.y - start.y) * 0.6,
-					s: start.s + (end.s - start.s) * 0.6
-				};
-
-				await anim(
-					flash,
-					[
-						{ transform: tf({ ...start, s: s * 1.1 }), opacity: 0, filter: 'blur(8px)' },
-						{ transform: tf(start), opacity: 1, filter: 'blur(0px)' }
-					],
-					{ duration: 300, easing: easeOut }
-				);
-				await wait(stacked ? stackHoldMs : beat.strong ? strongHoldMs : weakHoldMs);
-				await Promise.all([
-					anim(
-						flash,
-						[
-							{ transform: tf(start), opacity: 1 },
-							{ transform: tf(mid), opacity: 1, offset: 0.6 },
-							{ transform: tf(end), opacity: 0 }
-						],
-						{ duration: flyMs, easing: easeInOut }
-					),
-					...targets.map((span, j) =>
-						anim(span, [{ opacity: 0 }, { opacity: 1 }], { duration: 320, delay: flyMs * 0.55 + j * 45, easing: 'ease-out' })
-					)
-				]);
-				flash.style.opacity = '0';
-				index += beat.words;
-			}
+		function buildQuestion() {
+			state = 'big';
+			return Promise.all(els.map((el, i) => enter(el, bigPlaces[i], words[i].li * beatMs)));
 		}
 
 		function blink() {
@@ -242,72 +195,59 @@
 			});
 		}
 
-		function morph(to: 'big' | 'small', duration: number) {
-			const from = to === 'big' ? smallPlaces : bigPlaces;
-			const target = to === 'big' ? bigPlaces : smallPlaces;
-			state = to;
+		function fold() {
 			return Promise.all(
 				els.map((el, i) =>
-					anim(el, [{ transform: tf(from[i]) }, { transform: tf(target[i]) }], {
-						duration,
-						delay: (to === 'small' ? i : els.length - 1 - i) * 30,
+					anim(el, [{ transform: tf(bigPlaces[i]) }, { transform: tf(smallPlaces[i]) }], {
+						duration: 800,
+						delay: i * 30,
 						easing: easeInOut
 					})
 				)
 			);
 		}
 
-		function showAnswer() {
-			answerBox.style.opacity = '1';
-			return Promise.all(
-				answerSpans.map((span, i) =>
-					anim(
-						span,
-						[
-							{ transform: 'translateY(24px)', opacity: 0, filter: 'blur(8px)' },
-							{ transform: 'translateY(0px)', opacity: 1, filter: 'blur(0px)' }
-						],
-						{ duration: 650, delay: i * 140, easing: easeOut }
-					)
-				)
-			);
+		function buildAnswer() {
+			state = 'answer';
+			return Promise.all(aEls.map((el, i) => enter(el, answerPlaces[i], i * beatMs)));
 		}
 
-		function hideAnswer() {
-			return anim(answerBox, [{ opacity: 1 }, { opacity: 0 }], { duration: 400, easing: 'ease-in' });
-		}
-
-		function showSettled() {
-			place('small');
-			els.forEach((el) => (el.style.opacity = '1'));
-			answerBox.style.opacity = '1';
-			answerSpans.forEach((span) => (span.style.opacity = '1'));
+		function reset() {
+			const out = (el: Element, p: Placement, delay: number) =>
+				anim(
+					el,
+					[
+						{ transform: tf(p), opacity: 1, filter: 'blur(0px)' },
+						{ transform: tf(p, -30 * p.s), opacity: 0, filter: 'blur(10px)' }
+					],
+					{ duration: 420, delay, easing: easeIn }
+				);
+			state = 'empty';
+			return Promise.all([
+				...aEls.map((el, i) => out(el, answerPlaces[i], i * 70)),
+				...els.map((el, i) => out(el, smallPlaces[i], 0))
+			]);
 		}
 
 		async function run() {
 			await document.fonts.ready;
 			if (!alive) return;
 			measure();
-			place('big');
 			if (reduce) {
-				state = 'small';
-				showSettled();
+				show('answer');
 				return;
 			}
+			show('empty');
 			for (let c = 0; c < cycles && alive; c++) {
-				if (c === 0) await enterWords();
-				else await morph('big', 700);
+				await buildQuestion();
 				await blink();
-				await wait(1000);
-				await morph('small', 850);
-				if (beatsFit) await flyBeats();
-				else await showAnswer();
-				if (c < cycles - 1) {
-					await wait(5000);
-					await hideAnswer();
-					answerSpans.forEach((span) => (span.style.opacity = '0'));
-					answerBox.style.opacity = '1';
-				}
+				await wait(questionHoldMs);
+				await fold();
+				await buildAnswer();
+				if (c === cycles - 1) break;
+				await wait(answerHoldMs);
+				await reset();
+				await wait(250);
 			}
 		}
 
@@ -324,7 +264,7 @@
 		const observer = new ResizeObserver(() => {
 			if (!bigPlaces.length || running.size) return;
 			measure();
-			place(state);
+			show(state);
 		});
 
 		inner.addEventListener('mouseenter', onEnter);
@@ -363,24 +303,24 @@
 			</Heading>
 		</div>
 
+		<div bind:this={answerMeasureEl} class="invisible absolute top-0 left-0">
+			{#each answerLines as text, i (i)}
+				<div data-answer-line class="w-max whitespace-nowrap">
+					<Heading level={2} tag="span" size="hero" weight="bold" leading="none" tracking="tighter" tone="surface" balance={false} class="whitespace-nowrap">{text}</Heading>
+				</div>
+			{/each}
+		</div>
+
 		{#each words as word, i (i)}
 			<span bind:this={wordEls[i]} class="absolute top-0 left-0 origin-top-left whitespace-nowrap will-change-transform" style="opacity: 0">
 				<Heading level={2} tag="span" size="hero" weight="bold" leading="none" tracking="tighter" tone="surface" balance={false}>{word.text}</Heading>
 			</span>
 		{/each}
 
-		<div bind:this={flashEl} class="absolute top-0 left-0 w-max origin-top-left will-change-transform" style="opacity: 0">
-			<Heading level={2} tag="div" size="hero" weight="bold" leading="none" tracking="tighter" tone="surface" balance={false} class="w-max">
-				{#each flashLines as text, i (i)}
-					<span class="block whitespace-nowrap">{text}</span>
-				{/each}
-			</Heading>
-		</div>
-
-		<div bind:this={answerEl} class="absolute left-0 w-full max-w-5xl" style={`top: ${answerTop}px; opacity: 0`}>
-			<Heading level={2} tag="p" size="lg" sizeMd="xl" weight="bold" leading="tight" tracking="tight" tone="surface">
-				{#each answerWords as text, i (i)}<span data-aw={i} style="opacity: 0">{text}</span>{i < answerWords.length - 1 ? ' ' : ''}{/each}
-			</Heading>
-		</div>
+		{#each answerLines as text, i (i)}
+			<span bind:this={answerEls[i]} class="absolute top-0 left-0 w-max origin-top-left whitespace-nowrap will-change-transform" style="opacity: 0">
+				<Heading level={2} tag="span" size="hero" weight="bold" leading="none" tracking="tighter" tone="surface" balance={false} class="whitespace-nowrap">{text}</Heading>
+			</span>
+		{/each}
 	</div>
 </div>
