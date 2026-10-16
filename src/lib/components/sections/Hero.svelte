@@ -7,9 +7,10 @@
 	import { trackEvent } from '$lib/analytics/track';
 	import { cn } from '$lib/cn';
 	import { smoothScrollIfSamePage } from '$lib/scroll';
+	import type { Snippet } from 'svelte';
 	import type { HeroVariant } from '$lib/content/types';
 
-	let { hero, peek }: { hero: HeroVariant; peek?: HeroVariant } = $props();
+	let { hero, peek, stage }: { hero: HeroVariant; peek?: HeroVariant; stage?: Snippet } = $props();
 
 	const carouselImages = $derived(hero.images ?? []);
 	const headlineLines = $derived(hero.headline.split('\n'));
@@ -157,13 +158,17 @@
 		{/each}
 		</div>
 
-		<div class="absolute inset-x-0 bottom-0 px-container md:px-28">
-			<Heading level={1} size="hero" leading="none" tracking="tighter" tone="surface" balance={false} class="max-w-3xl">
-				{#each headlineLines as text, i (i)}
-					<span class="block w-fit" style={line(i + 1)}>{text}</span>
-				{/each}
-			</Heading>
-		</div>
+		{#if stage}
+			{@render stage()}
+		{:else}
+			<div class="absolute inset-x-0 bottom-0 px-container md:px-28">
+				<Heading level={1} size="hero" leading="none" tracking="tighter" tone="surface" balance={false} class="max-w-3xl">
+					{#each headlineLines as text, i (i)}
+						<span class="block w-fit" style={line(i + 1)}>{text}</span>
+					{/each}
+				</Heading>
+			</div>
+		{/if}
 	</div>
 
 	<div class="pointer-events-none absolute inset-0 z-10 hidden items-center justify-between px-6 md:flex">
@@ -217,9 +222,11 @@
 			</div>
 		</div>
 
-		<div class="mt-12" style={line(contentStart + 2)}>
-			<Heading level={5} tag="p" tone="muted">{hero.description}</Heading>
-		</div>
+		{#if !stage}
+			<div class="mt-12" style={line(contentStart + 2)}>
+				<Heading level={5} tag="p" tone="muted">{hero.description}</Heading>
+			</div>
+		{/if}
 	</div>
 </Section>
 </div>

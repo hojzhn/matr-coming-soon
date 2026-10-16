@@ -32,6 +32,8 @@ export interface BrandLogo {
 }
 export interface HeroVariant {
 	headline: string;
+	lines?: string[][];
+	emphasis?: string;
 	images?: string[];
 	description: string;
 	cta: { label: string; href: string };

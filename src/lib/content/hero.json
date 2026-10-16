@@ -1,7 +1,9 @@
 {
   "home": {
-    "headline": "Engineering\nfor art.",
-    "description": "Matr Labs brings Artists and Engineers together\nto invent new ways of making physical art.",
+    "headline": "Obsessed with making your digital art REAL?",
+    "lines": [["OBSESSED"], ["with", "making", "your"], ["DIGITAL", "ART"], ["REAL?"]],
+    "emphasis": "REAL?",
+    "description": "We have reinvented printing tech to give your art\nthe surface, depth and finish of painting.",
     "cta": {
       "label": "Order your Oil Edition™",
       "href": "/oil-edition"
