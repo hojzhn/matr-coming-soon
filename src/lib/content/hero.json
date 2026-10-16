@@ -1,8 +1,18 @@
 {
   "home": {
-    "headline": "Obsessed with making your digital art REAL?",
-    "lines": [["OBSESSED"], ["with", "making", "your"], ["DIGITAL", "ART"], ["REAL?"]],
-    "emphasis": "REAL?",
+    "headline": "Obsessed with making your digital art PHYSICAL?",
+    "lines": [["OBSESSED"], ["with", "making", "your"], ["DIGITAL", "ART"], ["PHYSICAL?"]],
+    "emphasis": "PHYSICAL?",
+    "beats": [
+      { "text": "We have reinvented" },
+      { "text": "PRINTING TECH", "strong": true },
+      { "text": "to give your art the" },
+      { "text": "SURFACE", "strong": true },
+      { "text": "DEPTH", "strong": true },
+      { "text": "and" },
+      { "text": "FINISH", "strong": true },
+      { "text": "of painting." }
+    ],
     "description": "We have reinvented printing tech to give your art\nthe surface, depth and finish of painting.",
     "cta": {
       "label": "Order your Oil Edition™",

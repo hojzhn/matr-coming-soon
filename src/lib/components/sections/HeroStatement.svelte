@@ -1,21 +1,27 @@
 <script lang="ts">
+	import { tick } from 'svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 
 	let {
 		question,
 		lines,
 		emphasis,
-		answer
+		answer,
+		beats = []
 	}: {
 		question: string;
 		lines: string[][];
 		emphasis?: string;
 		answer: string;
+		beats?: { text: string; strong?: boolean }[];
 	} = $props();
 
 	type Placement = { x: number; y: number; s: number };
 
-	const cycles = 3;
+	const cycles = 2;
+	const questionBeatMs = 520;
+	const answerBeatMs = 560;
+	const strongBeatMs = 680;
 	const lineTightness = 0.8;
 	const easeOut = 'cubic-bezier(0.22, 1, 0.36, 1)';
 	const easeInOut = 'cubic-bezier(0.76, 0, 0.24, 1)';
@@ -28,6 +34,8 @@
 	let smallEl = $state<HTMLDivElement>();
 	let answerEl = $state<HTMLDivElement>();
 	let wordEls = $state<HTMLSpanElement[]>([]);
+	let flashEl = $state<HTMLSpanElement>();
+	let flashText = $state('');
 	let answerTop = $state(0);
 
 	function tf(p: Placement, dy = 0) {
@@ -35,7 +43,8 @@
 	}
 
 	$effect(() => {
-		if (!innerEl || !bigEl || !smallEl || !answerEl) return;
+		if (!innerEl || !bigEl || !smallEl || !answerEl || !flashEl) return;
+		const flash = flashEl;
 		const inner = innerEl;
 		const big = bigEl;
 		const small = smallEl;
@@ -148,13 +157,46 @@
 					anim(
 						el,
 						[
-							{ transform: tf(bigPlaces[i], 40 * bigPlaces[i].s), opacity: 0, filter: 'blur(14px)' },
+							{ transform: tf({ ...bigPlaces[i], s: bigPlaces[i].s * 1.12 }, -20 * bigPlaces[i].s), opacity: 0, filter: 'blur(10px)' },
 							{ transform: tf(bigPlaces[i]), opacity: 1, filter: 'blur(0px)' }
 						],
-						{ duration: 560, delay: i * 70, easing: easeOut }
+						{ duration: 340, delay: words[i].li * questionBeatMs, easing: easeOut }
 					)
 				)
 			);
+		}
+
+		async function flashBeats() {
+			const box = inner.getBoundingClientRect();
+			const width = Math.min(box.width, 1200);
+			const regionTop = answerTop;
+			const regionHeight = Math.max(80, box.height - regionTop);
+			for (const beat of beats) {
+				if (!alive) return;
+				flashText = beat.text;
+				await tick();
+				flash.style.transform = 'none';
+				const outer = flash.getBoundingClientRect();
+				const text = (flash.firstElementChild as HTMLElement).getBoundingClientRect();
+				const cap = beat.strong ? 0.85 : 0.4;
+				const s = Math.min(width / text.width, (regionHeight * cap) / text.height);
+				const place = {
+					x: -(text.left - outer.left) * s,
+					y: regionTop + (regionHeight - text.height * s) / 2 - (text.top - outer.top) * s,
+					s
+				};
+				await anim(
+					flash,
+					[
+						{ transform: tf({ ...place, s: s * 1.1 }), opacity: 0, filter: 'blur(8px)' },
+						{ transform: tf(place), opacity: 1, filter: 'blur(0px)', offset: 0.25 },
+						{ transform: tf(place), opacity: 1, filter: 'blur(0px)', offset: 0.85 },
+						{ transform: tf(place), opacity: 0, filter: 'blur(0px)' }
+					],
+					{ duration: beat.strong ? strongBeatMs : answerBeatMs, easing: 'linear' }
+				);
+			}
+			flash.style.opacity = '0';
 		}
 
 		function blink() {
@@ -221,8 +263,9 @@
 				if (c === 0) await enterWords();
 				else await morph('big', 700);
 				await blink();
-				await wait(1300);
+				await wait(1000);
 				await morph('small', 850);
+				if (beats.length) await flashBeats();
 				await showAnswer();
 				if (c < cycles - 1) {
 					await wait(5000);
@@ -290,9 +333,12 @@
 			</span>
 		{/each}
 
+		<span bind:this={flashEl} class="absolute top-0 left-0 origin-top-left whitespace-nowrap will-change-transform" style="opacity: 0">
+			<Heading level={2} tag="span" size="hero" weight="bold" leading="none" tracking="tighter" tone="surface" balance={false}>{flashText}</Heading>
+		</span>
+
 		<div bind:this={answerEl} class="absolute left-0 w-full" style={`top: ${answerTop}px; opacity: 0`}>
 			<Heading level={2} tag="p" size="lg" sizeMd="xl" weight="bold" leading="tight" tracking="tight" tone="surface">
-
 				{#each answerLines as text, i (i)}
 					<span data-line class="block" style="opacity: 0">{text}</span>
 				{/each}
