@@ -2,7 +2,7 @@
 	"items": [
 		{ "label": "Home", "href": "/" },
 		{ "label": "Oil Edition™", "href": "/oil-edition" },
-		{ "label": "Studio+", "href": "/studio-plus" },
+		{ "label": "Studio", "href": "/studio" },
 		{ "label": "Contact", "href": "/contact" }
 	]
 }

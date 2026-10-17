@@ -15,7 +15,7 @@ import contact from './contact.json';
 import footer from './footer.json';
 import legal from './legal.json';
 import cookieConsent from './cookieConsent.json';
-import toolbox from './toolbox.json';
+import studio from './studio.json';
 import banners from './banners.json';
 import type {
 	AnnouncementContent,
@@ -35,7 +35,7 @@ import type {
 	FooterContent,
 	LegalContent,
 	CookieConsentContent,
-	ToolboxContent,
+	StudioContent,
 	BannersContent
 } from './types';
 
@@ -56,5 +56,5 @@ export const contactContent = contact satisfies ContactContent;
 export const footerContent = footer satisfies FooterContent;
 export const legalContent = legal satisfies LegalContent;
 export const cookieConsentContent = cookieConsent satisfies CookieConsentContent;
-export const toolboxContent = toolbox satisfies ToolboxContent;
+export const studioContent = studio satisfies StudioContent;
 export const bannersContent: BannersContent = banners;

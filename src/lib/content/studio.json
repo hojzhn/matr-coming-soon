@@ -1,0 +1,91 @@
+{
+  "intro": {
+    "eyebrow": "For artists, by artists",
+    "heading": "Artists and technicians, working for your art.",
+    "body": "Matr was started by artists, and the studio still runs on that instinct. Every finish we offer was developed alongside artists, to make their work look its best. Choose how you want to work with us."
+  },
+  "tiersHeading": "Three ways in",
+  "tiers": [
+    {
+      "id": "studio-plus",
+      "name": "Studio+",
+      "title": "More from a single image.",
+      "body": "Give your piece a surface with real presence: texture you can feel, relief that catches the light, or color on wood, metal or fabric.",
+      "pricing": "Each piece starts with a short conversation and is priced to match.",
+      "cta": "Ask about Studio+",
+      "image": "/images/strengths/strength-side.webp",
+      "alt": "Close-up of a glossy, textured surface catching the light"
+    },
+    {
+      "id": "studio-pro",
+      "name": "Studio Pro",
+      "title": "Your look, at scale.",
+      "body": "For artists with a distinctive style who need it in quantity. We find the look with you through samples, then deliver it consistently, edition after edition.",
+      "pricing": "A development fee covers the sampling. Volume earns it back through discounts.",
+      "cta": "Start a development project",
+      "image": "/images/gallery/kenny.webp",
+      "alt": "A series of works in one consistent style"
+    },
+    {
+      "id": "residency",
+      "name": "Residency",
+      "title": "Make it here, with us.",
+      "body": "Work in the studio alongside Matr's artists and technicians, and make pieces you couldn't make anywhere else.",
+      "pricing": "By application. Booked by the hour or the day.",
+      "cta": "Apply for a residency",
+      "image": "/images/strengths/strength-middle.webp",
+      "alt": "An artist working by hand on a finished print in the studio"
+    }
+  ],
+  "menu": {
+    "heading": "The Studio+ menu",
+    "lead": "Finishes we can bring to your image. Combine them, or ask us what would suit your work.",
+    "items": [
+      {
+        "title": "Gestural texture",
+        "body": "A living surface with the trace of a hand. No two pieces alike.",
+        "image": "/images/gallery/brushstrokes.webp",
+        "alt": "A richly textured surface with visible gestural marks"
+      },
+      {
+        "title": "Image-led texture",
+        "body": "Texture that follows the movement in your image.",
+        "image": "/images/strengths/strength-side-2.webp",
+        "alt": "Texture following the flow of an image"
+      },
+      {
+        "title": "Sculpted relief",
+        "body": "Crisp, defined relief, as precise as your file.",
+        "image": "/images/relaunch/oil-edition-print.webp",
+        "alt": "A print with crisp raised relief"
+      },
+      {
+        "title": "Beyond canvas",
+        "body": "Your image on wood, metal, paper or fabric.",
+        "image": "/images/gallery/oil-on-paper.webp",
+        "alt": "An image printed on textured paper"
+      },
+      {
+        "title": "Relief beneath oil",
+        "body": "Defined relief under a full oil-color surface.",
+        "status": "Coming soon",
+        "image": "/images/toolbox/combined.webp",
+        "alt": "A sign image with raised relief under a glossy oil-color surface"
+      },
+      {
+        "title": "Atmospheric color",
+        "body": "Soft, misted gradients with a hand-made feel.",
+        "status": "Limited",
+        "image": "/images/gallery/esherick.webp",
+        "alt": "A soft, glowing image with misted gradients"
+      },
+      {
+        "title": "Raised line",
+        "body": "Bold lines that stand off the surface.",
+        "status": "On request",
+        "image": "/images/toolbox/extrusion.webp",
+        "alt": "Bold raised lines standing off a printed surface"
+      }
+    ]
+  }
+}

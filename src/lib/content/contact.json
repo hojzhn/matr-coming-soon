@@ -24,17 +24,23 @@
   "modesLabel": "Type of enquiry",
   "modes": {
     "general": "General inquiry",
-    "commission": "Commission a piece"
+    "studio": "Studio enquiry"
   },
-  "commission": {
-    "techniquesLabel": "Techniques you are interested in",
+  "studio": {
+    "tierLabel": "How would you like to work with us?",
+    "techniquesLabel": "Finishes you are interested in",
     "unsureLabel": "Not sure yet",
     "surfaceLabel": "Surface and size",
     "surfacePlaceholder": "Surface and size, e.g. linen, 36 x 48 in",
     "timelineLabel": "Timeline",
     "timelinePlaceholder": "When do you need it?",
+    "portfolioLabel": "Portfolio or website",
+    "portfolioPlaceholder": "A link to your work",
+    "datesLabel": "Preferred dates",
+    "datesPlaceholder": "When would you like to come in?",
     "messagePlaceholder": "Describe the piece, the edition size and anything else we should know.",
-    "messageTitle": "COMMISSION ENQUIRY"
+    "residencyMessagePlaceholder": "Tell us about your work and what you would like to make with us.",
+    "messageTitle": "STUDIO ENQUIRY"
   },
   "banner": {
     "heading": "Have something in mind?",

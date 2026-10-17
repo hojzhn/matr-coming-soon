@@ -32,12 +32,13 @@
       "href": "#order"
     }
   },
-  "studioPlus": {
-    "headline": "Studio+\nComing soon.",
-    "description": "Something new is taking shape in our Brooklyn studio.\nDetails soon.",
+  "studio": {
+    "headline": "The\nStudio.",
+    "background": { "image": "/images/hero/oil-edition-shape.webp" },
+    "description": "Your work, taken further.\nSurfaces, textures and finishes you won't find anywhere else.",
     "cta": {
-      "label": "Get in touch",
-      "href": "/contact"
+      "label": "Find your way in",
+      "href": "#tiers"
     }
   },
   "contact": {

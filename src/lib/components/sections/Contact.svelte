@@ -6,51 +6,72 @@
 	import { slide } from 'svelte/transition';
 	import { page } from '$app/state';
 	import { replaceState } from '$app/navigation';
-	import { contactContent, siteContent, toolboxContent } from '$lib/content';
+	import { contactContent, siteContent, studioContent } from '$lib/content';
 	import { trackEvent } from '$lib/analytics/track';
 	import { cn } from '$lib/cn';
 
 	let { formToken }: { formToken: string } = $props();
 
-	type Mode = 'general' | 'commission';
-	const modes: Mode[] = ['general', 'commission'];
-	const { commission } = contactContent;
-	const techniqueOptions = [...toolboxContent.techniques.map((t) => t.title), commission.unsureLabel];
+	type Mode = 'general' | 'studio';
+	const modes: Mode[] = ['general', 'studio'];
+	const { studio } = contactContent;
+	const tiers = studioContent.tiers;
+	const finishOptions = [...studioContent.menu.items.map((t) => t.title), studio.unsureLabel];
 
-	let mode = $state<Mode>(page.url.searchParams.get('type') === 'commission' ? 'commission' : 'general');
+	const params = page.url.searchParams;
+	const requested = params.get('type');
+	let mode = $state<Mode>(requested === 'studio' || requested === 'commission' ? 'studio' : 'general');
+	let tier = $state(tiers.find((t) => t.id === params.get('tier'))?.id ?? tiers[0].id);
+	const residency = $derived(tier === 'residency');
 	let name = $state('');
 	let email = $state('');
 	let message = $state('');
 	let company = $state('');
-	let techniques = $state<string[]>([]);
+	let finishes = $state<string[]>([]);
 	let surface = $state('');
 	let timeline = $state('');
+	let portfolio = $state('');
+	let dates = $state('');
+
+	function syncUrl() {
+		const url = new URL(page.url);
+		if (mode === 'studio') {
+			url.searchParams.set('type', 'studio');
+			url.searchParams.set('tier', tier);
+		} else {
+			url.searchParams.delete('type');
+			url.searchParams.delete('tier');
+		}
+		replaceState(url, page.state);
+	}
 
 	function setMode(next: Mode) {
 		if (next === mode) return;
 		mode = next;
-		const url = new URL(page.url);
-		if (next === 'commission') url.searchParams.set('type', 'commission');
-		else url.searchParams.delete('type');
-		replaceState(url, page.state);
+		syncUrl();
 	}
 
-	function toggleTechnique(option: string) {
-		techniques = techniques.includes(option)
-			? techniques.filter((t) => t !== option)
-			: [...techniques, option];
+	function setTier(next: string) {
+		if (next === tier) return;
+		tier = next;
+		syncUrl();
+	}
+
+	function toggleFinish(option: string) {
+		finishes = finishes.includes(option) ? finishes.filter((t) => t !== option) : [...finishes, option];
 	}
 
 	function composeMessage() {
 		if (mode === 'general') return message;
-		return [
-			commission.messageTitle,
-			`${commission.techniquesLabel}: ${techniques.length ? techniques.join(', ') : '-'}`,
-			`${commission.surfaceLabel}: ${surface.trim() || '-'}`,
-			`${commission.timelineLabel}: ${timeline.trim() || '-'}`,
-			'',
-			message.trim()
-		].join('\n');
+		const tierName = tiers.find((t) => t.id === tier)?.name ?? tier;
+		const details = residency
+			? [`${studio.portfolioLabel}: ${portfolio.trim() || '-'}`, `${studio.datesLabel}: ${dates.trim() || '-'}`]
+			: [
+					`${studio.techniquesLabel}: ${finishes.length ? finishes.join(', ') : '-'}`,
+					`${studio.surfaceLabel}: ${surface.trim() || '-'}`,
+					`${studio.timelineLabel}: ${timeline.trim() || '-'}`
+				];
+		return [`${studio.messageTitle}: ${tierName}`, ...details, '', message.trim()].join('\n');
 	}
 	let loading = $state(false);
 	let error = $state('');
@@ -75,7 +96,7 @@
 			const data = await res.json();
 			if (data.ok) {
 				success = true;
-				trackEvent(mode === 'commission' ? 'commission_form_submitted' : 'contact_form_submitted');
+				trackEvent(mode === 'studio' ? 'studio_form_submitted' : 'contact_form_submitted', mode === 'studio' ? { tier } : undefined);
 			} else {
 				error = data.error || contactContent.form.errorGeneric;
 			}
@@ -86,6 +107,20 @@
 		}
 	}
 </script>
+
+{#snippet chip(label: string, selected: boolean, onclick: () => void)}
+	<button
+		type="button"
+		{onclick}
+		aria-pressed={selected}
+		class={cn(
+			'border-2 px-3 py-2 text-left transition-colors',
+			selected ? 'border-ink' : 'border-line hover:border-ink-muted'
+		)}
+	>
+		<Heading level={5} tag="span" weight="medium">{label}</Heading>
+	</button>
+{/snippet}
 
 <Section id="contact" tone="surface">
 	<div class="grid gap-10 md:grid-cols-2 md:gap-16">
@@ -148,35 +183,40 @@
 					required
 				/>
 
-				{#if mode === 'commission'}
+				{#if mode === 'studio'}
 					<div transition:slide={{ duration: 300 }}>
-						<Field label={commission.techniquesLabel}>
+						<Field label={studio.tierLabel}>
 							<div class="mt-3 flex flex-wrap gap-2">
-								{#each techniqueOptions as option (option)}
-									{@const selected = techniques.includes(option)}
-									<button
-										type="button"
-										onclick={() => toggleTechnique(option)}
-										aria-pressed={selected}
-										class={cn(
-											'border-2 px-3 py-2 text-left transition-colors',
-											selected ? 'border-ink' : 'border-line hover:border-ink-muted'
-										)}
-									>
-										<Heading level={5} tag="span" weight="medium">{option}</Heading>
-									</button>
+								{#each tiers as option (option.id)}
+									{@render chip(option.name, tier === option.id, () => setTier(option.id))}
 								{/each}
 							</div>
 						</Field>
-						<Field label={commission.surfaceLabel} bind:value={surface} placeholder={commission.surfacePlaceholder} />
-						<Field label={commission.timelineLabel} bind:value={timeline} placeholder={commission.timelinePlaceholder} />
+						{#if residency}
+							<Field label={studio.portfolioLabel} bind:value={portfolio} placeholder={studio.portfolioPlaceholder} />
+							<Field label={studio.datesLabel} bind:value={dates} placeholder={studio.datesPlaceholder} />
+						{:else}
+							<Field label={studio.techniquesLabel}>
+								<div class="mt-3 flex flex-wrap gap-2">
+									{#each finishOptions as option (option)}
+										{@render chip(option, finishes.includes(option), () => toggleFinish(option))}
+									{/each}
+								</div>
+							</Field>
+							<Field label={studio.surfaceLabel} bind:value={surface} placeholder={studio.surfacePlaceholder} />
+							<Field label={studio.timelineLabel} bind:value={timeline} placeholder={studio.timelinePlaceholder} />
+						{/if}
 					</div>
 				{/if}
 
 				<Field label={contactContent.form.messageLabel} required>
 					<textarea
 						bind:value={message}
-						placeholder={mode === 'commission' ? commission.messagePlaceholder : contactContent.form.messagePlaceholder}
+						placeholder={mode === 'general'
+							? contactContent.form.messagePlaceholder
+							: residency
+								? studio.residencyMessagePlaceholder
+								: studio.messagePlaceholder}
 						required
 						rows={4}
 						class="w-full resize-none border-b-2 border-ink bg-transparent px-0 py-2.5 text-base font-medium text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-brand"

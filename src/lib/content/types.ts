@@ -44,7 +44,7 @@ export interface HeroVariant {
 export interface HeroContent {
 	home: HeroVariant;
 	oilEdition: HeroVariant;
-	studioPlus: HeroVariant;
+	studio: HeroVariant;
 	contact: HeroVariant;
 }
 export interface BrandsContent {
@@ -208,15 +208,21 @@ export interface ContactContent {
 	intro: string;
 	form: ContactFormContent;
 	modesLabel: string;
-	modes: { general: string; commission: string };
-	commission: {
+	modes: { general: string; studio: string };
+	studio: {
+		tierLabel: string;
 		techniquesLabel: string;
 		unsureLabel: string;
 		surfaceLabel: string;
 		surfacePlaceholder: string;
 		timelineLabel: string;
 		timelinePlaceholder: string;
+		portfolioLabel: string;
+		portfolioPlaceholder: string;
+		datesLabel: string;
+		datesPlaceholder: string;
 		messagePlaceholder: string;
+		residencyMessagePlaceholder: string;
 		messageTitle: string;
 	};
 	banner: { heading: string; body: string; cta: string; href: string };
@@ -261,33 +267,28 @@ export interface CookieConsentContent {
 	};
 	footerLinkLabel: string;
 }
-export interface Technique {
+export interface StudioTier {
+	id: string;
+	name: string;
 	title: string;
 	body: string;
-	video?: string;
+	pricing: string;
+	cta: string;
 	image: string;
 	alt: string;
 }
-export interface ToolboxContent {
+export interface StudioFinish {
 	title: string;
-	heading: string;
-	lead: string;
-	cta: string;
-	ctaHref: string;
-	techniquesHeading: string;
-	techniques: Technique[];
-	combining: {
-		heading: string;
-		body: string;
-		video: string;
-		image: string;
-		alt: string;
-	};
-	materials: {
-		heading: string;
-		feature: Technique;
-		cards: { title: string; body: string }[];
-	};
+	body: string;
+	status?: string;
+	image: string;
+	alt: string;
+}
+export interface StudioContent {
+	intro: { eyebrow: string; heading: string; body: string };
+	tiersHeading: string;
+	tiers: StudioTier[];
+	menu: { heading: string; lead: string; items: StudioFinish[] };
 }
 export interface Banner {
 	heading: string;
