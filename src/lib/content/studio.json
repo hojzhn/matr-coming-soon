@@ -43,21 +43,27 @@
     "items": [
       {
         "title": "Gestural texture",
-        "body": "A living surface with the trace of a hand. No two pieces alike.",
+        "body": "Marks worked by hand into the surface before the color goes on. Every piece carries the trace of a hand, and no two are alike.",
         "image": "/images/gallery/brushstrokes.webp",
         "alt": "A richly textured surface with visible gestural marks"
       },
       {
         "title": "Image-led texture",
-        "body": "Texture that follows the movement in your image.",
+        "body": "Texture drawn from your image itself, following its forms and movement, and repeatable across an edition.",
         "image": "/images/strengths/strength-side-2.webp",
         "alt": "Texture following the flow of an image"
       },
       {
         "title": "Sculpted relief",
-        "body": "Crisp, defined relief, as precise as your file.",
-        "image": "/images/relaunch/oil-edition-print.webp",
+        "body": "Relief built up layer by layer, as crisp and exact as your file.",
+        "image": "/images/toolbox/extrusion.webp",
         "alt": "A print with crisp raised relief"
+      },
+      {
+        "title": "Custom grounds",
+        "body": "A surface mixed for your piece. Here, marble dust in the ground gives a gritty texture and a subtle, shimmering sparkle.",
+        "image": "/images/relaunch/oil-edition-print.webp",
+        "alt": "A gritty surface with a fine mineral sparkle"
       },
       {
         "title": "Beyond canvas",
@@ -67,24 +73,24 @@
       },
       {
         "title": "Relief beneath oil",
-        "body": "Defined relief under a full oil-color surface.",
+        "body": "Precise, built-up relief, finished in our signature oil-based color.",
         "status": "Coming soon",
         "image": "/images/toolbox/combined.webp",
         "alt": "A sign image with raised relief under a glossy oil-color surface"
       },
       {
         "title": "Atmospheric color",
-        "body": "Soft, misted gradients with a hand-made feel.",
+        "body": "Oil-based color sprayed on as a fine, continuous mist, for soft gradients and a hand-sprayed feel.",
         "status": "Limited",
         "image": "/images/gallery/esherick.webp",
         "alt": "A soft, glowing image with misted gradients"
       },
       {
         "title": "Raised line",
-        "body": "Bold lines that stand off the surface.",
+        "body": "Fine lines drawn in relief across the surface, so pattern and contour stand up off the image.",
         "status": "On request",
-        "image": "/images/toolbox/extrusion.webp",
-        "alt": "Bold raised lines standing off a printed surface"
+        "image": "/images/studio/raised-line.webp",
+        "alt": "Fine raised white lines forming a pattern across a printed surface"
       }
     ]
   }
