@@ -4,13 +4,20 @@
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import Icon from '$lib/components/ui/Icon.svelte';
 	import { heroPages, heroPageIndex } from '$lib/hero/pages';
+	import LazyImage from '$lib/components/ui/LazyImage.svelte';
+	import { brandsContent } from '$lib/content';
 	import { trackEvent } from '$lib/analytics/track';
 	import { cn } from '$lib/cn';
 	import { smoothScrollIfSamePage } from '$lib/scroll';
 	import type { Snippet } from 'svelte';
 	import type { HeroVariant } from '$lib/content/types';
 
-	let { hero, peek, stage }: { hero: HeroVariant; peek?: HeroVariant; stage?: Snippet } = $props();
+	let {
+		hero,
+		peek,
+		stage,
+		logos = false
+	}: { hero: HeroVariant; peek?: HeroVariant; stage?: Snippet; logos?: boolean } = $props();
 
 	const carouselImages = $derived(hero.background ? [] : (hero.images ?? []));
 	const headlineLines = $derived(hero.headline.split('\n'));
@@ -90,12 +97,6 @@
 					direction === 'prev' ? 'rotate-180 group-hover:-translate-x-1' : 'group-hover:translate-x-1'
 				)}
 			/>
-		</span>
-		<span
-			class="hidden md:block"
-			style={`view-transition-name: hero-p${currentIndex}-${direction}-label; view-transition-class: hero-line hero-d1;`}
-		>
-			<Heading level={6} tag="span" tone="surface" tracking="wide" uppercase>{target.label}</Heading>
 		</span>
 	</a>
 {/snippet}
@@ -247,6 +248,23 @@
 				</a>
 			</div>
 		</div>
+
+		{#if logos}
+			<div
+				style={line(contentStart + 2)}
+				class="mt-10 grid grid-cols-4 items-center justify-items-center gap-x-6 gap-y-5 md:mt-14 md:flex md:justify-between md:gap-x-6"
+			>
+				{#each brandsContent.items as brand (brand.src)}
+					<div class="flex h-4 min-w-0 items-center justify-center md:h-5">
+						<LazyImage
+							src={brand.src}
+							alt={brand.name}
+							class="h-full w-auto max-w-full shrink-0 object-contain object-center opacity-50 brightness-0 invert transition-opacity hover:opacity-100"
+						/>
+					</div>
+				{/each}
+			</div>
+		{/if}
 
 		{#if !stage}
 			<div class="mt-12" style={line(contentStart + 2)}>

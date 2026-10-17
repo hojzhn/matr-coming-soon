@@ -157,6 +157,19 @@ export interface HandcraftedContent {
 	body: string;
 }
 
+export interface ArtistClient {
+	name: string;
+	image?: string;
+	alt?: string;
+}
+export interface ArtistsContent {
+	eyebrow: string;
+	heading: string;
+	body: string;
+	cta: { label: string; href: string };
+	items: ArtistClient[];
+}
+
 export interface SocialPost {
 	platform: string;
 	href: string;

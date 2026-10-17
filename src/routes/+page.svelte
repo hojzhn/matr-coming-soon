@@ -3,13 +3,13 @@
 	import HeroStatement from '$lib/components/sections/HeroStatement.svelte';
 	import Banners from '$lib/components/sections/Banners.svelte';
 	import Handcrafted from '$lib/components/sections/Handcrafted.svelte';
+	import ArtistClients from '$lib/components/sections/ArtistClients.svelte';
 	import Gallery from '$lib/components/sections/Gallery.svelte';
-	import Creds from '$lib/components/sections/Creds.svelte';
 	import Testimonials from '$lib/components/sections/Testimonials.svelte';
 	import { heroContent } from '$lib/content';
 </script>
 
-<Hero hero={heroContent.home} peek={heroContent.oilEdition}>
+<Hero hero={heroContent.home} peek={heroContent.oilEdition} logos>
 	{#snippet stage()}
 		<HeroStatement
 			question={heroContent.home.headline}
@@ -22,8 +22,8 @@
 	{/snippet}
 </Hero>
 <Handcrafted />
+<ArtistClients />
 <Gallery />
-<Creds />
 <Banners />
 
 <video

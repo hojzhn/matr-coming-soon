@@ -85,10 +85,23 @@
 			<span class="sr-only" aria-live="polite">{trustedName}</span>
 			<Heading level={4} tag="span" weight="medium" balance={false}><SwapText text={trustedName} /></Heading>
 		</Heading>
-		<button type="button" onclick={toggleView} aria-expanded={listOpen} aria-controls="gallery-view">
+		<button
+			type="button"
+			onclick={toggleView}
+			aria-expanded={listOpen}
+			aria-controls="gallery-view"
+			class="group inline-flex items-center gap-2"
+		>
 			<Heading level={4} tag="span" weight="medium" underline>
 				{listOpen ? galleryContent.lessLabel : galleryContent.moreLabel}
 			</Heading>
+			<Icon
+				name="arrow-right"
+				class={cn(
+					'h-5 w-5 shrink-0 transition-transform duration-200 ease-out',
+					listOpen ? 'rotate-180 group-hover:-translate-x-1' : 'group-hover:translate-x-1'
+				)}
+			/>
 		</button>
 	</Container>
 

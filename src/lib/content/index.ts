@@ -17,6 +17,7 @@ import legal from './legal.json';
 import cookieConsent from './cookieConsent.json';
 import studio from './studio.json';
 import banners from './banners.json';
+import artists from './artists.json';
 import type {
 	AnnouncementContent,
 	FaqContent,
@@ -36,7 +37,8 @@ import type {
 	LegalContent,
 	CookieConsentContent,
 	StudioContent,
-	BannersContent
+	BannersContent,
+	ArtistsContent
 } from './types';
 
 export const announcementContent = announcement satisfies AnnouncementContent;
@@ -58,3 +60,4 @@ export const legalContent = legal satisfies LegalContent;
 export const cookieConsentContent = cookieConsent satisfies CookieConsentContent;
 export const studioContent = studio satisfies StudioContent;
 export const bannersContent: BannersContent = banners;
+export const artistsContent = artists satisfies ArtistsContent;
