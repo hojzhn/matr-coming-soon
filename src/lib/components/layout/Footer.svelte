@@ -171,9 +171,9 @@
 			<div class="sm:order-1">
 				<div class="flex items-end gap-4 sm:gap-6">
 					<Logo class="h-[clamp(2rem,4vw,4.25rem)] w-auto text-surface" />
-					<Heading level={1} leading="none">
-						{siteContent.name}
-					</Heading>
+					<Heading level={1} leading="none" tracking="tighter" balance={false} class="whitespace-nowrap"
+						>matr labs</Heading
+					>
 				</div>
 				<div class="flex flex-col gap-2 items-baseline">
 				<Heading level={5} weight="medium" tone="muted" class="mt-4">

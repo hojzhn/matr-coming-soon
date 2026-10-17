@@ -121,8 +121,16 @@
 >
 	<Container width="full">
 		<div class="relative flex h-16 items-center justify-between">
-			<a href="/" class="flex items-center" aria-label="matr labs, home" onclick={(e) => navigate(e, '/')}>
-				<Logo class={cn('h-7 w-auto transition-colors duration-300', inkClass, open && 'max-md:text-ink')} />
+			<a
+				href="/"
+				class={cn('flex items-end gap-2.5 transition-colors duration-300', inkClass, open && 'max-md:text-ink')}
+				aria-label="matr labs, home"
+				onclick={(e) => navigate(e, '/')}
+			>
+				<Logo class="h-7 w-auto" />
+				<Heading tag="span" size="lg" weight="bold" leading="none" tracking="tighter" balance={false} class="whitespace-nowrap"
+					>matr labs</Heading
+				>
 			</a>
 
 			<nav class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 md:flex">
