@@ -228,3 +228,12 @@ html.lenis body {
     transform: translateY(0.35em);
   }
 }
+
+@keyframes ken-burns {
+  from {
+    transform: scale(1.04) translate(0, 0);
+  }
+  to {
+    transform: scale(1.16) translate(-3%, -2%);
+  }
+}

@@ -13,6 +13,7 @@
   },
   "oilEdition": {
     "headline": "Oil\nEdition™",
+    "background": { "image": "/images/hero/oil-edition-swirl.webp" },
     "images": [
       "/images/hero/carousel_1.webp",
       "/images/hero/carousel_2.webp",
@@ -25,7 +26,7 @@
       "/images/hero/carousel_9.webp",
       "/images/hero/carousel_10.webp"
     ],
-    "description": "Real oil-based color on artist-grade linen,\nmade to order from your image.",
+    "description": "Your image in real oil‑based color on Belgian linen.\nA process refined over 12 years with world-famous artists.",
     "cta": {
       "label": "Are you ready?",
       "href": "#order"

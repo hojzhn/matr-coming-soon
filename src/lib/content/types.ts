@@ -36,6 +36,7 @@ export interface HeroVariant {
 	emphasis?: string;
 	answerLines?: string[];
 	answerPunch?: number[];
+	background?: { image: string; video?: string };
 	images?: string[];
 	description: string;
 	cta: { label: string; href: string };

@@ -12,7 +12,7 @@
 
 	let { hero, peek, stage }: { hero: HeroVariant; peek?: HeroVariant; stage?: Snippet } = $props();
 
-	const carouselImages = $derived(hero.images ?? []);
+	const carouselImages = $derived(hero.background ? [] : (hero.images ?? []));
 	const headlineLines = $derived(hero.headline.split('\n'));
 
 	const currentIndex = $derived(Math.max(0, heroPageIndex(page.url.pathname)));
@@ -47,7 +47,7 @@
 		return () => clearInterval(id);
 	});
 
-	const peekImage = $derived(peek?.images?.[0]);
+	const peekImage = $derived(peek?.background?.image ?? peek?.images?.[0]);
 	const ctaInPage = $derived(hero.cta.href.startsWith('#'));
 	let ctaHovered = $state(false);
 	let peekLoaded = $state(false);
@@ -134,8 +134,34 @@
 	tone="ink"
 	fullHeight
 	contained={false}
-	class="relative justify-between overflow-hidden bg-transparent"
+	class="relative isolate justify-between overflow-hidden bg-transparent"
 >
+	{#if hero.background}
+		<div aria-hidden="true" class="absolute inset-0 -z-10 overflow-hidden">
+			{#if hero.background.video}
+				<video
+					src={hero.background.video}
+					poster={hero.background.image}
+					autoplay
+					muted
+					loop
+					playsinline
+					class="absolute inset-0 h-full w-full object-cover"
+				></video>
+			{:else}
+				<img
+					src={hero.background.image}
+					alt=""
+					loading="eager"
+					decoding="async"
+					fetchpriority="high"
+					class="absolute inset-0 h-full w-full origin-center object-cover animate-[ken-burns_24s_ease-in-out_infinite_alternate] motion-reduce:animate-none"
+				/>
+			{/if}
+			<div class="absolute inset-0 bg-linear-to-t from-shade/85 via-shade/25 to-transparent"></div>
+			<div class="absolute inset-0 bg-linear-to-r from-shade/55 via-shade/10 to-transparent"></div>
+		</div>
+	{/if}
 	<div class="relative  w-full flex-1 min-h-0">
 		<div
 			class={cn(
@@ -224,7 +250,7 @@
 
 		{#if !stage}
 			<div class="mt-12" style={line(contentStart + 2)}>
-				<Heading level={5} tag="p" tone="muted">{hero.description}</Heading>
+				<Heading level={4} tag="p" size="md" sizeMd="lg" weight="medium" leading="snug" tone="surface" class="max-w-3xl">{hero.description}</Heading>
 			</div>
 		{/if}
 	</div>
