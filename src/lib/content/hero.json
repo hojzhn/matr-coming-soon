@@ -13,7 +13,7 @@
   },
   "oilEdition": {
     "headline": "Oil\nEdition™",
-    "background": { "image": "/images/hero/oil-edition-swirl.webp" },
+    "background": { "image": "/images/hero/oil-edition-shape.webp" },
     "images": [
       "/images/hero/carousel_1.webp",
       "/images/hero/carousel_2.webp",
@@ -34,7 +34,7 @@
   },
   "studio": {
     "headline": "The\nStudio.",
-    "background": { "image": "/images/hero/oil-edition-shape.webp" },
+    "background": { "image": "/images/hero/studio-impasto.webp" },
     "description": "Your work, taken further.\nSurfaces, textures and finishes you won't find anywhere else.",
     "cta": {
       "label": "Find your way in",
@@ -43,6 +43,7 @@
   },
   "contact": {
     "headline": "Say\nhello.",
+    "background": { "image": "/images/hero/contact-dog.webp" },
     "description": "Wanna collaborate? Our emails are open.\nWe usually reply within a day or two.",
     "cta": {
       "label": "Send us a message",

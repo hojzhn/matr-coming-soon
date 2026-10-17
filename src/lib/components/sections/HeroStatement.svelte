@@ -108,7 +108,8 @@
 			width: number,
 			height: number,
 			anchor: 'top' | 'bottom',
-			top: number
+			top: number,
+			frame: number
 		) {
 			const lineEls = Array.from(container.querySelectorAll<HTMLElement>('[data-line]')).map((l) => l.firstElementChild as HTMLElement);
 			const rects = lineEls.map((l) => l.getBoundingClientRect());
@@ -117,6 +118,7 @@
 			let gap = width * gapRatio;
 			const total = inks.reduce((sum, k, i) => sum + (k.bottom - k.top) * scales[i], 0) + gap * (rects.length - 1);
 			const fit = Math.min(1, height / total);
+			const dx = (frame - width * fit) / 2;
 			scales = scales.map((s) => s * fit);
 			gap *= fit;
 			let cursor = anchor === 'bottom' ? top + height - total * fit : top;
@@ -131,7 +133,7 @@
 				const line = rects[t.li];
 				const s = scales[t.li];
 				return {
-					x: (r.left - line.left) * s - offsets[i].x * s,
+					x: dx + (r.left - line.left) * s - offsets[i].x * s,
 					y: lineTops[t.li] + (r.top - line.top) * s - offsets[i].y * s,
 					s
 				};
@@ -143,20 +145,24 @@
 			const width = Math.min(box.width, 1200);
 			const height = box.height;
 
-			bigPlaces = layoutBlock(big, words, els, width, height, 'bottom', 0);
+			bigPlaces = layoutBlock(big, words, els, width, height, 'bottom', 0, box.width);
 
 			const wordOffsets = offsetsOf(els);
 			const baseSize = parseFloat(getComputedStyle(els[0].firstElementChild as Element).fontSize);
 			const smallBox = small.getBoundingClientRect();
 			const smallSize = parseFloat(getComputedStyle(small.firstElementChild as Element).fontSize);
 			const k = smallSize / baseSize;
-			smallPlaces = words.map((_, i) => {
-				const r = small.querySelector<HTMLElement>(`[data-small="${i}"]`)!.getBoundingClientRect();
-				return { x: r.left - smallBox.left - wordOffsets[i].x * k, y: r.top - smallBox.top - wordOffsets[i].y * k, s: k };
-			});
+			const smallRects = words.map((_, i) => small.querySelector<HTMLElement>(`[data-small="${i}"]`)!.getBoundingClientRect());
+			const smallWidth = Math.max(...smallRects.map((r) => r.right)) - smallBox.left;
+			const smallDx = Math.max(0, (box.width - smallWidth) / 2);
+			smallPlaces = smallRects.map((r, i) => ({
+				x: smallDx + r.left - smallBox.left - wordOffsets[i].x * k,
+				y: r.top - smallBox.top - wordOffsets[i].y * k,
+				s: k
+			}));
 
 			const answerTop = smallBox.height + Math.max(16, smallSize * 1.1);
-			answerPlaces = layoutBlock(answerMeasure, answerTokens, aEls, width, height - answerTop, 'top', answerTop);
+			answerPlaces = layoutBlock(answerMeasure, answerTokens, aEls, width, height - answerTop, 'top', answerTop, box.width);
 		}
 
 		function refresh() {

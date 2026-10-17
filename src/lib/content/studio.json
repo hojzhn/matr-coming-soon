@@ -13,8 +13,9 @@
       "body": "Give your piece a surface with real presence: texture you can feel, relief that catches the light, or color on wood, metal or fabric.",
       "pricing": "Each piece starts with a short conversation and is priced to match.",
       "cta": "Ask about Studio+",
-      "image": "/images/strengths/strength-side.webp",
-      "alt": "Close-up of a glossy, textured surface catching the light"
+      "image": "/images/studio/studio-plus.webp",
+      "video": "/videos/studio/studio-plus.mp4",
+      "alt": "A hand working fine lines into a textured surface with a thin brush"
     },
     {
       "id": "studio-pro",
@@ -23,8 +24,9 @@
       "body": "For artists with a distinctive style who need it in quantity. We find the look with you through samples, then deliver it consistently, edition after edition.",
       "pricing": "A development fee covers the sampling. Volume earns it back through discounts.",
       "cta": "Start a development project",
-      "image": "/images/gallery/kenny.webp",
-      "alt": "A series of works in one consistent style"
+      "image": "/images/studio/studio-pro.webp",
+      "video": "/videos/studio/studio-pro.mp4",
+      "alt": "A run of richly textured pieces laid out together on the print bed"
     },
     {
       "id": "residency",
@@ -33,8 +35,9 @@
       "body": "Work in the studio alongside Matr's artists and technicians, and make pieces you couldn't make anywhere else.",
       "pricing": "By application. Booked by the hour or the day.",
       "cta": "Apply for a residency",
-      "image": "/images/strengths/strength-middle.webp",
-      "alt": "An artist working by hand on a finished print in the studio"
+      "image": "/images/studio/residency.webp",
+      "video": "/videos/studio/residency.mp4",
+      "alt": "An artist seated at an upright printer, watching his piece take shape"
     }
   ],
   "menu": {

@@ -5,11 +5,13 @@
 		src,
 		poster,
 		label,
+		active,
 		class: className
 	}: {
 		src: string;
 		poster: string;
 		label: string;
+		active?: boolean;
 		class?: string;
 	} = $props();
 
@@ -19,6 +21,15 @@
 		if (!videoEl) return;
 		const video = videoEl;
 		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+		if (active !== undefined) {
+			if (active) {
+				video.play().catch(() => {});
+			} else {
+				video.pause();
+			}
+			return;
+		}
 
 		const observer = new IntersectionObserver(
 			([entry]) => {

@@ -3,10 +3,12 @@
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
 	import LazyImage from '$lib/components/ui/LazyImage.svelte';
+	import LoopVideo from '$lib/components/ui/LoopVideo.svelte';
 	import { artistsContent } from '$lib/content';
+	import type { ArtistClient } from '$lib/content/types';
 	import { cn } from '$lib/cn';
 
-	const { items } = artistsContent;
+	const items: ArtistClient[] = artistsContent.items;
 	const pictured = items.filter((item) => item.image);
 
 	let active = $state(pictured[0].name);
@@ -24,27 +26,35 @@
 		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
 		let visible = false;
+		let timer: ReturnType<typeof setTimeout>;
+		const current = active;
+		const dwell = activeItem.video ? 4000 : 3500;
+
+		const advance = () => {
+			if (!visible) {
+				timer = setTimeout(advance, 500);
+				return;
+			}
+			const i = pictured.findIndex((item) => item.name === current);
+			active = pictured[(i + 1) % pictured.length].name;
+		};
+
 		const observer = new IntersectionObserver(([entry]) => (visible = entry.isIntersecting), { threshold: 0.3 });
 		observer.observe(sectionEl);
-
-		const timer = setInterval(() => {
-			if (!visible) return;
-			const i = pictured.findIndex((item) => item.name === active);
-			active = pictured[(i + 1) % pictured.length].name;
-		}, 3500);
+		timer = setTimeout(advance, dwell);
 
 		return () => {
 			observer.disconnect();
-			clearInterval(timer);
+			clearTimeout(timer);
 		};
 	});
 </script>
 
 <div bind:this={sectionEl}>
 	<Section id="artists" tone="surface">
-		<div class="grid gap-10 md:grid-cols-12 md:gap-12">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-12">
 			<div
-				class="md:col-span-7 md:order-last"
+				class="lg:col-span-7 lg:order-last"
 				role="group"
 				onmouseenter={() => (paused = true)}
 				onmouseleave={() => (paused = false)}
@@ -87,7 +97,7 @@
 				</ul>
 			</div>
 
-			<div class="md:col-span-5 md:sticky md:top-24 md:self-start">
+			<div class="lg:col-span-5 lg:sticky lg:top-24 lg:self-start">
 				<div class="relative aspect-4/3 w-full overflow-hidden bg-fill">
 					{#each pictured as item (item.name)}
 						<div
@@ -97,7 +107,17 @@
 							)}
 							aria-hidden={active !== item.name}
 						>
-							<LazyImage src={item.image ?? ''} alt={item.alt ?? item.name} class="absolute inset-0 h-full w-full object-cover" />
+							{#if item.video}
+								<LoopVideo
+									src={item.video}
+									poster={item.image ?? ''}
+									label={item.alt ?? item.name}
+									active={active === item.name}
+									class="absolute inset-0 h-full w-full"
+								/>
+							{:else}
+								<LazyImage src={item.image ?? ''} alt={item.alt ?? item.name} class="absolute inset-0 h-full w-full object-cover" />
+							{/if}
 						</div>
 					{/each}
 				</div>

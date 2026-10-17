@@ -160,6 +160,7 @@ export interface HandcraftedContent {
 export interface ArtistClient {
 	name: string;
 	image?: string;
+	video?: string;
 	alt?: string;
 }
 export interface ArtistsContent {
@@ -288,6 +289,7 @@ export interface StudioTier {
 	pricing: string;
 	cta: string;
 	image: string;
+	video?: string;
 	alt: string;
 }
 export interface StudioFinish {

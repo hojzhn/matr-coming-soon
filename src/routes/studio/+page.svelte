@@ -4,9 +4,21 @@
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
 	import LazyImage from '$lib/components/ui/LazyImage.svelte';
+	import LoopVideo from '$lib/components/ui/LoopVideo.svelte';
 	import { heroContent, studioContent } from '$lib/content';
 
 	const { intro, tiers, menu } = studioContent;
+
+	let hoveredTier = $state<string | null>(null);
+	let canHover = $state(false);
+
+	$effect(() => {
+		const query = window.matchMedia('(hover: hover)');
+		const update = () => (canHover = query.matches);
+		update();
+		query.addEventListener('change', update);
+		return () => query.removeEventListener('change', update);
+	});
 </script>
 
 <Hero hero={heroContent.studio} peek={heroContent.contact} />
@@ -21,9 +33,23 @@
 	<Heading level={2} size="xl">{studioContent.tiersHeading}</Heading>
 	<div class="mt-10 grid gap-12 md:grid-cols-3 md:gap-8">
 		{#each tiers as tier (tier.id)}
-			<article class="flex flex-col">
+			<article
+				class="flex flex-col"
+				onmouseenter={() => (hoveredTier = tier.id)}
+				onmouseleave={() => (hoveredTier = null)}
+			>
 				<div class="relative aspect-4/5 w-full overflow-hidden bg-fill">
-					<LazyImage src={tier.image} alt={tier.alt} class="absolute inset-0 h-full w-full object-cover" />
+					{#if tier.video}
+						<LoopVideo
+							src={tier.video}
+							poster={tier.image}
+							label={tier.alt}
+							active={canHover ? hoveredTier === tier.id : undefined}
+							class="absolute inset-0 h-full w-full"
+						/>
+					{:else}
+						<LazyImage src={tier.image} alt={tier.alt} class="absolute inset-0 h-full w-full object-cover" />
+					{/if}
 				</div>
 				<Heading level={6} tag="p" eyebrow uppercase class="mt-6">{tier.name}</Heading>
 				<Heading level={3} size="lg" class="mt-2">{tier.title}</Heading>
