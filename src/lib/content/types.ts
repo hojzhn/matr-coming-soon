@@ -32,10 +32,8 @@ export interface BrandLogo {
 }
 export interface HeroVariant {
 	headline: string;
-	lines?: string[][];
-	emphasis?: string;
-	answerLines?: string[];
-	answerPunch?: number[];
+	punches?: { text: string; accent?: boolean }[];
+	taglineLines?: string[];
 	background?: { image: string; video?: string };
 	images?: string[];
 	description: string;

@@ -12,12 +12,9 @@
 <Hero hero={heroContent.home} peek={heroContent.oilEdition} logos>
 	{#snippet stage()}
 		<HeroStatement
-			question={heroContent.home.headline}
-			lines={heroContent.home.lines ?? [[heroContent.home.headline]]}
-			emphasis={heroContent.home.emphasis}
-			answer={heroContent.home.description}
-			answerLines={heroContent.home.answerLines ?? [heroContent.home.description]}
-			answerPunch={heroContent.home.answerPunch}
+			punches={heroContent.home.punches ?? [{ text: heroContent.home.headline }]}
+			taglineLines={heroContent.home.taglineLines ?? [heroContent.home.description]}
+			tagline={heroContent.home.description}
 		/>
 	{/snippet}
 </Hero>
