@@ -326,6 +326,7 @@
 				if (c === cycles - 1) break;
 				await wait(answerHoldMs);
 				await reset();
+				show('empty');
 				await wait(250);
 			}
 		}
