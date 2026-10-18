@@ -17,7 +17,6 @@
 	let { formToken }: { formToken: string } = $props();
 
 	let open = $state(false);
-	let mobileView = $state<'menu' | 'cart'>('menu');
 	let overDark = $state(true);
 
 	let linkEls = $state<HTMLAnchorElement[]>([]);
@@ -45,7 +44,6 @@
 
 	function close() {
 		open = false;
-		mobileView = 'menu';
 	}
 
 	function navigate(event: MouseEvent, href: string) {
@@ -53,22 +51,8 @@
 		smoothScrollIfSamePage(event, href);
 	}
 
-	function toggleMenu() {
-		if (open && mobileView === 'menu') {
-			close();
-		} else {
-			open = true;
-			mobileView = 'menu';
-		}
-	}
-
 	function toggleCart() {
-		if (open && mobileView === 'cart') {
-			close();
-		} else {
-			open = true;
-			mobileView = 'cart';
-		}
+		open = !open;
 	}
 
 	function updateOverDark() {
@@ -109,6 +93,7 @@
 	});
 
 	const inkClass = $derived(overDark ? 'text-surface' : 'text-ink');
+	const mobileTone = $derived(overDark && !open ? 'surface' : 'ink');
 	const announcementShown = $derived(!announcementState.dismissed && !announcementState.hiddenByScroll);
 </script>
 
@@ -165,7 +150,7 @@
 					type="button"
 					class="relative flex h-10 w-10 items-center justify-center"
 					aria-label={cart.count > 0 ? `Cart, ${cart.count} item${cart.count === 1 ? '' : 's'}` : 'Cart'}
-					aria-expanded={open && mobileView === 'cart'}
+					aria-expanded={open}
 					onclick={toggleCart}
 				>
 					<Icon name="cart" class={cn('h-5 w-5 transition-colors duration-300', inkClass, open && 'max-md:text-ink')} />
@@ -177,48 +162,42 @@
 						</span>
 					{/if}
 				</button>
-
-				<button
-					type="button"
-					class="flex h-10 w-10 items-center justify-center md:hidden"
-					aria-label={open && mobileView === 'menu' ? 'Close menu' : 'Open menu'}
-					aria-expanded={open && mobileView === 'menu'}
-					onclick={toggleMenu}
-				>
-					<Icon name="menu" class={cn('h-6 w-6 transition-colors duration-300', inkClass, open && 'max-md:text-ink')} />
-				</button>
 			</div>
 		</div>
+
+		<nav class="flex h-9 items-center justify-between md:hidden" aria-label="Main">
+			{#each navContent.items as item (item.href)}
+				<a
+					href={item.href}
+					aria-current={item.href === page.url.pathname ? 'page' : undefined}
+					onclick={(e) => navigate(e, item.href)}
+					class="py-2"
+				>
+					<Heading
+						tag="span"
+						size="sm"
+						weight={item.href === page.url.pathname ? 'bold' : 'medium'}
+						tone={mobileTone}
+						underline={item.href === page.url.pathname}
+						balance={false}
+						class="whitespace-nowrap transition-colors duration-300"
+					>
+						{item.label}
+					</Heading>
+				</a>
+			{/each}
+		</nav>
 	</Container>
 </header>
 
 {#if open}
 	<div class="fixed inset-0 z-[45] flex flex-col bg-surface px-container md:hidden" transition:fly={{ x: 40, duration: 250 }}>
-		{#if mobileView === 'menu'}
-			<div class="flex flex-1 flex-col justify-center">
-				<nav class="flex flex-col gap-6">
-					{#each navContent.items as item (item.href)}
-						<a
-							href={item.href}
-							aria-current={item.href === page.url.pathname ? 'page' : undefined}
-							onclick={(e) => navigate(e, item.href)}
-						>
-							<Heading level={2} underline={item.href === page.url.pathname}>{item.label}</Heading>
-						</a>
-					{/each}
-					<button type="button" class="text-left" onclick={() => (mobileView = 'cart')}>
-						<Heading level={2}>{orderContent.cart.menuLabel}</Heading>
-					</button>
-				</nav>
+		<div class="flex min-h-0 flex-1 flex-col pt-36 pb-6">
+			<Heading level={2} class="mb-4 shrink-0">{orderContent.cart.heading}</Heading>
+			<div class="min-h-0 flex-1">
+				<CartContents {formToken} />
 			</div>
-		{:else}
-			<div class="flex min-h-0 flex-1 flex-col pt-24 pb-6">
-				<Heading level={2} class="mb-4 shrink-0">{orderContent.cart.heading}</Heading>
-				<div class="min-h-0 flex-1">
-					<CartContents {formToken} />
-				</div>
-			</div>
-		{/if}
+		</div>
 	</div>
 {/if}
 

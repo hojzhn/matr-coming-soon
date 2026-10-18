@@ -407,7 +407,7 @@
 	<Heading level={2} tag="span" size="hero" weight="bold" leading="none" tracking="tighter" tone="surface" balance={false} class="whitespace-nowrap">{text}</Heading>
 {/snippet}
 
-<div class="absolute inset-0 px-container pt-24 pb-2 md:px-28 md:pt-28">
+<div class="absolute inset-0 px-container pt-36 pb-2 md:px-28 md:pt-28">
 	<Heading level={1} class="sr-only">{question}</Heading>
 	<Heading level={2} tag="p" class="sr-only">{answer}</Heading>
 
