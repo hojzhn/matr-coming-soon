@@ -206,12 +206,15 @@
 
 		function anim(el: Element, keyframes: Keyframe[], options: KeyframeAnimationOptions) {
 			const a = el.animate(keyframes, { fill: 'both', ...options });
+			const end = Object.entries(keyframes[keyframes.length - 1]).filter(
+				([key]) => key !== 'offset' && key !== 'easing' && key !== 'composite'
+			);
 			running.add(a);
 			if (paused) a.pause();
 			return a.finished
 				.then(() => {
 					if (!alive) return;
-					a.commitStyles();
+					end.forEach(([key, value]) => (el as HTMLElement).style.setProperty(key, String(value)));
 					a.cancel();
 				})
 				.catch(() => {})
