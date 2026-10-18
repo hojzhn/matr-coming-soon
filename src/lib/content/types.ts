@@ -153,6 +153,7 @@ export interface StrengthsContent {
 export interface HandcraftedContent {
 	heading: string;
 	body: string;
+	video: { desktop: string; phone: string; posterDesktop: string; posterPhone: string; alt: string };
 }
 
 export interface ArtistClient {

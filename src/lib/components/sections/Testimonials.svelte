@@ -42,7 +42,7 @@
 	}
 </script>
 
-<Section id="testimonials" tone="surface" contained={false}>
+<Section id="testimonials" tone="surface" contained={false} class="border-t-2 border-ink">
 	<Container class="mb-4 flex items-center justify-between gap-2">
 	<Heading level={4}>Meet our clients</Heading>
 	<div class="flex items-center gap-2">

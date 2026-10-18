@@ -19,16 +19,7 @@
 	{/snippet}
 </Hero>
 <Handcrafted />
+<Banners />
 <ArtistClients />
 <Gallery />
-<Banners />
-
-<video
-	src="/videos/paint-area.mp4"
-	autoplay
-	muted
-	loop
-	playsinline
-	class="h-screen w-full object-cover md:my-20 contrast-130 brightness-110"
-></video>
 <Testimonials />

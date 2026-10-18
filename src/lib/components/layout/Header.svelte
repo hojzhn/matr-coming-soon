@@ -56,8 +56,10 @@
 	}
 
 	function updateOverDark() {
-		const hero = document.getElementById('top');
-		overDark = !!hero && hero.getBoundingClientRect().bottom > 64;
+		overDark = [...document.querySelectorAll('#top, #handcrafted')].some((el) => {
+			const r = el.getBoundingClientRect();
+			return r.top < 64 && r.bottom > 64;
+		});
 	}
 
 	$effect(() => {
