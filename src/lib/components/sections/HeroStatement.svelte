@@ -17,7 +17,7 @@
 		answerPunch?: number[];
 	} = $props();
 
-	type Placement = { x: number; y: number; s: number };
+	type Placement = { x: number; y: number; s: number; f?: number };
 	type Token = { text: string; li: number; wi: number };
 
 	const cycles = 4;
@@ -59,7 +59,7 @@
 	let answerEls = $state<HTMLSpanElement[]>([]);
 
 	function tf(p: Placement, dy = 0) {
-		return `translate(${p.x}px, ${p.y + dy}px) scale(${p.s})`;
+		return `translate(${p.x}px, ${p.y + dy}px) scale(${p.s / (p.f ?? 1)})`;
 	}
 
 	$effect(() => {
@@ -72,7 +72,8 @@
 		const aEls = answerEls.slice(0, answerTokens.length);
 		const emphasisIndex = words.findIndex((w) => w.text === emphasis);
 		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-		const blurPx = window.matchMedia('(pointer: coarse)').matches ? 3 : 10;
+		const blurPx = window.matchMedia('(pointer: coarse)').matches ? 0 : 10;
+		const blurred = (px: number) => (blurPx ? { filter: `blur(${px}px)` } : {});
 		const ctx = document.createElement('canvas').getContext('2d')!;
 
 		let bigPlaces: Placement[] = [];
@@ -141,7 +142,12 @@
 			});
 		}
 
+		function sizeOf(el: HTMLElement) {
+			return el.firstElementChild as HTMLElement;
+		}
+
 		function measure() {
+			[...els, ...aEls].forEach((el) => (sizeOf(el).style.fontSize = ''));
 			const box = inner.getBoundingClientRect();
 			const width = Math.min(box.width, 1200);
 			const height = box.height;
@@ -164,6 +170,18 @@
 
 			const answerTop = smallBox.height + Math.max(16, smallSize * 1.1);
 			answerPlaces = layoutBlock(answerMeasure, answerTokens, aEls, width, height - answerTop, 'top', answerTop, box.width);
+
+			els.forEach((el, i) => {
+				const f = bigPlaces[i].s;
+				bigPlaces[i].f = f;
+				smallPlaces[i].f = f;
+				sizeOf(el).style.fontSize = `${baseSize * f}px`;
+			});
+			aEls.forEach((el, i) => {
+				const f = answerPlaces[i].s;
+				answerPlaces[i].f = f;
+				sizeOf(el).style.fontSize = `${baseSize * f}px`;
+			});
 		}
 
 		function refresh() {
@@ -219,8 +237,8 @@
 			return anim(
 				el,
 				[
-					{ transform: tf({ ...p, s: p.s * 1.12 }, -20 * p.s), opacity: 0, filter: `blur(${blurPx}px)` },
-					{ transform: tf(p), opacity: 1, filter: 'blur(0px)' }
+					{ transform: tf({ ...p, s: p.s * 1.12 }, -20 * p.s), opacity: 0, ...blurred(blurPx) },
+					{ transform: tf(p), opacity: 1, ...blurred(0) }
 				],
 				{ duration: enterMs, delay, easing: easeOut }
 			);
@@ -288,8 +306,8 @@
 				anim(
 					el,
 					[
-						{ transform: tf(p), opacity: 1, filter: 'blur(0px)' },
-						{ transform: tf(p, -30 * p.s), opacity: 0, filter: `blur(${blurPx}px)` }
+						{ transform: tf(p), opacity: 1, ...blurred(0) },
+						{ transform: tf(p, -30 * p.s), opacity: 0, ...blurred(blurPx) }
 					],
 					{ duration: 420, delay, easing: easeIn }
 				);
@@ -406,13 +424,13 @@
 		</div>
 
 		{#each words as word, i (i)}
-			<span bind:this={wordEls[i]} class="absolute top-0 left-0 w-[max-content] origin-top-left whitespace-nowrap will-change-transform" style="opacity: 0">
+			<span bind:this={wordEls[i]} class="absolute top-0 left-0 w-[max-content] origin-top-left whitespace-nowrap" style="opacity: 0">
 				{@render token(word.text)}
 			</span>
 		{/each}
 
 		{#each answerTokens as tok, i (i)}
-			<span bind:this={answerEls[i]} class="absolute top-0 left-0 w-[max-content] origin-top-left whitespace-nowrap will-change-transform" style="opacity: 0">
+			<span bind:this={answerEls[i]} class="absolute top-0 left-0 w-[max-content] origin-top-left whitespace-nowrap" style="opacity: 0">
 				{@render token(tok.text)}
 			</span>
 		{/each}
