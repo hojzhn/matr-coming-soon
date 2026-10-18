@@ -72,6 +72,7 @@
 		const aEls = answerEls.slice(0, answerTokens.length);
 		const emphasisIndex = words.findIndex((w) => w.text === emphasis);
 		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const blurPx = window.matchMedia('(pointer: coarse)').matches ? 3 : 10;
 		const ctx = document.createElement('canvas').getContext('2d')!;
 
 		let bigPlaces: Placement[] = [];
@@ -218,7 +219,7 @@
 			return anim(
 				el,
 				[
-					{ transform: tf({ ...p, s: p.s * 1.12 }, -20 * p.s), opacity: 0, filter: 'blur(10px)' },
+					{ transform: tf({ ...p, s: p.s * 1.12 }, -20 * p.s), opacity: 0, filter: `blur(${blurPx}px)` },
 					{ transform: tf(p), opacity: 1, filter: 'blur(0px)' }
 				],
 				{ duration: enterMs, delay, easing: easeOut }
@@ -230,10 +231,10 @@
 			return anim(
 				el,
 				[
-					{ transform: tf(grow(1.6)), opacity: 0, filter: 'blur(0px)' },
-					{ transform: tf(grow(0.92)), opacity: 1, filter: 'blur(0px)', offset: 0.45 },
-					{ transform: tf(grow(1.04)), opacity: 1, filter: 'blur(0px)', offset: 0.75 },
-					{ transform: tf(p), opacity: 1, filter: 'blur(0px)' }
+					{ transform: tf(grow(1.6)), opacity: 0 },
+					{ transform: tf(grow(0.92)), opacity: 1, offset: 0.45 },
+					{ transform: tf(grow(1.04)), opacity: 1, offset: 0.75 },
+					{ transform: tf(p), opacity: 1 }
 				],
 				{ duration: 380, delay, easing: easeOut }
 			);
@@ -288,7 +289,7 @@
 					el,
 					[
 						{ transform: tf(p), opacity: 1, filter: 'blur(0px)' },
-						{ transform: tf(p, -30 * p.s), opacity: 0, filter: 'blur(10px)' }
+						{ transform: tf(p, -30 * p.s), opacity: 0, filter: `blur(${blurPx}px)` }
 					],
 					{ duration: 420, delay, easing: easeIn }
 				);
@@ -372,7 +373,7 @@
 
 {#snippet measureBlock(grid: string[][])}
 	{#each grid as line, li (li)}
-		<div data-line class="w-max whitespace-nowrap">
+		<div data-line class="w-[max-content] whitespace-nowrap">
 			<Heading level={2} tag="span" size="hero" weight="bold" leading="none" tracking="tighter" tone="surface" balance={false} class="whitespace-nowrap">
 				{#each line as word, wi (wi)}<span data-tok={`${li}-${wi}`}>{word}</span>{wi < line.length - 1 ? ' ' : ''}{/each}
 			</Heading>
@@ -404,13 +405,13 @@
 		</div>
 
 		{#each words as word, i (i)}
-			<span bind:this={wordEls[i]} class="absolute top-0 left-0 w-max origin-top-left whitespace-nowrap will-change-transform" style="opacity: 0">
+			<span bind:this={wordEls[i]} class="absolute top-0 left-0 w-[max-content] origin-top-left whitespace-nowrap will-change-transform" style="opacity: 0">
 				{@render token(word.text)}
 			</span>
 		{/each}
 
 		{#each answerTokens as tok, i (i)}
-			<span bind:this={answerEls[i]} class="absolute top-0 left-0 w-max origin-top-left whitespace-nowrap will-change-transform" style="opacity: 0">
+			<span bind:this={answerEls[i]} class="absolute top-0 left-0 w-[max-content] origin-top-left whitespace-nowrap will-change-transform" style="opacity: 0">
 				{@render token(tok.text)}
 			</span>
 		{/each}
