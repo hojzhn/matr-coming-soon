@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Section from '$lib/components/ui/Section.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
-	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
 	import LazyImage from '$lib/components/ui/LazyImage.svelte';
 	import LoopVideo from '$lib/components/ui/LoopVideo.svelte';
 	import { artistsContent } from '$lib/content';
@@ -124,14 +123,6 @@
 				<Heading level={5} tag="p" tone="muted" class="mt-3" balance={false}>
 					<span aria-live="polite">{activeItem.name}</span>
 				</Heading>
-				<Heading level={4} tag="p" weight="medium" balance={false} class="mt-8">{artistsContent.body}</Heading>
-				<ArrowLink
-					href={artistsContent.cta.href}
-					label={artistsContent.cta.label}
-					size="sm"
-					sizeMd="md"
-					class="mt-8 border-2 px-6 py-3"
-				/>
 			</div>
 		</div>
 	</Section>
