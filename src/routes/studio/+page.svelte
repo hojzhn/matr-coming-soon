@@ -6,6 +6,7 @@
 	import LazyImage from '$lib/components/ui/LazyImage.svelte';
 	import LoopVideo from '$lib/components/ui/LoopVideo.svelte';
 	import { heroContent, studioContent } from '$lib/content';
+	import { cn } from '$lib/cn';
 
 	const { intro, tiers, menu } = studioContent;
 
@@ -29,16 +30,19 @@
 	<Heading level={3} tag="p" weight="medium" balance={false} class="mt-6 max-w-3xl">{intro.body}</Heading>
 </Section>
 
-<Section id="tiers" tone="surface">
+<Section id="tiers" tone="surface" class="border-t-2 border-ink">
 	<Heading level={2} size="xl">{studioContent.tiersHeading}</Heading>
-	<div class="mt-10 grid gap-12 md:grid-cols-3 md:gap-8">
-		{#each tiers as tier (tier.id)}
+	<div class="mt-10 grid border-y-2 border-ink md:grid-cols-2">
+		{#each tiers as tier, i (tier.id)}
 			<article
-				class="flex flex-col"
+				class={cn(
+					'flex flex-col py-10',
+					i === 0 ? 'md:pr-8' : 'border-t-2 border-ink md:border-t-0 md:border-l-2 md:pl-8'
+				)}
 				onmouseenter={() => (hoveredTier = tier.id)}
 				onmouseleave={() => (hoveredTier = null)}
 			>
-				<div class="relative aspect-4/5 w-full overflow-hidden bg-fill">
+				<div class="relative aspect-4/5 w-full overflow-hidden bg-fill md:aspect-square">
 					{#if tier.video}
 						<LoopVideo
 							src={tier.video}
@@ -69,7 +73,7 @@
 	</div>
 </Section>
 
-<Section tone="canvas">
+<Section tone="canvas" class="border-t-2 border-ink">
 	<Heading level={2} size="xl">{menu.heading}</Heading>
 	<Heading level={4} tag="p" weight="medium" tone="muted" class="mt-3 max-w-2xl">{menu.lead}</Heading>
 	<div class="mt-10 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">

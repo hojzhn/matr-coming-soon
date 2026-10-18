@@ -101,7 +101,8 @@
 
 <header
 	class={cn(
-		'fixed inset-x-0 z-50 w-full [view-transition-name:site-header] transition-[top,transform] duration-300 ease-out',
+		'fixed inset-x-0 z-50 w-full [view-transition-name:site-header] transition-[top,transform,background-color] duration-300 ease-out',
+		overDark ? 'bg-transparent' : 'bg-surface',
 		announcementShown ? 'top-6' : 'top-0',
 		hiddenByScroll && !open ? 'max-md:-translate-y-full' : 'max-md:translate-y-0'
 	)}

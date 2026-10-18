@@ -22,7 +22,6 @@
 	const requested = params.get('type');
 	let mode = $state<Mode>(requested === 'studio' || requested === 'commission' ? 'studio' : 'general');
 	let tier = $state(tiers.find((t) => t.id === params.get('tier'))?.id ?? tiers[0].id);
-	const residency = $derived(tier === 'residency');
 	let name = $state('');
 	let email = $state('');
 	let message = $state('');
@@ -30,8 +29,6 @@
 	let finishes = $state<string[]>([]);
 	let surface = $state('');
 	let timeline = $state('');
-	let portfolio = $state('');
-	let dates = $state('');
 
 	function syncUrl() {
 		const url = new URL(page.url);
@@ -64,13 +61,11 @@
 	function composeMessage() {
 		if (mode === 'general') return message;
 		const tierName = tiers.find((t) => t.id === tier)?.name ?? tier;
-		const details = residency
-			? [`${studio.portfolioLabel}: ${portfolio.trim() || '-'}`, `${studio.datesLabel}: ${dates.trim() || '-'}`]
-			: [
-					`${studio.techniquesLabel}: ${finishes.length ? finishes.join(', ') : '-'}`,
-					`${studio.surfaceLabel}: ${surface.trim() || '-'}`,
-					`${studio.timelineLabel}: ${timeline.trim() || '-'}`
-				];
+		const details = [
+			`${studio.techniquesLabel}: ${finishes.length ? finishes.join(', ') : '-'}`,
+			`${studio.surfaceLabel}: ${surface.trim() || '-'}`,
+			`${studio.timelineLabel}: ${timeline.trim() || '-'}`
+		];
 		return [`${studio.messageTitle}: ${tierName}`, ...details, '', message.trim()].join('\n');
 	}
 	let loading = $state(false);
@@ -192,31 +187,22 @@
 								{/each}
 							</div>
 						</Field>
-						{#if residency}
-							<Field label={studio.portfolioLabel} bind:value={portfolio} placeholder={studio.portfolioPlaceholder} />
-							<Field label={studio.datesLabel} bind:value={dates} placeholder={studio.datesPlaceholder} />
-						{:else}
-							<Field label={studio.techniquesLabel}>
-								<div class="mt-3 flex flex-wrap gap-2">
-									{#each finishOptions as option (option)}
-										{@render chip(option, finishes.includes(option), () => toggleFinish(option))}
-									{/each}
-								</div>
-							</Field>
-							<Field label={studio.surfaceLabel} bind:value={surface} placeholder={studio.surfacePlaceholder} />
-							<Field label={studio.timelineLabel} bind:value={timeline} placeholder={studio.timelinePlaceholder} />
-						{/if}
+						<Field label={studio.techniquesLabel}>
+							<div class="mt-3 flex flex-wrap gap-2">
+								{#each finishOptions as option (option)}
+									{@render chip(option, finishes.includes(option), () => toggleFinish(option))}
+								{/each}
+							</div>
+						</Field>
+						<Field label={studio.surfaceLabel} bind:value={surface} placeholder={studio.surfacePlaceholder} />
+						<Field label={studio.timelineLabel} bind:value={timeline} placeholder={studio.timelinePlaceholder} />
 					</div>
 				{/if}
 
 				<Field label={contactContent.form.messageLabel} required>
 					<textarea
 						bind:value={message}
-						placeholder={mode === 'general'
-							? contactContent.form.messagePlaceholder
-							: residency
-								? studio.residencyMessagePlaceholder
-								: studio.messagePlaceholder}
+						placeholder={mode === 'general' ? contactContent.form.messagePlaceholder : studio.messagePlaceholder}
 						required
 						rows={4}
 						class="w-full resize-none border-b-2 border-ink bg-transparent px-0 py-2.5 text-base font-medium text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-brand"

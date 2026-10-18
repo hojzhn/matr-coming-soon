@@ -4,14 +4,14 @@
     "heading": "Artists and technicians, working for your art.",
     "body": "Matr was started by artists, and the studio still runs on that instinct. Every finish we offer was developed alongside artists, to make their work look its best. Choose how you want to work with us."
   },
-  "tiersHeading": "Three ways in",
+  "tiersHeading": "Two ways in",
   "tiers": [
     {
       "id": "studio-plus",
       "name": "Studio+",
       "title": "More from a single image.",
-      "body": "Give your piece a surface with real presence: texture you can feel, relief that catches the light, or color on wood, metal or fabric.",
-      "pricing": "Each piece starts with a short conversation and is priced to match.",
+      "body": "Anything from the menu below, on top of what an Oil Edition offers: texture you can feel, relief, custom grounds, or color on wood, metal or fabric.",
+      "pricing": "Tell us what you have in mind, and we'll shape and price it with you.",
       "cta": "Ask about Studio+",
       "image": "/images/studio/studio-plus.webp",
       "video": "/videos/studio/studio-plus.mp4",
@@ -20,24 +20,13 @@
     {
       "id": "studio-pro",
       "name": "Studio Pro",
-      "title": "Your look, at scale.",
-      "body": "For artists with a distinctive style who need it in quantity. We find the look with you through samples, then deliver it consistently, edition after edition.",
-      "pricing": "A development fee covers the sampling. Volume earns it back through discounts.",
+      "title": "Your production studio.",
+      "body": "We develop your look with you through samples, then produce and deliver it in quantity, edition after edition.",
+      "pricing": "An upfront development fee covers the sampling; volume pricing earns it back.",
       "cta": "Start a development project",
       "image": "/images/studio/studio-pro.webp",
       "video": "/videos/studio/studio-pro.mp4",
       "alt": "A run of richly textured pieces laid out together on the print bed"
-    },
-    {
-      "id": "residency",
-      "name": "Residency",
-      "title": "Make it here, with us.",
-      "body": "Work in the studio alongside Matr's artists and technicians, and make pieces you couldn't make anywhere else.",
-      "pricing": "By application. Booked by the hour or the day.",
-      "cta": "Apply for a residency",
-      "image": "/images/studio/residency.webp",
-      "video": "/videos/studio/residency.mp4",
-      "alt": "An artist seated at an upright printer, watching his piece take shape"
     }
   ],
   "menu": {

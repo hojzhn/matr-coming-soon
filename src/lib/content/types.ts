@@ -228,12 +228,7 @@ export interface ContactContent {
 		surfacePlaceholder: string;
 		timelineLabel: string;
 		timelinePlaceholder: string;
-		portfolioLabel: string;
-		portfolioPlaceholder: string;
-		datesLabel: string;
-		datesPlaceholder: string;
 		messagePlaceholder: string;
-		residencyMessagePlaceholder: string;
 		messageTitle: string;
 	};
 	banner: { heading: string; body: string; cta: string; href: string };
