@@ -6,10 +6,12 @@
 	import LazyImage from '$lib/components/ui/LazyImage.svelte';
 	import LoopVideo from '$lib/components/ui/LoopVideo.svelte';
 	import { heroContent, studioContent } from '$lib/content';
+	import type { StudioTile } from '$lib/content/types';
+	import { cn } from '$lib/cn';
 
-	const { intro, tiers, menu } = studioContent;
+	const { intro, together, pro } = studioContent;
 
-	let hoveredTier = $state<string | null>(null);
+	let hovered = $state<string | null>(null);
 	let canHover = $state(false);
 
 	$effect(() => {
@@ -19,7 +21,34 @@
 		query.addEventListener('change', update);
 		return () => query.removeEventListener('change', update);
 	});
+
+	const contactHref = (tier: string) => `/contact?type=studio&tier=${tier}`;
 </script>
+
+{#snippet tile(item: StudioTile, aspect: string)}
+	<figure
+		class="flex flex-col"
+		onmouseenter={() => (hovered = item.caption)}
+		onmouseleave={() => (hovered = null)}
+	>
+		<div class={cn('relative w-full overflow-hidden bg-fill', aspect)}>
+			{#if item.video}
+				<LoopVideo
+					src={item.video}
+					poster={item.image}
+					label={item.alt}
+					active={canHover ? hovered === item.caption : undefined}
+					class="absolute inset-0 h-full w-full"
+				/>
+			{:else}
+				<LazyImage src={item.image} alt={item.alt} class="absolute inset-0 h-full w-full object-cover" />
+			{/if}
+		</div>
+		<figcaption class="mt-3">
+			<Heading level={4} tag="span" size="sm" sizeMd="base" weight="semibold" balance={false}>{item.caption}</Heading>
+		</figcaption>
+	</figure>
+{/snippet}
 
 <Hero hero={heroContent.studio} peek={heroContent.contact} />
 
@@ -29,70 +58,44 @@
 	<Heading level={3} tag="p" weight="medium" balance={false} class="mt-6 max-w-3xl">{intro.body}</Heading>
 </Section>
 
-<Section id="tiers" tone="surface">
-	<Heading level={2} size="xl">{studioContent.tiersHeading}</Heading>
-	<div class="mt-10 grid gap-12 md:grid-cols-3 md:gap-8">
-		{#each tiers as tier (tier.id)}
-			<article
-				class="flex flex-col"
-				onmouseenter={() => (hoveredTier = tier.id)}
-				onmouseleave={() => (hoveredTier = null)}
-			>
-				<div class="relative aspect-4/5 w-full overflow-hidden bg-fill">
-					{#if tier.video}
-						<LoopVideo
-							src={tier.video}
-							poster={tier.image}
-							label={tier.alt}
-							active={canHover ? hoveredTier === tier.id : undefined}
-							class="absolute inset-0 h-full w-full"
-						/>
-					{:else}
-						<LazyImage src={tier.image} alt={tier.alt} class="absolute inset-0 h-full w-full object-cover" />
-					{/if}
-				</div>
-				<Heading level={6} tag="p" eyebrow uppercase class="mt-6">{tier.name}</Heading>
-				<Heading level={3} size="lg" class="mt-2">{tier.title}</Heading>
-				<Heading level={4} tag="p" weight="medium" tone="muted" class="mt-3">{tier.body}</Heading>
-				<Heading level={5} tag="p" weight="medium" class="mt-4">{tier.pricing}</Heading>
-				<div class="mt-auto pt-6">
-					<ArrowLink
-						href={`/contact?type=studio&tier=${tier.id}`}
-						label={tier.cta}
-						size="sm"
-						sizeMd="md"
-						class="border-2 px-6 py-3"
-					/>
-				</div>
-			</article>
+<Section id={together.id} tone="surface" class="border-t-2 border-ink">
+	<Heading level={2} size="xl">{together.heading}</Heading>
+	<Heading level={4} tag="p" weight="medium" tone="muted" class="mt-3 max-w-2xl">{together.lead}</Heading>
+	<div class="mt-10 grid gap-8 md:grid-cols-3 md:gap-6">
+		{#each together.items as item (item.caption)}
+			{@render tile(item, 'aspect-4/3')}
 		{/each}
 	</div>
+	<ArrowLink href={contactHref(together.tier)} label={together.cta} size="sm" sizeMd="md" class="mt-10 border-2 px-6 py-3" />
 </Section>
 
-<Section tone="canvas">
-	<Heading level={2} size="xl">{menu.heading}</Heading>
-	<Heading level={4} tag="p" weight="medium" tone="muted" class="mt-3 max-w-2xl">{menu.lead}</Heading>
-	<div class="mt-10 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-		{#each menu.items as item (item.title)}
-			<article>
-				<div class="relative aspect-4/3 w-full overflow-hidden bg-fill">
-					<LazyImage src={item.image} alt={item.alt} class="absolute inset-0 h-full w-full object-cover" />
-				</div>
-				<div class="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-					<Heading level={3} size="md">{item.title}</Heading>
-					{#if item.status}
-						<Heading level={6} tag="span" tone="muted" uppercase>{item.status}</Heading>
-					{/if}
-				</div>
-				<Heading level={4} tag="p" weight="medium" tone="muted" class="mt-2">{item.body}</Heading>
-			</article>
-		{/each}
+<Section id={pro.id} tone="surface" class="border-t-2 border-ink">
+	<div class="grid border-2 border-ink md:grid-cols-2">
+		<div class="flex flex-col p-6 md:order-first md:p-12">
+			<Heading level={6} tag="p" eyebrow uppercase>{pro.eyebrow}</Heading>
+			<Heading level={2} size="xl" class="mt-3">{pro.heading}</Heading>
+			<Heading level={4} tag="p" weight="medium" balance={false} class="mt-4">{pro.body}</Heading>
+			<ArrowLink href={contactHref(pro.tier)} label={pro.cta} size="sm" sizeMd="md" class="mt-8 border-2 px-6 py-3" />
+		</div>
+		<div
+			class="order-first border-b-2 border-ink md:order-last md:border-b-0 md:border-l-2"
+			role="presentation"
+			onmouseenter={() => (hovered = pro.id)}
+			onmouseleave={() => (hovered = null)}
+		>
+			<div class="relative aspect-4/3 h-full w-full overflow-hidden bg-fill">
+				{#if pro.video}
+					<LoopVideo
+						src={pro.video}
+						poster={pro.image}
+						label={pro.alt}
+						active={canHover ? hovered === pro.id : undefined}
+						class="absolute inset-0 h-full w-full"
+					/>
+				{:else}
+					<LazyImage src={pro.image} alt={pro.alt} class="absolute inset-0 h-full w-full object-cover" />
+				{/if}
+			</div>
+		</div>
 	</div>
-	<ArrowLink
-		href="/contact?type=studio&tier=studio-plus"
-		label={tiers[0].cta}
-		size="sm"
-		sizeMd="md"
-		class="mt-12 border-2 px-6 py-3"
-	/>
 </Section>

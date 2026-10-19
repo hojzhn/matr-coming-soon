@@ -81,14 +81,11 @@
 		href={target.href}
 		aria-label={`${direction === 'prev' ? 'Previous' : 'Next'}: ${target.label}`}
 		onclick={() => trackEvent('hero_pager_click', { direction, to: target.href })}
-		class={cn(
-			'group pointer-events-auto flex flex-col gap-3',
-			direction === 'prev' ? 'items-start' : 'items-end'
-		)}
+		class="group pointer-events-auto relative flex items-center"
 	>
 		<span
 			style={`view-transition-name: hero-${direction};`}
-			class="flex h-12 w-12 items-center justify-center rounded-full border border-surface/40 bg-shade/30 text-surface backdrop-blur-sm transition-colors duration-300 group-hover:border-brand group-hover:bg-brand group-hover:text-ink md:h-16 md:w-16"
+			class="flex h-12 w-12 items-center justify-center rounded-full bg-surface text-ink shadow-xl transition-colors duration-300 group-hover:bg-brand md:h-16 md:w-16"
 		>
 			<Icon
 				name="arrow-right"
@@ -97,6 +94,14 @@
 					direction === 'prev' ? 'rotate-180 group-hover:-translate-x-1' : 'group-hover:translate-x-1'
 				)}
 			/>
+		</span>
+		<span
+			class={cn(
+				'pointer-events-none absolute top-1/2 mx-3 -translate-y-1/2 rounded-full bg-surface px-4 py-2 opacity-0 shadow-xl transition-[opacity,translate] duration-300 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100',
+				direction === 'prev' ? 'left-full -translate-x-2' : 'right-full translate-x-2'
+			)}
+		>
+			<Heading level={6} tag="span" tone="ink" weight="semibold" balance={false} class="whitespace-nowrap">{target.label}</Heading>
 		</span>
 	</a>
 {/snippet}
@@ -228,23 +233,29 @@
 				/>
 			</a>
 			</div>
-			<div style={line(contentStart + 1)} class="flex items-center gap-4">
+			<div style={line(contentStart + 1)} class="flex w-full items-center justify-between gap-3 md:w-auto md:justify-start">
 				<a
 					href={prevPage.href}
 					aria-label={`Previous: ${prevPage.label}`}
 					onclick={() => trackEvent('hero_pager_click', { direction: 'prev', to: prevPage.href })}
-					class="flex h-10 w-10 items-center justify-center rounded-full border border-surface/40 text-surface transition-colors duration-300 active:border-brand active:bg-brand active:text-ink md:hidden"
+					class="flex min-w-0 items-center gap-2 md:hidden"
 				>
-					<Icon name="arrow-right" class="h-4 w-4 rotate-180" />
+					<span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-surface text-ink shadow-xl transition-colors duration-300 active:bg-brand">
+						<Icon name="arrow-right" class="h-5 w-5 rotate-180" />
+					</span>
+					<Heading level={6} tag="span" tone="surface" weight="semibold" balance={false} class="truncate">{prevPage.label}</Heading>
 				</a>
-				<Heading level={6} tag="span" tone="muted" tracking="wide" uppercase>{counter}</Heading>
+				<Heading level={6} tag="span" tone="muted" tracking="wide" uppercase class="shrink-0">{counter}</Heading>
 				<a
 					href={nextPage.href}
 					aria-label={`Next: ${nextPage.label}`}
 					onclick={() => trackEvent('hero_pager_click', { direction: 'next', to: nextPage.href })}
-					class="flex h-10 w-10 items-center justify-center rounded-full border border-surface/40 text-surface transition-colors duration-300 active:border-brand active:bg-brand active:text-ink md:hidden"
+					class="flex min-w-0 items-center justify-end gap-2 md:hidden"
 				>
-					<Icon name="arrow-right" class="h-4 w-4" />
+					<Heading level={6} tag="span" tone="surface" weight="semibold" balance={false} class="truncate">{nextPage.label}</Heading>
+					<span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-surface text-ink shadow-xl transition-colors duration-300 active:bg-brand">
+						<Icon name="arrow-right" class="h-5 w-5" />
+					</span>
 				</a>
 			</div>
 		</div>

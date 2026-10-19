@@ -54,6 +54,7 @@
 
 	function onEnter() {
 		if (disabled || loading) return;
+		if (!window.matchMedia('(hover: hover)').matches) return;
 		dither?.animateTo(1, 300);
 	}
 	function onLeave() {

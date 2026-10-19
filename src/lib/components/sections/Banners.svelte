@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
 	import Section from '$lib/components/ui/Section.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import Icon from '$lib/components/ui/Icon.svelte';
@@ -51,12 +50,20 @@
 		{/each}
 
 		<div class="col-span-2 flex flex-col border-t-2 border-ink md:col-span-1 md:border-t-0">
-			{#key activeIndex}
-				<div in:fade={{ duration: 300 }} class="flex flex-1 flex-col gap-4 px-container py-6 md:px-8 md:py-8">
-					<Heading level={2}  balance={false}>{active.heading}</Heading>
-					<Heading level={3} tag="p" weight="medium" balance={false}>{active.body}</Heading>
-				</div>
-			{/key}
+			<div class="grid flex-1">
+				{#each banners as banner, i (banner.href)}
+					<div
+						aria-hidden={i !== activeIndex}
+						class={cn(
+							'flex flex-col gap-4 px-container py-6 transition-opacity duration-300 [grid-area:1/1] md:px-8 md:py-8',
+							i === activeIndex ? 'opacity-100' : 'pointer-events-none opacity-0'
+						)}
+					>
+						<Heading level={2} balance={false}>{banner.heading}</Heading>
+						<Heading level={3} tag="p" weight="medium" balance={false}>{banner.body}</Heading>
+					</div>
+				{/each}
+			</div>
 			<a
 				href={active.href}
 				aria-label={`${bannersContent.ctaPrefix} ${active.heading}`}

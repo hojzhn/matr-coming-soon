@@ -32,10 +32,8 @@ export interface BrandLogo {
 }
 export interface HeroVariant {
 	headline: string;
-	lines?: string[][];
-	emphasis?: string;
-	answerLines?: string[];
-	answerPunch?: number[];
+	punches?: { text: string; accent?: boolean }[];
+	taglineLines?: string[];
 	background?: { image: string; video?: string };
 	images?: string[];
 	description: string;
@@ -155,6 +153,7 @@ export interface StrengthsContent {
 export interface HandcraftedContent {
 	heading: string;
 	body: string;
+	video: { desktop: string; phone: string; posterDesktop: string; posterPhone: string; alt: string };
 }
 
 export interface ArtistClient {
@@ -166,8 +165,6 @@ export interface ArtistClient {
 export interface ArtistsContent {
 	eyebrow: string;
 	heading: string;
-	body: string;
-	cta: { label: string; href: string };
 	items: ArtistClient[];
 }
 
@@ -225,18 +222,8 @@ export interface ContactContent {
 	modes: { general: string; studio: string };
 	studio: {
 		tierLabel: string;
-		techniquesLabel: string;
-		unsureLabel: string;
-		surfaceLabel: string;
-		surfacePlaceholder: string;
-		timelineLabel: string;
-		timelinePlaceholder: string;
-		portfolioLabel: string;
-		portfolioPlaceholder: string;
-		datesLabel: string;
-		datesPlaceholder: string;
+		tierNotes: { "studio-plus": string; "studio-pro": string };
 		messagePlaceholder: string;
-		residencyMessagePlaceholder: string;
 		messageTitle: string;
 	};
 	banner: { heading: string; body: string; cta: string; href: string };
@@ -284,26 +271,36 @@ export interface CookieConsentContent {
 export interface StudioTier {
 	id: string;
 	name: string;
-	title: string;
-	body: string;
-	pricing: string;
-	cta: string;
+}
+export interface StudioTile {
+	caption: string;
 	image: string;
 	video?: string;
 	alt: string;
 }
-export interface StudioFinish {
-	title: string;
-	body: string;
-	status?: string;
-	image: string;
-	alt: string;
+export interface StudioBlock {
+	id: string;
+	heading: string;
+	lead: string;
+	cta: string;
+	tier: string;
+	items: StudioTile[];
 }
 export interface StudioContent {
 	intro: { eyebrow: string; heading: string; body: string };
-	tiersHeading: string;
 	tiers: StudioTier[];
-	menu: { heading: string; lead: string; items: StudioFinish[] };
+	together: StudioBlock;
+	pro: {
+		id: string;
+		eyebrow: string;
+		heading: string;
+		body: string;
+		cta: string;
+		tier: string;
+		image: string;
+		video?: string;
+		alt: string;
+	};
 }
 export interface Banner {
 	heading: string;

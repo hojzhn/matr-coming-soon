@@ -28,18 +28,11 @@
   },
   "studio": {
     "tierLabel": "How would you like to work with us?",
-    "techniquesLabel": "Finishes you are interested in",
-    "unsureLabel": "Not sure yet",
-    "surfaceLabel": "Surface and size",
-    "surfacePlaceholder": "Surface and size, e.g. linen, 36 x 48 in",
-    "timelineLabel": "Timeline",
-    "timelinePlaceholder": "When do you need it?",
-    "portfolioLabel": "Portfolio or website",
-    "portfolioPlaceholder": "A link to your work",
-    "datesLabel": "Preferred dates",
-    "datesPlaceholder": "When would you like to come in?",
-    "messagePlaceholder": "Describe the piece, the edition size and anything else we should know.",
-    "residencyMessagePlaceholder": "Tell us about your work and what you would like to make with us.",
+    "tierNotes": {
+      "studio-plus": "Tell us about your work and the techniques you're curious about, and we'll get back to you.",
+      "studio-pro": "For larger collaborations and production at scale. Tell us about your work, and we'll be glad to talk through the details."
+    },
+    "messagePlaceholder": "Tell us about your work.",
     "messageTitle": "STUDIO ENQUIRY"
   },
   "banner": {

@@ -78,7 +78,7 @@
 	});
 </script>
 
-<Section id="gallery" tone="surface" contained={false} class="pt-0">
+<Section id="gallery" tone="surface" contained={false} class="border-t-2 border-ink">
 	<Container class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
 		<Heading level={4} tag="h2" balance={false}>
 			{galleryContent.trustedLabel}

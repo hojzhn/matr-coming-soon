@@ -12,26 +12,14 @@
 <Hero hero={heroContent.home} peek={heroContent.oilEdition} logos>
 	{#snippet stage()}
 		<HeroStatement
-			question={heroContent.home.headline}
-			lines={heroContent.home.lines ?? [[heroContent.home.headline]]}
-			emphasis={heroContent.home.emphasis}
-			answer={heroContent.home.description}
-			answerLines={heroContent.home.answerLines ?? [heroContent.home.description]}
-			answerPunch={heroContent.home.answerPunch}
+			punches={heroContent.home.punches ?? [{ text: heroContent.home.headline }]}
+			taglineLines={heroContent.home.taglineLines ?? [heroContent.home.description]}
+			tagline={heroContent.home.description}
 		/>
 	{/snippet}
 </Hero>
 <Handcrafted />
+<Banners />
 <ArtistClients />
 <Gallery />
-<Banners />
-
-<video
-	src="/videos/paint-area.mp4"
-	autoplay
-	muted
-	loop
-	playsinline
-	class="h-screen w-full object-cover md:my-20 contrast-130 brightness-110"
-></video>
 <Testimonials />
