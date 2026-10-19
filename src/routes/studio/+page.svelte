@@ -9,7 +9,7 @@
 	import type { StudioTile } from '$lib/content/types';
 	import { cn } from '$lib/cn';
 
-	const { intro, beyond, together, pro } = studioContent;
+	const { intro, together, pro } = studioContent;
 
 	let hovered = $state<string | null>(null);
 	let canHover = $state(false);
@@ -56,18 +56,6 @@
 	<Heading level={6} tag="p" eyebrow uppercase>{intro.eyebrow}</Heading>
 	<Heading level={1} class="mt-4 max-w-4xl">{intro.heading}</Heading>
 	<Heading level={3} tag="p" weight="medium" balance={false} class="mt-6 max-w-3xl">{intro.body}</Heading>
-</Section>
-
-<Section id={beyond.id} tone="surface" class="scroll-mt-28 border-t-2 border-ink">
-	<Heading level={2} size="xl">{beyond.heading}</Heading>
-	<Heading level={4} tag="p" weight="medium" tone="muted" class="mt-3 max-w-2xl">{beyond.lead}</Heading>
-	<ArrowLink href={contactHref(beyond.tier)} label={beyond.cta} size="sm" sizeMd="md" class="mt-6 border-2 px-6 py-3" />
-	<div class="mt-10 grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4 lg:gap-x-6">
-		{#each beyond.items as item (item.caption)}
-			{@render tile(item, 'aspect-4/5')}
-		{/each}
-	</div>
-	<ArrowLink href={contactHref(beyond.tier)} label={beyond.cta} size="sm" sizeMd="md" class="mt-10" />
 </Section>
 
 <Section id={together.id} tone="surface" class="border-t-2 border-ink">

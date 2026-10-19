@@ -14,39 +14,6 @@
       "name": "Studio Pro"
     }
   ],
-  "beyond": {
-    "id": "beyond",
-    "heading": "Beyond the edition",
-    "lead": "Texture, surfaces and finishes over and above the Oil Edition. Tell us what you have in mind.",
-    "cta": "Ask about the Studio",
-    "tier": "studio-plus",
-    "items": [
-      {
-        "caption": "Texture by hand",
-        "image": "/images/studio/hand-texture.webp",
-        "video": "/videos/studio/hand-texture.mp4",
-        "alt": "A hand working fine lines into a textured surface with a thin brush"
-      },
-      {
-        "caption": "Texture by machine",
-        "image": "/images/studio/machine-texture.webp",
-        "video": "/videos/studio/machine-texture.mp4",
-        "alt": "A machine brush working texture into a white ground"
-      },
-      {
-        "caption": "Airbrushed prints",
-        "image": "/images/studio/airbrush-poster.webp",
-        "video": "/videos/studio/airbrush.mp4",
-        "alt": "A machine airbrush sweeping across an upright panel"
-      },
-      {
-        "caption": "Texture printed layer by layer",
-        "image": "/images/studio/raised-texture.webp",
-        "video": "/videos/studio/raised-texture.mp4",
-        "alt": "Fingers running over the raised, layered surface of a printed piece"
-      }
-    ]
-  },
   "together": {
     "id": "together",
     "heading": "Made together",

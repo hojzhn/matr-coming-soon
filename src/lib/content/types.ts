@@ -289,7 +289,6 @@ export interface StudioBlock {
 export interface StudioContent {
 	intro: { eyebrow: string; heading: string; body: string };
 	tiers: StudioTier[];
-	beyond: StudioBlock;
 	together: StudioBlock;
 	pro: {
 		id: string;
