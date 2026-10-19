@@ -82,10 +82,32 @@
 </Section>
 
 <Section id={pro.id} tone="surface" class="border-t-2 border-ink">
-	<div class="border-2 border-ink p-6 md:p-12">
-		<Heading level={6} tag="p" eyebrow uppercase>{pro.eyebrow}</Heading>
-		<Heading level={2} size="xl" class="mt-3 max-w-3xl">{pro.heading}</Heading>
-		<Heading level={4} tag="p" weight="medium" balance={false} class="mt-4 max-w-3xl">{pro.body}</Heading>
-		<ArrowLink href={contactHref(pro.tier)} label={pro.cta} size="sm" sizeMd="md" class="mt-8 border-2 px-6 py-3" />
+	<div class="grid border-2 border-ink md:grid-cols-2">
+		<div class="flex flex-col p-6 md:order-first md:p-12">
+			<Heading level={6} tag="p" eyebrow uppercase>{pro.eyebrow}</Heading>
+			<Heading level={2} size="xl" class="mt-3">{pro.heading}</Heading>
+			<Heading level={4} tag="p" weight="medium" balance={false} class="mt-4">{pro.body}</Heading>
+			<ArrowLink href={contactHref(pro.tier)} label={pro.cta} size="sm" sizeMd="md" class="mt-8 border-2 px-6 py-3" />
+		</div>
+		<div
+			class="order-first border-b-2 border-ink md:order-last md:border-b-0 md:border-l-2"
+			role="presentation"
+			onmouseenter={() => (hovered = pro.id)}
+			onmouseleave={() => (hovered = null)}
+		>
+			<div class="relative aspect-4/3 h-full w-full overflow-hidden bg-fill">
+				{#if pro.video}
+					<LoopVideo
+						src={pro.video}
+						poster={pro.image}
+						label={pro.alt}
+						active={canHover ? hovered === pro.id : undefined}
+						class="absolute inset-0 h-full w-full"
+					/>
+				{:else}
+					<LazyImage src={pro.image} alt={pro.alt} class="absolute inset-0 h-full w-full object-cover" />
+				{/if}
+			</div>
+		</div>
 	</div>
 </Section>

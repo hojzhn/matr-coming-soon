@@ -40,9 +40,9 @@
       },
       {
         "caption": "Texture printed layer by layer",
-        "image": "/images/studio/layer-texture.webp",
-        "video": "/videos/studio/layer-texture.mp4",
-        "alt": "A run of richly textured pieces on the print bed under a print head"
+        "image": "/images/studio/raised-texture.webp",
+        "video": "/videos/studio/raised-texture.mp4",
+        "alt": "Fingers running over the raised, layered surface of a printed piece"
       }
     ]
   },
@@ -79,6 +79,9 @@
     "heading": "Your work, produced at scale.",
     "body": "We'd like to hear from artists and studios who need their images produced in quantity. We develop the look with you through samples, then produce and deliver the edition. An upfront development fee covers the sampling; volume pricing earns it back.",
     "cta": "Ask about Studio Pro",
-    "tier": "studio-pro"
+    "tier": "studio-pro",
+    "image": "/images/studio/studio-pro.webp",
+    "video": "/videos/studio/studio-pro.mp4",
+    "alt": "A print bed laid out with a run of pieces under the print head"
   }
 }

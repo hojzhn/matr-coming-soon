@@ -294,7 +294,17 @@ export interface StudioContent {
 	tiers: StudioTier[];
 	beyond: StudioBlock;
 	together: StudioBlock;
-	pro: { id: string; eyebrow: string; heading: string; body: string; cta: string; tier: string };
+	pro: {
+		id: string;
+		eyebrow: string;
+		heading: string;
+		body: string;
+		cta: string;
+		tier: string;
+		image: string;
+		video?: string;
+		alt: string;
+	};
 }
 export interface Banner {
 	heading: string;
