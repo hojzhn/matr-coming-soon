@@ -2,19 +2,59 @@
 	import Section from '$lib/components/ui/Section.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
-	import LazyImage from '$lib/components/ui/LazyImage.svelte';
-	import Icon from '$lib/components/ui/Icon.svelte';
-	import { contactContent } from '$lib/content';
+	import Field from '$lib/components/ui/Field.svelte';
+	import { slide } from 'svelte/transition';
+	import { page } from '$app/state';
+	import { replaceState } from '$app/navigation';
+	import { contactContent, siteContent, studioContent } from '$lib/content';
 	import { trackEvent } from '$lib/analytics/track';
+	import { cn } from '$lib/cn';
 
 	let { formToken }: { formToken: string } = $props();
 
-	const contactImageSrc = '/images/contact.webp';
+	type Mode = 'general' | 'studio';
+	const modes: Mode[] = ['general', 'studio'];
+	const { studio } = contactContent;
+	const tiers = studioContent.tiers;
 
+	const params = page.url.searchParams;
+	const requested = params.get('type');
+	let mode = $state<Mode>(requested === 'studio' || requested === 'commission' ? 'studio' : 'general');
+	let tier = $state(tiers.find((t) => t.id === params.get('tier'))?.id ?? tiers[0].id);
 	let name = $state('');
 	let email = $state('');
 	let message = $state('');
 	let company = $state('');
+
+	function syncUrl() {
+		const url = new URL(page.url);
+		if (mode === 'studio') {
+			url.searchParams.set('type', 'studio');
+			url.searchParams.set('tier', tier);
+		} else {
+			url.searchParams.delete('type');
+			url.searchParams.delete('tier');
+		}
+		replaceState(url, page.state);
+	}
+
+	function setMode(next: Mode) {
+		if (next === mode) return;
+		mode = next;
+		syncUrl();
+	}
+
+	function setTier(next: string) {
+		if (next === tier) return;
+		tier = next;
+		syncUrl();
+	}
+
+	function composeMessage() {
+		if (mode === 'general') return message;
+		const tierName = tiers.find((t) => t.id === tier)?.name ?? tier;
+		return [`${studio.messageTitle}: ${tierName}`, '', message.trim()].join('\n');
+	}
 	let loading = $state(false);
 	let error = $state('');
 	let success = $state(false);
@@ -33,12 +73,12 @@
 			const res = await fetch('/api/contact', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name, email, message, company, formToken })
+				body: JSON.stringify({ name, email, message: composeMessage(), company, formToken })
 			});
 			const data = await res.json();
 			if (data.ok) {
 				success = true;
-				trackEvent('contact_form_submitted');
+				trackEvent(mode === 'studio' ? 'studio_form_submitted' : 'contact_form_submitted', mode === 'studio' ? { tier } : undefined);
 			} else {
 				error = data.error || contactContent.form.errorGeneric;
 			}
@@ -50,30 +90,39 @@
 	}
 </script>
 
-<Section id="contact" tone="surface" fullHeight class="md:mb-40">
-<div class="mb-8">
-	<Heading level={4} class="text-ink">Wanna collaborate?{'\n'}Our emails are open.</Heading>
-</div>
-	<div class="flex w-full flex-col py-0 h-full md:pb-20">
+{#snippet chip(label: string, selected: boolean, onclick: () => void)}
+	<button
+		type="button"
+		{onclick}
+		aria-pressed={selected}
+		class={cn(
+			'border-2 px-3 py-2 text-left transition-colors',
+			selected ? 'border-ink' : 'border-line hover:border-ink-muted'
+		)}
+	>
+		<Heading level={5} tag="span" weight="medium">{label}</Heading>
+	</button>
+{/snippet}
 
-	<div class="flex flex-row justify-between items-center mb-2">
-	<div>
-		<Icon name="mail" class="h-6 w-6 text-ink" /></div>
-		<Heading level={4}>studio@matr.art</Heading>
-	</div>
-		<LazyImage
-			src={contactImageSrc}
-			alt=""
-			class="w-full shrink-0 object-contain"
-		/>
-		{#if success}
-		<div class="mt-8 w-full text-right">
-			<Heading level={3}>
-				{contactContent.form.successMessage}
-			</Heading>
+<Section id="contact" tone="surface">
+	<div class="grid gap-10 md:grid-cols-2 md:gap-16">
+		<div class="flex flex-col items-start gap-2">
+			<Heading level={4} tag="h2">{contactContent.heading}</Heading>
+			<ArrowLink
+				href={`mailto:${siteContent.email}`}
+				label={siteContent.email}
+				icon="mail"
+				arrow={false}
+				size="base"
+				sizeMd="md"
+				class="-ml-3"
+			/>
 		</div>
+
+		{#if success}
+			<Heading level={3}>{contactContent.form.successMessage}</Heading>
 		{:else}
-			<form class="flex flex-1 min-h-0 flex-col justify-center gap-8" {onsubmit}>
+			<form class="flex flex-col" {onsubmit}>
 				<input
 					type="text"
 					name="company"
@@ -84,47 +133,66 @@
 					aria-hidden="true"
 				/>
 
-				<div class="flex flex-col gap-4 md:flex-row md:gap-8 mt-8">
-				<Heading level={3} tag="p" balance={false} class="flex flex-nowrap flex-col items-baseline gap-x-3 gap-y-2">
-					<input
-						type="text"
-						bind:value={name}
-						placeholder={contactContent.form.namePlaceholder}
-						required
-						autocomplete="name"
-						class="min-w-20 md:max-w-md bg-transparent px-0 outline-none transition-colors placeholder:text-ink-faint "
-					/>
-					<span>{'<'}
-					<input
-						type="email"
-						bind:value={email}
-						placeholder={contactContent.form.emailPlaceholder}
-						required
-						autocomplete="email"
-						class="field-sizing-content max-w-full min-w-20 bg-transparent px-0 outline-none transition-colors placeholder:text-ink-faint"
-					/>
-					{'>'}</span>
-					</Heading>
-<hr class="block md:hidden border"/>
-					<Heading level={3} tag="p" balance={false} class="w-full">
-						<textarea
-							bind:value={message}
-							placeholder={contactContent.form.messagePlaceholder}
-							required
-							rows={5}
-							class="w-full resize-none bg-transparent p-0 outline-none placeholder:text-ink-faint"
-						></textarea>
-					</Heading>
+				<div class="mb-8 flex flex-wrap gap-x-8 gap-y-2" role="group" aria-label={contactContent.modesLabel}>
+					{#each modes as option (option)}
+						<button
+							type="button"
+							onclick={() => setMode(option)}
+							aria-pressed={mode === option}
+							class={cn(
+								'text-left transition-opacity duration-300',
+								mode === option ? 'opacity-100' : 'opacity-40 hover:opacity-100'
+							)}
+						>
+							<Heading level={4} tag="span" weight="medium" underline={mode === option}>{contactContent.modes[option]}</Heading>
+						</button>
+					{/each}
+				</div>
+
+				<Field
+					label={contactContent.form.nameLabel}
+					bind:value={name}
+					placeholder={contactContent.form.namePlaceholder}
+					autocomplete="name"
+					required
+				/>
+				<Field
+					label={contactContent.form.emailLabel}
+					type="email"
+					bind:value={email}
+					placeholder={contactContent.form.emailPlaceholder}
+					autocomplete="email"
+					required
+				/>
+
+				{#if mode === 'studio'}
+					<div transition:slide={{ duration: 300 }}>
+						<Field label={studio.tierLabel}>
+							<div class="mt-3 flex flex-wrap gap-2">
+								{#each tiers as option (option.id)}
+									{@render chip(option.name, tier === option.id, () => setTier(option.id))}
+								{/each}
+							</div>
+						</Field>
+						<Heading level={5} tag="p" weight="medium" tone="muted" balance={false} class="-mt-2 mb-6">
+							{studio.tierNotes[tier as keyof typeof studio.tierNotes]}
+						</Heading>
 					</div>
-
-					
-
-				{#if error}
-					<Heading level={6} tag="p" class="text-danger">{error}</Heading>
 				{/if}
 
-				<div class="flex flex-col gap-y-4 md:flex-row md:items-center md:justify-end">
-				
+				<Field label={contactContent.form.messageLabel} required>
+					<textarea
+						bind:value={message}
+						placeholder={mode === 'general' ? contactContent.form.messagePlaceholder : studio.messagePlaceholder}
+						required
+						rows={4}
+						class="w-full resize-none border-b-2 border-ink bg-transparent px-0 py-2.5 text-base font-medium text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
+					></textarea>
+				</Field>
+
+				{#if error}
+					<Heading level={6} tag="p" class="mb-4 text-danger">{error}</Heading>
+				{/if}
 
 				<ArrowLink
 					type="submit"
@@ -132,8 +200,8 @@
 					label={loading ? contactContent.form.submitLoadingLabel : contactContent.form.submitLabel}
 					{loading}
 					disabled={loading}
+					class="mt-2"
 				/>
-				</div>
 			</form>
 		{/if}
 	</div>

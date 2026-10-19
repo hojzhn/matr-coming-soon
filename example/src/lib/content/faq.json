@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "question": "What is the Oil Edition?",
+      "answer": "We transform your image by applying real, oil-based color directly onto artist-grade Belgian linen using our patented technology. The result has qualities that conventional giclée printing can't reproduce: the richness, depth, and luminosity of oil paint."
+    },
+    {
+      "question": "How long does it take to receive my print?",
+      "answer": "Every piece is made to order and ships within 7 business days after production. Additional options may extend this timeframe. Shipping, taxes, and any customs fees are calculated at checkout."
+    },
+    {
+      "question": "What sizes can I order?",
+      "answer": "You can size your print to your artwork, up to 48″ x 48″. You are responsible for preparing your digital file at the appropriate resolution: a minimum of 150 dpi at the final printed dimensions."
+    },
+    {
+      "question": "Do you include extra canvas around the image?",
+      "answer": "Yes. We include an additional 3″ canvas border around the image by default, which is especially useful if you plan to stretch the canvas yourself or have us stretch it for you."
+    },
+    {
+      "question": "Will the colors match what I see on screen?",
+      "answer": "Screen colors may differ slightly from the finished piece. Digital images are viewed as light on a screen, while our Oil Editions are made with oil-based color on linen. The result has its own distinctive depth, warmth, and material character that a screen can't fully preview."
+    },
+    {
+      "question": "Can I return or exchange my print?",
+      "answer": "Because every piece is made to order, custom prints are final sale and cannot be returned or exchanged. If your piece arrives damaged, defective, or materially different from the file you submitted, contact us within 14 days of delivery and we'll make it right."
+    },
+    {
+      "question": "Do you use my artwork to train AI?",
+      "answer": "No. We do not use customer artwork to train AI or machine-learning models. Your artwork is used only as needed to produce, fulfill, and support your order."
+    }
+  ]
+}

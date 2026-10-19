@@ -1,5 +1,55 @@
 {
-  "headline": "Wait for it...",
-  "subheadline": "We've spent years working for galleries and practicing artists. Now we're bringing it straight to you.",
-  "logosLabel": "Matr Labs brings Artists and Engineers together\nto invent new ways of making physical art."
+  "home": {
+    "headline": "Your art. Real oil paint. No limits.",
+    "punches": [
+      { "text": "YOUR ART" },
+      { "text": "REAL OIL PAINT" },
+      { "text": "NO LIMITS", "accent": true }
+    ],
+    "taglineLines": ["Reinventing printing tech", "with the richness", "of oil paint"],
+    "description": "Reinventing printing tech with the richness of oil paint.",
+    "cta": {
+      "label": "Order your Oil Edition™",
+      "href": "/oil-edition"
+    }
+  },
+  "oilEdition": {
+    "headline": "Oil\nEdition™",
+    "background": { "image": "/images/hero/oil-edition-shape.webp" },
+    "images": [
+      "/images/hero/carousel_1.webp",
+      "/images/hero/carousel_2.webp",
+      "/images/hero/carousel_3.webp",
+      "/images/hero/carousel_4.webp",
+      "/images/hero/carousel_5.webp",
+      "/images/hero/carousel_6.webp",
+      "/images/hero/carousel_7.webp",
+      "/images/hero/carousel_8.webp",
+      "/images/hero/carousel_9.webp",
+      "/images/hero/carousel_10.webp"
+    ],
+    "description": "Your image in real oil‑based color on Belgian linen.\nA process refined over 12 years with world-famous artists.\nNow open to every artist, at the price of a standard giclée print.",
+    "cta": {
+      "label": "Are you ready?",
+      "href": "#order"
+    }
+  },
+  "studio": {
+    "headline": "The\nStudio.",
+    "background": { "image": "/images/hero/studio-impasto.webp" },
+    "description": "Your work, taken further.\nSurfaces, textures and finishes you won't find anywhere else.",
+    "cta": {
+      "label": "Ask about the Studio",
+      "href": "/contact?type=studio&tier=studio-plus#contact"
+    }
+  },
+  "contact": {
+    "headline": "Say\nhello.",
+    "background": { "image": "/images/hero/contact-dog.webp" },
+    "description": "Wanna collaborate? Our emails are open.\nWe usually reply within a day or two.",
+    "cta": {
+      "label": "Send us a message",
+      "href": "#contact"
+    }
+  }
 }

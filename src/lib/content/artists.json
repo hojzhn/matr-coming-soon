@@ -1,0 +1,64 @@
+{
+  "eyebrow": "Twelve years in the studio",
+  "heading": "In the studio with",
+  "items": [
+    {
+      "name": "Chuck Close",
+      "image": "/images/artists/chuck-close.webp",
+      "alt": "Chuck Close in his studio with large portrait prints made at Matr"
+    },
+    {
+      "name": "Tyler Hobbs",
+      "image": "/images/artists/tyler-hobbs.webp",
+      "alt": "A Matr machine drawing red circles for a work by Tyler Hobbs"
+    },
+    {
+      "name": "Jeff Koons",
+      "image": "/images/artists/jeff-koons.webp",
+      "video": "/videos/artists/jeff-koons.mp4",
+      "alt": "A mirror-polished sphere turning under print heads on a sculpture printer built at Matr for Jeff Koons"
+    },
+    {
+      "name": "Arthur Jafa",
+      "image": "/images/artists/arthur-jafa.webp",
+      "video": "/videos/artists/arthur-jafa.mp4",
+      "alt": "Arthur Jafa watching a print head move across his piece on an upright printer"
+    },
+    {
+      "name": "Matthew Ritchie",
+      "image": "/images/artists/matthew-ritchie.webp",
+      "alt": "Matthew Ritchie at a Matr printer with a row of prepared panels"
+    },
+    {
+      "name": "James Jean",
+      "image": "/images/artists/james-jean.webp",
+      "alt": "Fine raised lines being drawn across a work by James Jean"
+    },
+    {
+      "name": "Barnaby Furnas",
+      "image": "/images/artists/barnaby-furnas.webp",
+      "alt": "Barnaby Furnas with a Matr painting machine working across a canvas"
+    },
+    {
+      "name": "Raghava KK",
+      "image": "/images/artists/raghava-kk.webp",
+      "alt": "Raghava KK working by hand on a large canvas beside a Matr machine"
+    },
+    {
+      "name": "Petra Cortright",
+      "image": "/images/artists/petra-cortright.webp",
+      "alt": "A glossy work by Petra Cortright under a Matr print head"
+    },
+    {
+      "name": "Anne Vieux",
+      "image": "/images/artists/anne-vieux.webp",
+      "alt": "A large print by Anne Vieux on the bed beside a robotic arm"
+    },
+    {
+      "name": "Eric Fischl"
+    },
+    {
+      "name": "Ross Bleckner"
+    }
+  ]
+}

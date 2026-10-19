@@ -34,7 +34,7 @@
 {#if !announcementState.dismissed}
 	<div
 		class={cn(
-			'fixed inset-x-0 top-0 z-50 h-6 w-full bg-brand transition-transform duration-300 ease-out',
+			'fixed inset-x-0 top-0 z-50 h-6 w-full bg-brand [view-transition-name:announcement] transition-transform duration-300 ease-out',
 			announcementState.hiddenByScroll && '-translate-y-full'
 		)}
 	>

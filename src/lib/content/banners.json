@@ -1,0 +1,19 @@
+{
+  "ctaPrefix": "Explore",
+  "items": [
+    {
+      "heading": "Oil Edition™",
+      "body": "Your image, made in real oil-based color on artist-grade linen.",
+      "href": "/oil-edition",
+      "image": "/images/strengths/detail.webp",
+      "alt": "Close-up of the oil surface of an Oil Edition print"
+    },
+    {
+      "heading": "Studio",
+      "body": "Want more than an edition? New textures, relief and surfaces, or your style produced at scale.",
+      "href": "/studio",
+      "image": "/images/strengths/crafted-landscape.webp",
+      "alt": "A finished piece handcrafted in the Matr Labs studio"
+    }
+  ]
+}

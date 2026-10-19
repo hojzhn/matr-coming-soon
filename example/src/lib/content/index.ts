@@ -1,0 +1,63 @@
+import announcement from './announcement.json';
+import faq from './faq.json';
+import nav from './nav.json';
+import site from './site.json';
+import hero from './hero.json';
+import brands from './brands.json';
+import doors from './doors.json';
+import carousel from './carousel.json';
+import toolbox from './toolbox.json';
+import collaborate from './collaborate.json';
+import gallery from './gallery.json';
+import order from './order.json';
+import strengths from './strengths.json';
+import testimonials from './testimonials.json';
+import relaunch from './relaunch.json';
+import newsletter from './newsletter.json';
+import contact from './contact.json';
+import footer from './footer.json';
+import legal from './legal.json';
+import cookieConsent from './cookieConsent.json';
+import type {
+	AnnouncementContent,
+	FaqContent,
+	NavContent,
+	SiteContent,
+	HeroContent,
+	BrandsContent,
+	DoorsContent,
+	CarouselContent,
+	ToolboxContent,
+	CollaborateContent,
+	GalleryContent,
+	OrderContent,
+	StrengthsContent,
+	TestimonialsContent,
+	RelaunchContent,
+	NewsletterContent,
+	ContactContent,
+	FooterContent,
+	LegalContent,
+	CookieConsentContent
+} from './types';
+
+export const announcementContent = announcement satisfies AnnouncementContent;
+export const faqContent = faq satisfies FaqContent;
+export const navContent = nav satisfies NavContent;
+export const siteContent = site satisfies SiteContent;
+export const heroContent = hero satisfies HeroContent;
+export const brandsContent = brands satisfies BrandsContent;
+export const doorsContent = doors satisfies DoorsContent;
+export const carouselContent = carousel satisfies CarouselContent;
+export const toolboxContent = toolbox satisfies ToolboxContent;
+export const collaborateContent = collaborate satisfies CollaborateContent;
+export const galleryContent = gallery satisfies GalleryContent;
+export const orderContent = order satisfies OrderContent;
+export const strengthsContent = strengths satisfies StrengthsContent;
+export const testimonialsContent = testimonials satisfies TestimonialsContent;
+export const relaunchContent = relaunch satisfies RelaunchContent;
+export const newsletterContent = newsletter satisfies NewsletterContent;
+export const contactContent = contact satisfies ContactContent;
+export const footerContent = footer satisfies FooterContent;
+export const legalContent = legal satisfies LegalContent;
+export const cookieConsentContent = cookieConsent satisfies CookieConsentContent;

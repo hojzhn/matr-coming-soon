@@ -54,6 +54,7 @@
 
 	function onEnter() {
 		if (disabled || loading) return;
+		if (!window.matchMedia('(hover: hover)').matches) return;
 		dither?.animateTo(1, 300);
 	}
 	function onLeave() {
@@ -107,6 +108,7 @@
 		target={external ? '_blank' : undefined}
 		rel={external ? 'noreferrer' : undefined}
 		data-sveltekit-preload-data={samepage ? 'off' : undefined}
+		{onclick}
 		onmouseenter={onEnter}
 		onmouseleave={onLeave}
 		class={cn('group relative inline-flex w-fit items-center overflow-hidden', variantClass, className)}

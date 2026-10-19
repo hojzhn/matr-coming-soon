@@ -5,13 +5,11 @@
 	import LazyImage from '$lib/components/ui/LazyImage.svelte';
 
 	import { strengthsContent } from '$lib/content';
-  import ArrowLink from '../ui/ArrowLink.svelte';
 
 	const detailSrc = '/images/strengths/detail.webp';
 	const strengthMiddleSrc = '/images/strengths/strength-middle.webp';
 	const strengthSideSrc = '/images/strengths/strength-side.webp';
 	const strengthSide2Src = '/images/strengths/strength-side-2.webp';
-	const craftedSrc = '/images/strengths/crafted.webp';
 
 	let processImageEl = $state<HTMLElement>();
 	let scrollY = $state(0);
@@ -125,20 +123,3 @@
 			</div>
 		</div>
 	</div>
-
-	<Container>
-<div class="mt-4">
-	<Heading level={1}>{strengthsContent.process.heading}</Heading>
-	<div class="flex flex-col items-start lg:items-end gap-8 mt-16 lg:flex-row xl:ml-50">
-	<div class="relative aspect-2/3 w-60 shrink-0 sm:w-56 lg:w-100">
-		<LazyImage src={craftedSrc} alt="" class="absolute inset-0 h-full w-full object-cover" />
-	</div>
-
-	<div>
-	<Heading level={3} tag="p"  weight="medium" balance={false}>
-		{strengthsContent.process.body}
-	</Heading>
-	<ArrowLink href="/#contact" label="Contact us" size="sm" sizeMd="md" arrow={false} class="mt-4 lg:mt-12 border-2 px-6 py-3" /></div>
-		</div>
-</div>
-</Container>

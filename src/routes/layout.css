@@ -15,6 +15,7 @@
   --text-xl: 2.25rem;
   --text-2xl: clamp(2.5rem, 5vw, 3.75rem);
   --text-hero: clamp(3rem, 8vw, 7rem);
+  --text-display: clamp(3.5rem, 11vw, 11rem);
 
   --leading-none: 0.85;
   --leading-tighter: 0.9;
@@ -39,9 +40,9 @@
   --radius-lg: 24px;
 
   --spacing-section: clamp(4rem, 2vw, 9rem);
-  --spacing-container: clamp(2rem, 8vw, 8rem);
+  --spacing-container: clamp(1.25rem, 4vw, 4rem);
 
-  --container-max: 100rem;
+  --container-max: 120rem;
 }
 
 html {
@@ -96,4 +97,143 @@ html.lenis body {
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+::view-transition-group(root) {
+  background: var(--color-ink-strong);
+}
+
+:root[data-hero-direction] {
+  &::view-transition-image-pair(root) {
+    perspective: 2000px;
+    animation: hero-pull-back 1s cubic-bezier(0.76, 0, 0.24, 1) both;
+  }
+
+  &::view-transition-old(root),
+  &::view-transition-new(root) {
+    mix-blend-mode: normal;
+    backface-visibility: hidden;
+    animation-duration: 1s;
+    animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+    animation-fill-mode: both;
+  }
+
+  &::view-transition-group(hero-prev),
+  &::view-transition-group(hero-next),
+  &::view-transition-new(hero-prev),
+  &::view-transition-new(hero-next) {
+    animation: none;
+  }
+
+  &::view-transition-old(hero-prev),
+  &::view-transition-old(hero-next) {
+    animation: none;
+    opacity: 0;
+  }
+
+  &::view-transition-old(*.hero-line) {
+    animation: hero-blur-out 0.35s ease-in both;
+  }
+
+  &::view-transition-new(*.hero-line) {
+    animation: hero-blur-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  &::view-transition-old(*.hero-d2) { animation-delay: 0.04s; }
+  &::view-transition-old(*.hero-d3) { animation-delay: 0.08s; }
+  &::view-transition-old(*.hero-d4) { animation-delay: 0.12s; }
+  &::view-transition-old(*.hero-d5) { animation-delay: 0.16s; }
+  &::view-transition-old(*.hero-d6) { animation-delay: 0.2s; }
+  &::view-transition-old(*.hero-d7) { animation-delay: 0.24s; }
+
+  &::view-transition-new(*.hero-d1) { animation-delay: 0.5s; }
+  &::view-transition-new(*.hero-d2) { animation-delay: 0.58s; }
+  &::view-transition-new(*.hero-d3) { animation-delay: 0.66s; }
+  &::view-transition-new(*.hero-d4) { animation-delay: 0.74s; }
+  &::view-transition-new(*.hero-d5) { animation-delay: 0.82s; }
+  &::view-transition-new(*.hero-d6) { animation-delay: 0.9s; }
+  &::view-transition-new(*.hero-d7) { animation-delay: 0.98s; }
+}
+
+:root[data-hero-direction="next"] {
+  &::view-transition-old(root) {
+    transform-origin: 100% 50%;
+    animation-name: hero-out-next;
+  }
+
+  &::view-transition-new(root) {
+    transform-origin: 0% 50%;
+    animation-name: hero-in-next;
+  }
+}
+
+:root[data-hero-direction="prev"] {
+  &::view-transition-old(root) {
+    transform-origin: 0% 50%;
+    animation-name: hero-out-prev;
+  }
+
+  &::view-transition-new(root) {
+    transform-origin: 100% 50%;
+    animation-name: hero-in-prev;
+  }
+}
+
+@keyframes hero-pull-back {
+  50% {
+    transform: scale(0.82);
+  }
+}
+
+@keyframes hero-out-next {
+  to {
+    transform: translateX(-100%) rotateY(-90deg);
+    filter: brightness(0.35);
+  }
+}
+
+@keyframes hero-in-next {
+  from {
+    transform: translateX(100%) rotateY(90deg);
+    filter: brightness(0.35);
+  }
+}
+
+@keyframes hero-out-prev {
+  to {
+    transform: translateX(100%) rotateY(90deg);
+    filter: brightness(0.35);
+  }
+}
+
+@keyframes hero-in-prev {
+  from {
+    transform: translateX(-100%) rotateY(-90deg);
+    filter: brightness(0.35);
+  }
+}
+
+@keyframes hero-blur-out {
+  to {
+    opacity: 0;
+    filter: blur(12px);
+    transform: translateY(-0.25em);
+  }
+}
+
+@keyframes hero-blur-in {
+  from {
+    opacity: 0;
+    filter: blur(12px);
+    transform: translateY(0.35em);
+  }
+}
+
+@keyframes ken-burns {
+  from {
+    transform: scale(1.04) translate(0, 0);
+  }
+  to {
+    transform: scale(1.16) translate(-3%, -2%);
+  }
 }

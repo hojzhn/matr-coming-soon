@@ -1,0 +1,20 @@
+{
+  "headings": {
+    "connect": "Connect",
+    "sayHello": "Say hello",
+    "localTime": "Local time",
+    "index": "Index"
+  },
+  "social": [
+    { "label": "Instagram", "href": "https://instagram.com/matr.labs" },
+    { "label": "X / Twitter", "href": "https://twitter.com/matr_lab" },
+    {
+      "label": "LinkedIn",
+      "href": "https://www.linkedin.com/company/matr-labs"
+    }
+  ],
+  "contactEmail": "hello@matr.art",
+  "address": { "city": "Brooklyn", "region": "NY" },
+  "localTime": { "timeZone": "America/New_York" },
+  "legal": { "rights": "All rights reserved" }
+}

@@ -62,5 +62,9 @@
       "alt": "Detail of an oil print on paper",
       "caption": "Oil on Paper"
     }
-  ]
+  ],
+  "trustedLabel": "Trusted by",
+  "trustedDefault": "a new generation of artists",
+  "moreLabel": "See all the artists",
+  "lessLabel": "Back to the work"
 }

@@ -7,6 +7,7 @@ import brands from './brands.json';
 import gallery from './gallery.json';
 import order from './order.json';
 import strengths from './strengths.json';
+import handcrafted from './handcrafted.json';
 import testimonials from './testimonials.json';
 import relaunch from './relaunch.json';
 import newsletter from './newsletter.json';
@@ -14,6 +15,9 @@ import contact from './contact.json';
 import footer from './footer.json';
 import legal from './legal.json';
 import cookieConsent from './cookieConsent.json';
+import studio from './studio.json';
+import banners from './banners.json';
+import artists from './artists.json';
 import type {
 	AnnouncementContent,
 	FaqContent,
@@ -24,24 +28,29 @@ import type {
 	GalleryContent,
 	OrderContent,
 	StrengthsContent,
+	HandcraftedContent,
 	TestimonialsContent,
 	RelaunchContent,
 	NewsletterContent,
 	ContactContent,
 	FooterContent,
 	LegalContent,
-	CookieConsentContent
+	CookieConsentContent,
+	StudioContent,
+	BannersContent,
+	ArtistsContent
 } from './types';
 
 export const announcementContent = announcement satisfies AnnouncementContent;
 export const faqContent = faq satisfies FaqContent;
 export const navContent = nav satisfies NavContent;
 export const siteContent = site satisfies SiteContent;
-export const heroContent = hero satisfies HeroContent;
+export const heroContent = hero as HeroContent;
 export const brandsContent = brands satisfies BrandsContent;
 export const galleryContent = gallery satisfies GalleryContent;
 export const orderContent = order satisfies OrderContent;
 export const strengthsContent = strengths satisfies StrengthsContent;
+export const handcraftedContent = handcrafted satisfies HandcraftedContent;
 export const testimonialsContent = testimonials satisfies TestimonialsContent;
 export const relaunchContent = relaunch satisfies RelaunchContent;
 export const newsletterContent = newsletter satisfies NewsletterContent;
@@ -49,3 +58,6 @@ export const contactContent = contact satisfies ContactContent;
 export const footerContent = footer satisfies FooterContent;
 export const legalContent = legal satisfies LegalContent;
 export const cookieConsentContent = cookieConsent satisfies CookieConsentContent;
+export const studioContent = studio satisfies StudioContent;
+export const bannersContent: BannersContent = banners;
+export const artistsContent = artists satisfies ArtistsContent;
