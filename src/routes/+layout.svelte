@@ -18,8 +18,8 @@
 	import { siteContent } from '$lib/content';
 	import type { LayoutProps } from './$types';
 
-	const pageTitle = 'Matr Labs: Engineering for Art';
-	const pageDescription = 'Oil prints made to order. Matr labs is coming back soon.';
+	const pageTitle = 'Matr Labs';
+	const pageDescription = 'Your art in real oil paint. Order an Oil Edition, or make something bigger with our studio.';
 	const shareImage = `${siteContent.url}/images/og-share.webp`;
 
 	let { data, children }: LayoutProps = $props();
