@@ -39,8 +39,8 @@
     "background": { "image": "/images/hero/studio-impasto.webp" },
     "description": "Your work, taken further.\nSurfaces, textures and finishes you won't find anywhere else.",
     "cta": {
-      "label": "Find your way in",
-      "href": "#beyond"
+      "label": "Ask about the Studio",
+      "href": "/contact?type=studio&tier=studio-plus#contact"
     }
   },
   "contact": {
