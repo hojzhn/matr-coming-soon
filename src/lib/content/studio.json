@@ -35,8 +35,9 @@
       },
       {
         "caption": "Airbrushed prints",
-        "image": "/images/studio/airbrush.webp",
-        "alt": "A blue airbrushed print of roses on an upright airbrush rig"
+        "image": "/images/studio/airbrush-poster.webp",
+        "video": "/videos/studio/airbrush.mp4",
+        "alt": "A machine airbrush sweeping across an upright panel"
       },
       {
         "caption": "Texture printed layer by layer",
