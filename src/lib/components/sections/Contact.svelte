@@ -25,8 +25,6 @@
 	let email = $state('');
 	let message = $state('');
 	let company = $state('');
-	let surface = $state('');
-	let timeline = $state('');
 
 	function syncUrl() {
 		const url = new URL(page.url);
@@ -55,11 +53,7 @@
 	function composeMessage() {
 		if (mode === 'general') return message;
 		const tierName = tiers.find((t) => t.id === tier)?.name ?? tier;
-		const details = [
-			`${studio.surfaceLabel}: ${surface.trim() || '-'}`,
-			`${studio.timelineLabel}: ${timeline.trim() || '-'}`
-		];
-		return [`${studio.messageTitle}: ${tierName}`, ...details, '', message.trim()].join('\n');
+		return [`${studio.messageTitle}: ${tierName}`, '', message.trim()].join('\n');
 	}
 	let loading = $state(false);
 	let error = $state('');
@@ -180,8 +174,9 @@
 								{/each}
 							</div>
 						</Field>
-						<Field label={studio.surfaceLabel} bind:value={surface} placeholder={studio.surfacePlaceholder} />
-						<Field label={studio.timelineLabel} bind:value={timeline} placeholder={studio.timelinePlaceholder} />
+						<Heading level={5} tag="p" weight="medium" tone="muted" balance={false} class="-mt-2 mb-6">
+							{studio.tierNotes[tier as keyof typeof studio.tierNotes]}
+						</Heading>
 					</div>
 				{/if}
 

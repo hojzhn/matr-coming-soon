@@ -222,10 +222,7 @@ export interface ContactContent {
 	modes: { general: string; studio: string };
 	studio: {
 		tierLabel: string;
-		surfaceLabel: string;
-		surfacePlaceholder: string;
-		timelineLabel: string;
-		timelinePlaceholder: string;
+		tierNotes: { "studio-plus": string; "studio-pro": string };
 		messagePlaceholder: string;
 		messageTitle: string;
 	};

@@ -28,11 +28,11 @@
   },
   "studio": {
     "tierLabel": "How would you like to work with us?",
-    "surfaceLabel": "Surface and size",
-    "surfacePlaceholder": "Surface and size, e.g. linen, 36 x 48 in",
-    "timelineLabel": "Timeline",
-    "timelinePlaceholder": "When do you need it?",
-    "messagePlaceholder": "Describe the piece, the edition size and anything else we should know.",
+    "tierNotes": {
+      "studio-plus": "Tell us about your work and the techniques you're curious about, and we'll get back to you.",
+      "studio-pro": "For larger collaborations and production at scale. Tell us about your work, and we'll be glad to talk through the details."
+    },
+    "messagePlaceholder": "Tell us about your work.",
     "messageTitle": "STUDIO ENQUIRY"
   },
   "banner": {
