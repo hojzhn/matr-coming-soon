@@ -28,8 +28,6 @@
   },
   "studio": {
     "tierLabel": "How would you like to work with us?",
-    "techniquesLabel": "Finishes you are interested in",
-    "unsureLabel": "Not sure yet",
     "surfaceLabel": "Surface and size",
     "surfacePlaceholder": "Surface and size, e.g. linen, 36 x 48 in",
     "timelineLabel": "Timeline",

@@ -16,7 +16,6 @@
 	const modes: Mode[] = ['general', 'studio'];
 	const { studio } = contactContent;
 	const tiers = studioContent.tiers;
-	const finishOptions = [...studioContent.menu.items.map((t) => t.title), studio.unsureLabel];
 
 	const params = page.url.searchParams;
 	const requested = params.get('type');
@@ -26,7 +25,6 @@
 	let email = $state('');
 	let message = $state('');
 	let company = $state('');
-	let finishes = $state<string[]>([]);
 	let surface = $state('');
 	let timeline = $state('');
 
@@ -54,15 +52,10 @@
 		syncUrl();
 	}
 
-	function toggleFinish(option: string) {
-		finishes = finishes.includes(option) ? finishes.filter((t) => t !== option) : [...finishes, option];
-	}
-
 	function composeMessage() {
 		if (mode === 'general') return message;
 		const tierName = tiers.find((t) => t.id === tier)?.name ?? tier;
 		const details = [
-			`${studio.techniquesLabel}: ${finishes.length ? finishes.join(', ') : '-'}`,
 			`${studio.surfaceLabel}: ${surface.trim() || '-'}`,
 			`${studio.timelineLabel}: ${timeline.trim() || '-'}`
 		];
@@ -184,13 +177,6 @@
 							<div class="mt-3 flex flex-wrap gap-2">
 								{#each tiers as option (option.id)}
 									{@render chip(option.name, tier === option.id, () => setTier(option.id))}
-								{/each}
-							</div>
-						</Field>
-						<Field label={studio.techniquesLabel}>
-							<div class="mt-3 flex flex-wrap gap-2">
-								{#each finishOptions as option (option)}
-									{@render chip(option, finishes.includes(option), () => toggleFinish(option))}
 								{/each}
 							</div>
 						</Field>

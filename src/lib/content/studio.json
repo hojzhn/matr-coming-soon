@@ -4,86 +4,81 @@
     "heading": "Artists and technicians, working for your art.",
     "body": "Matr was started by artists, and the studio still runs on that instinct. Every finish we offer was developed alongside artists, to make their work look its best. Choose how you want to work with us."
   },
-  "tiersHeading": "Two ways in",
   "tiers": [
     {
       "id": "studio-plus",
-      "name": "Studio+",
-      "title": "More from a single image.",
-      "body": "Anything from the menu below, on top of what an Oil Edition offers: texture you can feel, relief, custom grounds, or color on wood, metal or fabric.",
-      "pricing": "Tell us what you have in mind, and we'll shape and price it with you.",
-      "cta": "Ask about Studio+",
-      "image": "/images/studio/studio-plus.webp",
-      "video": "/videos/studio/studio-plus.mp4",
-      "alt": "A hand working fine lines into a textured surface with a thin brush"
+      "name": "Studio+"
     },
     {
       "id": "studio-pro",
-      "name": "Studio Pro",
-      "title": "Your production studio.",
-      "body": "We develop your look with you through samples, then produce and deliver it in quantity, edition after edition.",
-      "pricing": "An upfront development fee covers the sampling; volume pricing earns it back.",
-      "cta": "Start a development project",
-      "image": "/images/studio/studio-pro.webp",
-      "video": "/videos/studio/studio-pro.mp4",
-      "alt": "A run of richly textured pieces laid out together on the print bed"
+      "name": "Studio Pro"
     }
   ],
-  "menu": {
-    "heading": "The Studio+ menu",
-    "lead": "Finishes we can bring to your image. Combine them, or ask us what would suit your work.",
+  "beyond": {
+    "id": "beyond",
+    "heading": "Beyond the edition",
+    "lead": "Texture, surfaces and finishes over and above the Oil Edition. Tell us what you have in mind.",
+    "cta": "Ask about the Studio",
+    "tier": "studio-plus",
     "items": [
       {
-        "title": "Gestural texture",
-        "body": "Marks worked by hand into the surface before the color goes on. Every piece carries the trace of a hand, and no two are alike.",
-        "image": "/images/gallery/brushstrokes.webp",
-        "alt": "A richly textured surface with visible gestural marks"
+        "caption": "Texture by hand",
+        "image": "/images/studio/hand-texture.webp",
+        "video": "/videos/studio/hand-texture.mp4",
+        "alt": "A hand working fine lines into a textured surface with a thin brush"
       },
       {
-        "title": "Image-led texture",
-        "body": "Texture drawn from your image itself, following its forms and movement, and repeatable across an edition.",
-        "image": "/images/strengths/strength-side-2.webp",
-        "alt": "Texture following the flow of an image"
+        "caption": "Texture by machine",
+        "image": "/images/studio/machine-texture.webp",
+        "video": "/videos/studio/machine-texture.mp4",
+        "alt": "A machine brush working texture into a white ground"
       },
       {
-        "title": "Sculpted relief",
-        "body": "Relief built up layer by layer, as crisp and exact as your file.",
-        "image": "/images/toolbox/extrusion.webp",
-        "alt": "A print with crisp raised relief"
+        "caption": "Airbrushed prints",
+        "image": "/images/studio/airbrush.webp",
+        "alt": "A blue airbrushed print of roses on an upright airbrush rig"
       },
       {
-        "title": "Custom mediums",
-        "body": "We mix the surface for your piece. Here, marble dust in both the oil ground and wet medium gives a gritty texture and a subtle, shimmering sparkle.",
-        "image": "/images/relaunch/oil-edition-print.webp",
-        "alt": "A gritty surface with a fine mineral sparkle"
-      },
-      {
-        "title": "Beyond canvas",
-        "body": "Your image on wood, metal, paper, fabric, even cement.",
-        "image": "/images/studio/beyond-canvas.webp",
-        "alt": "A face printed directly onto rough, pitted cement"
-      },
-      {
-        "title": "Relief beneath oil",
-        "body": "Precise, built-up relief, finished in our signature oil-based color.",
-        "status": "Coming soon",
-        "image": "/images/toolbox/combined.webp",
-        "alt": "A sign image with raised relief under a glossy oil-color surface"
-      },
-      {
-        "title": "Atmospheric color",
-        "body": "Oil-based color sprayed on as a fine, continuous mist, for soft gradients and a hand-sprayed feel.",
-        "status": "Limited",
-        "image": "/images/gallery/esherick.webp",
-        "alt": "A soft, glowing image with misted gradients"
-      },
-      {
-        "title": "Raised line",
-        "body": "Fine lines drawn in relief across the surface, so pattern and contour stand up off the image.",
-        "status": "On request",
-        "image": "/images/studio/raised-line.webp",
-        "alt": "Fine raised white lines forming a pattern across a printed surface"
+        "caption": "Texture printed layer by layer",
+        "image": "/images/studio/layer-texture.webp",
+        "video": "/videos/studio/layer-texture.mp4",
+        "alt": "A run of richly textured pieces on the print bed under a print head"
       }
     ]
+  },
+  "together": {
+    "id": "together",
+    "heading": "Made together",
+    "lead": "Artists work with us on pieces they couldn't make anywhere else.",
+    "cta": "Talk to us about a project",
+    "tier": "studio-plus",
+    "items": [
+      {
+        "caption": "Tyler Hobbs",
+        "image": "/images/studio/tyler-hobbs.webp",
+        "video": "/videos/studio/tyler-hobbs.mp4",
+        "alt": "A plotter drawing a work by Tyler Hobbs while a technician works at a laptop"
+      },
+      {
+        "caption": "Matthew Ritchie",
+        "image": "/images/studio/matthew-ritchie.webp",
+        "video": "/videos/studio/matthew-ritchie.mp4",
+        "alt": "Matthew Ritchie working on a print as it is made on a Matr printer"
+      },
+      {
+        "caption": "Arthur Jafa",
+        "image": "/images/studio/arthur-jafa.webp",
+        "video": "/videos/studio/arthur-jafa.mp4",
+        "alt": "Arthur Jafa seated at an upright printer as his piece is printed"
+      }
+    ]
+  },
+  "pro": {
+    "id": "pro",
+    "eyebrow": "Studio Pro",
+    "heading": "Your work, produced at scale.",
+    "body": "We'd like to hear from artists and studios who need their images produced in quantity. We develop the look with you through samples, then produce and deliver the edition. An upfront development fee covers the sampling; volume pricing earns it back.",
+    "cta": "Ask about Studio Pro",
+    "tier": "studio-pro"
   }
 }

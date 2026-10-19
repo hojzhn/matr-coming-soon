@@ -222,8 +222,6 @@ export interface ContactContent {
 	modes: { general: string; studio: string };
 	studio: {
 		tierLabel: string;
-		techniquesLabel: string;
-		unsureLabel: string;
 		surfaceLabel: string;
 		surfacePlaceholder: string;
 		timelineLabel: string;
@@ -276,26 +274,27 @@ export interface CookieConsentContent {
 export interface StudioTier {
 	id: string;
 	name: string;
-	title: string;
-	body: string;
-	pricing: string;
-	cta: string;
+}
+export interface StudioTile {
+	caption: string;
 	image: string;
 	video?: string;
 	alt: string;
 }
-export interface StudioFinish {
-	title: string;
-	body: string;
-	status?: string;
-	image: string;
-	alt: string;
+export interface StudioBlock {
+	id: string;
+	heading: string;
+	lead: string;
+	cta: string;
+	tier: string;
+	items: StudioTile[];
 }
 export interface StudioContent {
 	intro: { eyebrow: string; heading: string; body: string };
-	tiersHeading: string;
 	tiers: StudioTier[];
-	menu: { heading: string; lead: string; items: StudioFinish[] };
+	beyond: StudioBlock;
+	together: StudioBlock;
+	pro: { id: string; eyebrow: string; heading: string; body: string; cta: string; tier: string };
 }
 export interface Banner {
 	heading: string;
