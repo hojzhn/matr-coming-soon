@@ -11,6 +11,7 @@
     "printTypeRolledShippingNote": "Ships worldwide.",
     "printTypeStretchedLabel": "Stretched",
     "printTypeStretchedShippingNote": "We don't ship stretched prints internationally.",
+    "printTypeStretchedUnavailableNote": "Stretched piece is currently unavailable. Email {email} if you need a stretched print.",
     "sizeLabel": "Size",
     "optionsLabel": "Options",
     "optionsDescription": "",
@@ -57,6 +58,7 @@
     "errorCartFull": "Your cart is full. Remove an item to add another.",
     "errorProjectNameRequired": "Give this print a name first.",
     "errorFileRequired": "Upload your artwork first.",
+    "errorStretchedUnavailable": "Stretched prints are currently unavailable. Email studio@matr.art if you need one.",
     "errorUploadFailed": "Couldn't upload your artwork. Please try again."
   },
   "cart": {

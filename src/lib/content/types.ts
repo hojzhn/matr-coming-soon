@@ -77,6 +77,7 @@ export interface OrderFormContent {
 	printTypeRolledShippingNote: string;
 	printTypeStretchedLabel: string;
 	printTypeStretchedShippingNote: string;
+	printTypeStretchedUnavailableNote: string;
 	sizeLabel: string;
 	optionsLabel: string;
 	optionsDescription: string;
@@ -108,6 +109,7 @@ export interface OrderFormContent {
 	errorCartFull: string;
 	errorProjectNameRequired: string;
 	errorFileRequired: string;
+	errorStretchedUnavailable: string;
 	errorUploadFailed: string;
 }
 export interface OrderCartContent {

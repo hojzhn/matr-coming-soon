@@ -45,6 +45,8 @@ export const ACCEPTED_ARTWORK_TYPES = [
 
 export const STRETCH_SERVICE_OPTION_ID = "stretch-service";
 
+export const UNAVAILABLE_OPTION_IDS: string[] = [STRETCH_SERVICE_OPTION_ID];
+
 export const addOnOptions: AddOnOption[] = [
   { id: "varnish", label: "Varnish", priceDeltaCents: 3500, icon: "droplet" },
   {

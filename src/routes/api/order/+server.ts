@@ -14,8 +14,10 @@ import {
 	addOnOptions,
 	MAX_PRINT_SIDE_IN,
 	MAX_CART_ITEMS,
-	MAX_ITEM_QUANTITY
+	MAX_ITEM_QUANTITY,
+	UNAVAILABLE_OPTION_IDS
 } from '$lib/pricing/config';
+import { orderContent } from '$lib/content';
 import { createDraftOrder, lookupDiscountCode } from '$lib/server/shopify';
 import { computeDiscountCents } from '$lib/pricing/discount';
 
@@ -71,6 +73,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		}
 		if (!optionIds.every((id) => addOnOptions.some((o) => o.id === id))) {
 			return fail('Please choose valid options.');
+		}
+		if (optionIds.some((id) => UNAVAILABLE_OPTION_IDS.includes(id))) {
+			return fail(orderContent.form.errorStretchedUnavailable);
 		}
 
 		const widthIn = toInches(rawWidth, rawUnit);

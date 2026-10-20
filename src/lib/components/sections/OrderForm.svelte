@@ -5,10 +5,11 @@
 	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import Icon, { type IconName } from '$lib/components/ui/Icon.svelte';
-	import { orderContent } from '$lib/content';
+	import { orderContent, siteContent } from '$lib/content';
 	import {
 		addOnOptions,
 		STRETCH_SERVICE_OPTION_ID,
+		UNAVAILABLE_OPTION_IDS,
 		MAX_PRINT_SIDE_IN,
 		MAX_ARTWORK_FILE_BYTES,
 		ACCEPTED_ARTWORK_TYPES
@@ -137,6 +138,10 @@
 
 	const stretchOption = addOnOptions.find((opt) => opt.id === STRETCH_SERVICE_OPTION_ID)!;
 
+	const stretchUnavailable = UNAVAILABLE_OPTION_IDS.includes(STRETCH_SERVICE_OPTION_ID);
+
+	const [stretchNoteBefore, stretchNoteAfter] = orderContent.form.printTypeStretchedUnavailableNote.split('{email}');
+
 	const visibleAddOnOptions = addOnOptions.filter((opt) => opt.id !== STRETCH_SERVICE_OPTION_ID);
 
 	const printTypes = [
@@ -157,6 +162,7 @@
 	];
 
 	function setStretched(stretched: boolean) {
+		if (stretched && stretchUnavailable) return;
 		if (stretched !== stretchSelected) toggleOption(STRETCH_SERVICE_OPTION_ID);
 	}
 
@@ -241,6 +247,10 @@
 		}
 		if (exceedsMaxSize) {
 			error = orderContent.form.errorMaxSize;
+			return false;
+		}
+		if (selectedOptionIds.some((id) => UNAVAILABLE_OPTION_IDS.includes(id))) {
+			error = orderContent.form.errorStretchedUnavailable;
 			return false;
 		}
 		return true;
@@ -405,13 +415,19 @@
 				<div class="mt-4 grid grid-cols-2 gap-2">
 					{#each printTypes as type (type.stretched)}
 						{@const selected = stretchSelected === type.stretched}
+						{@const unavailable = type.stretched && stretchUnavailable}
 						<button
 							type="button"
 							onclick={() => setStretched(type.stretched)}
 							aria-pressed={selected}
+							disabled={unavailable}
 							class={cn(
 								'flex flex-col items-start gap-2 border-2 p-3 text-left transition-colors',
-								selected ? 'border-ink' : 'border-line hover:border-ink-muted'
+								unavailable
+									? 'cursor-not-allowed border-line opacity-50'
+									: selected
+										? 'border-ink'
+										: 'border-line hover:border-ink-muted'
 							)}
 						>
 							<div class="flex items-center gap-3">
@@ -426,6 +442,13 @@
 						</button>
 					{/each}
 				</div>
+				{#if stretchUnavailable}
+					<Heading level={6} tag="p" tone="muted" class="mt-2">
+						{stretchNoteBefore}<a href={`mailto:${siteContent.email}`} class="underline hover:text-ink"
+							>{siteContent.email}</a
+						>{stretchNoteAfter}
+					</Heading>
+				{/if}
 			</Field>
 
 			<Field label={orderContent.form.sizeLabel}>
