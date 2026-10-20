@@ -166,6 +166,7 @@
 			{/if}
 			<div class="absolute inset-0 bg-linear-to-t from-shade/85 via-shade/25 to-transparent"></div>
 			<div class="absolute inset-0 bg-linear-to-r from-shade/55 via-shade/10 to-transparent"></div>
+			<div class="absolute inset-x-0 top-0 h-48 bg-linear-to-b from-shade/60 to-transparent"></div>
 		</div>
 	{/if}
 	<div class="relative  w-full flex-1 min-h-0">
