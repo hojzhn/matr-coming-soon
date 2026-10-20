@@ -155,17 +155,23 @@
 					class="absolute inset-0 h-full w-full object-cover"
 				></video>
 			{:else}
-				<img
-					src={hero.background.image}
-					alt=""
-					loading="eager"
-					decoding="async"
-					fetchpriority="high"
-					class="absolute inset-0 h-full w-full origin-center object-cover animate-[ken-burns_24s_ease-in-out_infinite_alternate] motion-reduce:animate-none"
-				/>
+				<picture>
+					{#if hero.background.imagePhone}
+						<source media="(max-width: 767px)" srcset={hero.background.imagePhone} />
+					{/if}
+					<img
+						src={hero.background.image}
+						alt=""
+						loading="eager"
+						decoding="async"
+						fetchpriority="high"
+						class="absolute inset-0 h-full w-full origin-center object-cover animate-[ken-burns_24s_ease-in-out_infinite_alternate] motion-reduce:animate-none"
+					/>
+				</picture>
 			{/if}
 			<div class="absolute inset-0 bg-linear-to-t from-shade/85 via-shade/25 to-transparent"></div>
 			<div class="absolute inset-0 bg-linear-to-r from-shade/55 via-shade/10 to-transparent"></div>
+			<div class="absolute inset-x-0 top-0 h-48 bg-linear-to-b from-shade/60 to-transparent"></div>
 		</div>
 	{/if}
 	<div class="relative  w-full flex-1 min-h-0">

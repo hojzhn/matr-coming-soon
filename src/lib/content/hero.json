@@ -36,7 +36,7 @@
   },
   "studio": {
     "headline": "The\nStudio.",
-    "background": { "image": "/images/hero/studio-impasto.webp" },
+    "background": { "image": "/images/hero/studio.webp" },
     "description": "Your work, taken further.\nSurfaces, textures and finishes you won't find anywhere else.",
     "cta": {
       "label": "Ask about the Studio",
@@ -45,7 +45,7 @@
   },
   "contact": {
     "headline": "Say\nhello.",
-    "background": { "image": "/images/hero/contact-dog.webp" },
+    "background": { "image": "/images/hero/contact-courbet.webp", "imagePhone": "/images/hero/contact-courbet-phone.webp" },
     "description": "Wanna collaborate? Our emails are open.\nWe usually reply within a day or two.",
     "cta": {
       "label": "Send us a message",
