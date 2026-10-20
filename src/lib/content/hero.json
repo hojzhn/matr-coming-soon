@@ -45,7 +45,7 @@
   },
   "contact": {
     "headline": "Say\nhello.",
-    "background": { "image": "/images/hero/contact-dog.webp", "imagePhone": "/images/hero/contact-dog-phone.webp" },
+    "background": { "image": "/images/hero/contact-courbet.webp", "imagePhone": "/images/hero/contact-courbet-phone.webp" },
     "description": "Wanna collaborate? Our emails are open.\nWe usually reply within a day or two.",
     "cta": {
       "label": "Send us a message",
