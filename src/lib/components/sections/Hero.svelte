@@ -54,7 +54,22 @@
 		return () => clearInterval(id);
 	});
 
-	const peekImage = $derived(peek?.background?.image ?? peek?.images?.[0]);
+	let videoSrc = $state<string>();
+
+	$effect(() => {
+		const video = hero.background?.video;
+		if (!video || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			videoSrc = undefined;
+			return;
+		}
+		const phone = window.matchMedia('(max-width: 767px)');
+		const pick = () => (videoSrc = phone.matches ? (hero.background?.videoPhone ?? video) : video);
+		pick();
+		phone.addEventListener('change', pick);
+		return () => phone.removeEventListener('change', pick);
+	});
+
+	const peekImage =$derived(peek?.background?.image ?? peek?.images?.[0]);
 	const ctaInPage = $derived(hero.cta.href.startsWith('#'));
 	let ctaHovered = $state(false);
 	let peekLoaded = $state(false);
@@ -145,15 +160,29 @@
 	{#if hero.background}
 		<div aria-hidden="true" class="absolute inset-0 -z-10 overflow-hidden">
 			{#if hero.background.video}
-				<video
-					src={hero.background.video}
-					poster={hero.background.image}
-					autoplay
-					muted
-					loop
-					playsinline
-					class="absolute inset-0 h-full w-full object-cover"
-				></video>
+				<picture>
+					{#if hero.background.imagePhone}
+						<source media="(max-width: 767px)" srcset={hero.background.imagePhone} />
+					{/if}
+					<img
+						src={hero.background.image}
+						alt=""
+						loading="eager"
+						decoding="async"
+						fetchpriority="high"
+						class="absolute inset-0 h-full w-full object-cover"
+					/>
+				</picture>
+				{#if videoSrc}
+					<video
+						src={videoSrc}
+						autoplay
+						muted
+						loop
+						playsinline
+						class="absolute inset-0 h-full w-full object-cover"
+					></video>
+				{/if}
 			{:else}
 				<picture>
 					{#if hero.background.imagePhone}
@@ -200,7 +229,7 @@
 			{@render stage()}
 		{:else}
 			<div class="absolute inset-x-0 bottom-0 px-container md:px-28">
-				<Heading level={1} size="hero" leading="none" tracking="tighter" tone="surface" balance={false} class="max-w-3xl">
+				<Heading level={1} size="hero" leading="none" tracking="tighter" tone="surface" class="max-w-5xl">
 					{#each headlineLines as text, i (i)}
 						<span class="block w-fit" style={line(i + 1)}>{text}</span>
 					{/each}
@@ -283,7 +312,7 @@
 			</div>
 		{/if}
 
-		{#if !stage}
+		{#if !stage && hero.description}
 			<div class="mt-12" style={line(contentStart + 2)}>
 				<Heading level={4} tag="p" size="md" sizeMd="lg" weight="medium" leading="snug" tone="surface" class="max-w-3xl">{hero.description}</Heading>
 			</div>
