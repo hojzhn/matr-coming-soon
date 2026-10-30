@@ -254,16 +254,27 @@ describe("priceAddOnCents (varnish/stretch size-based engine)", () => {
 });
 
 describe("pricingConfig checkpoint prices", () => {
-  it("prices 12x12 at $49", () => {
-    expect(calculatePriceCents(12, 12, pricingConfig).priceCents).toBe(4900);
+  it("prices 12x12 at $59", () => {
+    expect(calculatePriceCents(12, 12, pricingConfig).priceCents).toBe(5900);
   });
 
-  it("prices 24x24 at $145", () => {
-    expect(calculatePriceCents(24, 24, pricingConfig).priceCents).toBe(14500);
+  it("prices 24x24 at $174", () => {
+    expect(calculatePriceCents(24, 24, pricingConfig).priceCents).toBe(17400);
   });
 
-  it("prices 36x36 at $240", () => {
-    expect(calculatePriceCents(36, 36, pricingConfig).priceCents).toBe(24000);
+  it("prices 36x36 at $320", () => {
+    expect(calculatePriceCents(36, 36, pricingConfig).priceCents).toBe(32000);
+  });
+
+  it("prices 48x48 at $460", () => {
+    expect(calculatePriceCents(48, 48, pricingConfig).priceCents).toBe(46000);
+  });
+
+  it("prices the in-between sizes", () => {
+    expect(calculatePriceCents(18, 18, pricingConfig).priceCents).toBe(10700);
+    expect(calculatePriceCents(30, 30, pricingConfig).priceCents).toBe(24000);
+    expect(calculatePriceCents(42, 42, pricingConfig).priceCents).toBe(38500);
+    expect(calculatePriceCents(24, 36, pricingConfig).priceCents).toBe(23300);
   });
 });
 
