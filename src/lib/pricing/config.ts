@@ -23,12 +23,12 @@ export interface AddOnOption {
 export const pricingConfig: PricingConfig = {
   minWidthIn: 6,
   minHeightIn: 6,
-  minPrice: 49,
+  minPrice: 59,
   zones: [
     { upToSqIn: 144, ratePerSqIn: 0 },
-    { upToSqIn: 576, ratePerSqIn: 96 / 432 },
-    { upToSqIn: 1296, ratePerSqIn: 95 / 720 },
-    { upToSqIn: Infinity, ratePerSqIn: 1 / 12 },
+    { upToSqIn: 576, ratePerSqIn: 115 / 432 },
+    { upToSqIn: 1296, ratePerSqIn: 146 / 720 },
+    { upToSqIn: Infinity, ratePerSqIn: 140 / 1008 },
   ],
 };
 

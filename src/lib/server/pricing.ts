@@ -1,6 +1,6 @@
 import type { OrderTotal } from '$lib/pricing/calculate';
 
-const COMPARE_AT_PRICE_RATE = 0.25;
+const COMPARE_AT_PRICE_RATE = 0.1;
 
 export function computeCompareAtTotalCents(total: OrderTotal): number {
 	const addOnsCents = total.unitPriceCents - total.basePriceCents;
