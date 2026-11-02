@@ -92,9 +92,9 @@
     "note": "Rolled, ships in a tube. Varnish optional.",
     "pickAriaTemplate": "Use {size}, {price}",
     "sizes": [
-      { "widthIn": 16, "heightIn": 20 },
+      { "widthIn": 20, "heightIn": 16 },
       { "widthIn": 24, "heightIn": 24 },
-      { "widthIn": 36, "heightIn": 48 }
+      { "widthIn": 48, "heightIn": 36 }
     ]
   }
 }

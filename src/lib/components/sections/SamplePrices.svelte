@@ -2,7 +2,6 @@
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import { orderContent } from '$lib/content';
 	import { calculatePriceCents, formatPrice } from '$lib/pricing/calculate';
-	import { MAX_PRINT_SIDE_IN } from '$lib/pricing/config';
 	import { cn } from '$lib/cn';
 
 	let {
@@ -20,6 +19,9 @@
 		label: `${s.widthIn} × ${s.heightIn}″`,
 		priceCents: calculatePriceCents(s.widthIn, s.heightIn).priceCents
 	}));
+
+	const maxWidthIn = Math.max(...sizes.map((s) => s.widthIn));
+	const maxHeightIn = Math.max(...sizes.map((s) => s.heightIn));
 
 	let compareAtCents = $state<Record<string, number>>({});
 
@@ -66,18 +68,18 @@
 				aria-pressed={active}
 				aria-label={pickAriaTemplate.replace('{size}', s.label).replace('{price}', formatPrice(s.priceCents))}
 				class={cn(
-					'group flex flex-col items-center gap-3 border-2 bg-fill-soft px-2 pt-4 pb-3 text-center transition-colors md:px-4 md:pt-6 md:pb-4',
+					'group flex flex-col items-center gap-2 border-2 bg-fill-soft px-2 pt-3 pb-2 text-center transition-colors md:gap-3 md:px-4 md:pt-4 md:pb-3',
 					active ? 'border-ink bg-surface' : 'border-transparent hover:border-line'
 				)}
 			>
-				<div class="flex h-24 w-full items-end justify-center md:h-36">
+				<div class="flex w-full max-w-32 items-end justify-center" style={`aspect-ratio:${maxWidthIn}/${maxHeightIn};`}>
 					<div
 						aria-hidden="true"
 						class={cn(
 							'border-2 bg-surface transition-colors',
 							active ? 'border-brand bg-brand/20' : 'border-ink group-hover:border-brand'
 						)}
-						style={`height:${(s.heightIn / MAX_PRINT_SIDE_IN) * 100}%;aspect-ratio:${s.widthIn}/${s.heightIn};`}
+						style={`width:${(s.widthIn / maxWidthIn) * 100}%;aspect-ratio:${s.widthIn}/${s.heightIn};`}
 					></div>
 				</div>
 				<div>
