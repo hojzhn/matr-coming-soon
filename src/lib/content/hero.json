@@ -1,13 +1,13 @@
 {
   "home": {
-    "headline": "Your art. Real oil paint. No limits.",
-    "punches": [
-      { "text": "YOUR ART" },
-      { "text": "REAL OIL PAINT" },
-      { "text": "NO LIMITS", "accent": true }
-    ],
-    "taglineLines": ["Reinventing printing tech", "with the richness", "of oil paint"],
-    "description": "Reinventing printing tech with the richness of oil paint.",
+    "headline": "Your image.\nReimagined in oil.",
+    "background": {
+      "image": "/images/hero/home-hero-desktop.webp",
+      "imagePhone": "/images/hero/home-hero-phone.webp",
+      "video": "/videos/home/hero-desktop.mp4",
+      "videoPhone": "/videos/home/hero-phone.mp4"
+    },
+    "description": "",
     "cta": {
       "label": "Order your Oil Edition™",
       "href": "/oil-edition"

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Hero from '$lib/components/sections/Hero.svelte';
-	import HeroStatement from '$lib/components/sections/HeroStatement.svelte';
 	import Banners from '$lib/components/sections/Banners.svelte';
 	import Handcrafted from '$lib/components/sections/Handcrafted.svelte';
 	import ArtistClients from '$lib/components/sections/ArtistClients.svelte';
@@ -9,15 +8,7 @@
 	import { heroContent } from '$lib/content';
 </script>
 
-<Hero hero={heroContent.home} peek={heroContent.oilEdition} logos>
-	{#snippet stage()}
-		<HeroStatement
-			punches={heroContent.home.punches ?? [{ text: heroContent.home.headline }]}
-			taglineLines={heroContent.home.taglineLines ?? [heroContent.home.description]}
-			tagline={heroContent.home.description}
-		/>
-	{/snippet}
-</Hero>
+<Hero hero={heroContent.home} peek={heroContent.oilEdition} logos />
 <Handcrafted />
 <Banners />
 <ArtistClients />
