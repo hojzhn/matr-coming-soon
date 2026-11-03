@@ -135,9 +135,17 @@ export interface OrderCartContent {
 	paymentConfirmedToast: string;
 	promoOptOutLabel: string;
 }
+export interface OrderSamplesContent {
+	heading: string;
+	hint: string;
+	note: string;
+	pickAriaTemplate: string;
+	sizes: { widthIn: number; heightIn: number }[];
+}
 export interface OrderContent {
 	form: OrderFormContent;
 	cart: OrderCartContent;
+	samples: OrderSamplesContent;
 }
 
 export interface Strength {

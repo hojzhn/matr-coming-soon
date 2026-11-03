@@ -2,6 +2,7 @@
 	import { fade, slide } from 'svelte/transition';
 	import Field from '$lib/components/ui/Field.svelte';
 	import SizeInput from '$lib/components/ui/SizeInput.svelte';
+	import SamplePrices from './SamplePrices.svelte';
 	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import Icon, { type IconName } from '$lib/components/ui/Icon.svelte';
@@ -47,6 +48,18 @@
 	let fileError = $state('');
 	let upload = $state<ArtworkUpload | null>(null);
 	let dragOver = $state(false);
+	let sizeField = $state<HTMLDivElement>();
+
+	function pickSample(widthIn: number, heightIn: number) {
+		customUnit = 'in';
+		customWidth = String(widthIn);
+		customHeight = String(heightIn);
+		trackEvent('sample_size_pick', { size: `${widthIn}x${heightIn}` });
+		const rect = sizeField?.getBoundingClientRect();
+		if (rect && (rect.top < 80 || rect.bottom > window.innerHeight)) {
+			sizeField?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		}
+	}
 
 	const activeSize = $derived.by(() => {
 		const w = Number(customWidth);
@@ -316,6 +329,7 @@
 </script>
 
 <div class="relative">
+	<SamplePrices selected={activeSize} onpick={pickSample} />
 	<form
 		class={cn(
 			'mt-8 grid gap-10 transition-all duration-500 ease-out md:grid-cols-2',
@@ -451,6 +465,7 @@
 				{/if}
 			</Field>
 
+			<div bind:this={sizeField}>
 			<Field label={orderContent.form.sizeLabel}>
 				<SizeInput bind:width={customWidth} bind:height={customHeight} bind:unit={customUnit} />
 
@@ -460,6 +475,7 @@
 					</Heading>
 				{/if}
 			</Field>
+			</div>
 			<Field label={orderContent.form.optionsLabel} description={orderContent.form.optionsDescription}>
 				<div class="flex flex-col gap-2 mt-4">
 					{#each visibleAddOnOptions as opt (opt.id)}
