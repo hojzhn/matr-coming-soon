@@ -1,0 +1,129 @@
+{
+	"username": "madbutter",
+	"name": "madbutter",
+	"lead": "Paintings printed in oil at Matr Labs. Each piece is shown as the object on the bench, next to the digital file it was printed from.",
+	"collections": [
+		{
+			"slug": "weshouldtalk",
+			"title": "weshouldtalk",
+			"works": [
+				{
+					"slug": "weshouldtalk-005",
+					"title": "weshouldtalk 005",
+					"digital": "/images/studio-plus/madbutter/weshouldtalk-005-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/weshouldtalk-005-digital-sm.webp",
+					"photo": "/images/studio-plus/madbutter/weshouldtalk-005-photo.webp",
+					"photoSm": "/images/studio-plus/madbutter/weshouldtalk-005-photo-sm.webp"
+				},
+				{
+					"slug": "weshouldtalk-009",
+					"title": "weshouldtalk 009",
+					"digital": "/images/studio-plus/madbutter/weshouldtalk-009-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/weshouldtalk-009-digital-sm.webp",
+					"photo": "/images/studio-plus/madbutter/weshouldtalk-009-photo.webp",
+					"photoSm": "/images/studio-plus/madbutter/weshouldtalk-009-photo-sm.webp"
+				},
+				{
+					"slug": "weshouldtalk-013",
+					"title": "weshouldtalk 013",
+					"digital": "/images/studio-plus/madbutter/weshouldtalk-013-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/weshouldtalk-013-digital-sm.webp",
+					"photo": "/images/studio-plus/madbutter/weshouldtalk-013-photo.webp",
+					"photoSm": "/images/studio-plus/madbutter/weshouldtalk-013-photo-sm.webp"
+				},
+				{
+					"slug": "weshouldtalk-018",
+					"title": "weshouldtalk 018",
+					"digital": "/images/studio-plus/madbutter/weshouldtalk-018-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/weshouldtalk-018-digital-sm.webp",
+					"photo": "/images/studio-plus/madbutter/weshouldtalk-018-photo.webp",
+					"photoSm": "/images/studio-plus/madbutter/weshouldtalk-018-photo-sm.webp"
+				},
+				{
+					"slug": "weshouldtalk-023",
+					"title": "weshouldtalk 023",
+					"digital": "/images/studio-plus/madbutter/weshouldtalk-023-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/weshouldtalk-023-digital-sm.webp",
+					"photo": "/images/studio-plus/madbutter/weshouldtalk-023-photo.webp",
+					"photoSm": "/images/studio-plus/madbutter/weshouldtalk-023-photo-sm.webp"
+				},
+				{
+					"slug": "weshouldtalk-026",
+					"title": "weshouldtalk 026",
+					"digital": "/images/studio-plus/madbutter/weshouldtalk-026-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/weshouldtalk-026-digital-sm.webp",
+					"photo": "/images/studio-plus/madbutter/weshouldtalk-026-photo.webp",
+					"photoSm": "/images/studio-plus/madbutter/weshouldtalk-026-photo-sm.webp"
+				},
+				{
+					"slug": "weshouldtalk-031",
+					"title": "weshouldtalk 031",
+					"digital": "/images/studio-plus/madbutter/weshouldtalk-031-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/weshouldtalk-031-digital-sm.webp"
+				},
+				{
+					"slug": "weshouldtalk-032",
+					"title": "weshouldtalk 032",
+					"digital": "/images/studio-plus/madbutter/weshouldtalk-032-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/weshouldtalk-032-digital-sm.webp",
+					"photo": "/images/studio-plus/madbutter/weshouldtalk-032-photo.webp",
+					"photoSm": "/images/studio-plus/madbutter/weshouldtalk-032-photo-sm.webp"
+				},
+				{
+					"slug": "weshouldtalk-033",
+					"title": "weshouldtalk 033",
+					"digital": "/images/studio-plus/madbutter/weshouldtalk-033-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/weshouldtalk-033-digital-sm.webp",
+					"photo": "/images/studio-plus/madbutter/weshouldtalk-033-photo.webp",
+					"photoSm": "/images/studio-plus/madbutter/weshouldtalk-033-photo-sm.webp"
+				},
+				{
+					"slug": "weshouldtalk-082",
+					"title": "weshouldtalk 082",
+					"digital": "/images/studio-plus/madbutter/weshouldtalk-082-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/weshouldtalk-082-digital-sm.webp",
+					"photo": "/images/studio-plus/madbutter/weshouldtalk-082-photo.webp",
+					"photoSm": "/images/studio-plus/madbutter/weshouldtalk-082-photo-sm.webp"
+				},
+				{
+					"slug": "weshouldtalk-093",
+					"title": "weshouldtalk 093",
+					"digital": "/images/studio-plus/madbutter/weshouldtalk-093-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/weshouldtalk-093-digital-sm.webp",
+					"photo": "/images/studio-plus/madbutter/weshouldtalk-093-photo.webp",
+					"photoSm": "/images/studio-plus/madbutter/weshouldtalk-093-photo-sm.webp"
+				}
+			]
+		},
+		{
+			"slug": "vintage-signs",
+			"title": "Vintage Signs",
+			"works": [
+				{
+					"slug": "secrets-cocktail-lounge",
+					"title": "Secrets Cocktail Lounge",
+					"digital": "/images/studio-plus/madbutter/secrets-cocktail-lounge-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/secrets-cocktail-lounge-digital-sm.webp",
+					"photo": "/images/studio-plus/madbutter/secrets-cocktail-lounge-photo.webp",
+					"photoSm": "/images/studio-plus/madbutter/secrets-cocktail-lounge-photo-sm.webp"
+				},
+				{
+					"slug": "end-of-the-road-motel",
+					"title": "End of the Road Motel",
+					"digital": "/images/studio-plus/madbutter/end-of-the-road-motel-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/end-of-the-road-motel-digital-sm.webp",
+					"photo": "/images/studio-plus/madbutter/end-of-the-road-motel-photo.webp",
+					"photoSm": "/images/studio-plus/madbutter/end-of-the-road-motel-photo-sm.webp"
+				},
+				{
+					"slug": "the-grog-blossom",
+					"title": "The Grog Blossom",
+					"digital": "/images/studio-plus/madbutter/the-grog-blossom-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/the-grog-blossom-digital-sm.webp",
+					"photo": "/images/studio-plus/madbutter/the-grog-blossom-photo.webp",
+					"photoSm": "/images/studio-plus/madbutter/the-grog-blossom-photo-sm.webp"
+				}
+			]
+		}
+	]
+}
