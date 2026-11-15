@@ -322,3 +322,25 @@ export interface BannersContent {
 	ctaPrefix: string;
 	items: Banner[];
 }
+
+export interface StudioPlusWork {
+	slug: string;
+	title: string;
+	photo?: string;
+	photoSm?: string;
+	digital: string;
+	digitalSm: string;
+}
+
+export interface StudioPlusCollection {
+	slug: string;
+	title: string;
+	works: StudioPlusWork[];
+}
+
+export interface StudioPlusArtist {
+	username: string;
+	name: string;
+	lead: string;
+	collections: StudioPlusCollection[];
+}
