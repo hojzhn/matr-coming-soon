@@ -25,7 +25,7 @@
 	</figure>
 {/snippet}
 
-<Section tone="surface" class="pt-32 md:pt-40">
+<Section tone="surface" class="pt-8 md:pt-12">
 	<a href="{base || '/'}#{collection.slug}" class="inline-flex hover:underline">
 		<Heading level={6} tag="span" eyebrow uppercase balance={false}>{artist.name} / {collection.title}</Heading>
 	</a>
