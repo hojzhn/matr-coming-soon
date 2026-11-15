@@ -6,6 +6,8 @@
 	import AnnouncementBar from '$lib/components/layout/AnnouncementBar.svelte';
 	import { announcementState } from '$lib/components/layout/announcement-state.svelte';
 	import Header from '$lib/components/layout/Header.svelte';
+	import ArtistHeader from '$lib/components/layout/ArtistHeader.svelte';
+	import ArtistFooter from '$lib/components/layout/ArtistFooter.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
 	import BackToTop from '$lib/components/layout/BackToTop.svelte';
 	import Toast from '$lib/components/ui/Toast.svelte';
@@ -23,6 +25,8 @@
 	const shareImage = `${siteContent.url}/images/og-share.webp`;
 
 	let { data, children }: LayoutProps = $props();
+
+	const artistSite = $derived(page.route.id?.startsWith('/artists/[artist]') ?? false);
 
 	// svelte-ignore state_referenced_locally -- seeds initial render (incl. SSR) from the cookie; the banner owns updates after that
 	consentState.dismissed = data.cookieNoticeDismissed;
@@ -117,20 +121,27 @@
 	<script src="https://analytics.matr.art/api/script.js" data-site-id="db2110d0308a" defer></script>
 </svelte:head>
 
-<Preloader />
 <SmoothScroll />
-<CookieConsentBanner />
-
-<AnnouncementBar />
-<Header formToken={data.formToken} />
+{#if artistSite}
+	<ArtistHeader />
+{:else}
+	<Preloader />
+	<CookieConsentBanner />
+	<AnnouncementBar />
+	<Header formToken={data.formToken} />
+{/if}
 <BackToTop />
 <Toast />
 
 <main>
 	{@render children()}
-	{#if page.url.pathname !== '/contact'}
+	{#if !artistSite && page.url.pathname !== '/contact'}
 		<ContactBanner />
 	{/if}
 </main>
 
-<Footer formToken={data.formToken} />
+{#if artistSite}
+	<ArtistFooter />
+{:else}
+	<Footer formToken={data.formToken} />
+{/if}

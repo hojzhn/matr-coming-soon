@@ -13,9 +13,8 @@
 	<meta name="robots" content="noindex" />
 </svelte:head>
 
-<Section tone="surface" class="pt-32 md:pt-40">
-	<Heading level={6} tag="p" eyebrow uppercase>Studio Plus</Heading>
-	<Heading level={1} size="hero" class="mt-3">{artist.name}</Heading>
+<Section tone="surface" class="pt-8 md:pt-12">
+	<Heading level={1} size="hero">{artist.name}</Heading>
 	<Heading level={4} tag="p" weight="medium" tone="muted" class="mt-4 max-w-2xl">{artist.lead}</Heading>
 	<nav class="mt-8 flex flex-wrap gap-3" aria-label="Collections">
 		{#each artist.collections as collection (collection.slug)}
