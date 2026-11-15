@@ -7,6 +7,7 @@
 	import { announcementState } from '$lib/components/layout/announcement-state.svelte';
 	import Header from '$lib/components/layout/Header.svelte';
 	import ArtistHeader from '$lib/components/layout/ArtistHeader.svelte';
+	import ArtistFooter from '$lib/components/layout/ArtistFooter.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
 	import BackToTop from '$lib/components/layout/BackToTop.svelte';
 	import Toast from '$lib/components/ui/Toast.svelte';
@@ -134,9 +135,13 @@
 
 <main>
 	{@render children()}
-	{#if page.url.pathname !== '/contact'}
+	{#if !artistSite && page.url.pathname !== '/contact'}
 		<ContactBanner />
 	{/if}
 </main>
 
-<Footer formToken={data.formToken} />
+{#if artistSite}
+	<ArtistFooter />
+{:else}
+	<Footer formToken={data.formToken} />
+{/if}
