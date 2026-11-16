@@ -3,6 +3,7 @@
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import LazyImage from '$lib/components/ui/LazyImage.svelte';
 	import ArrowLink from '$lib/components/ui/ArrowLink.svelte';
+	import { cn } from '$lib/cn';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -16,7 +17,7 @@
 
 {#snippet plate(src: string, alt: string, caption: string)}
 	<figure class="flex flex-col">
-		<div class="relative aspect-square w-full overflow-hidden bg-fill">
+		<div class={cn('relative w-full overflow-hidden bg-fill', collection.landscape ? 'aspect-4/3' : 'aspect-square')}>
 			<LazyImage {src} {alt} loading="eager" class="absolute inset-0 h-full w-full object-contain" />
 		</div>
 		<figcaption class="mt-3">
@@ -31,12 +32,12 @@
 	</a>
 	<Heading level={1} size="2xl" class="mt-3">{work.title}</Heading>
 
-	<div class="mt-10 grid gap-8 md:grid-cols-2 md:gap-6">
+	<div class={cn('mt-10 grid gap-8 md:gap-6', work.photo ? 'md:grid-cols-2' : 'max-w-4xl')}>
 		{#if work.photo}
 			{@render plate(work.photo, `${work.title}, printed in oil`, 'Printed in oil')}
 			{@render plate(work.digital, `${work.title}, digital file`, 'Digital file')}
 		{:else}
-			{@render plate(work.digital, `${work.title}, digital file`, 'Digital file. The printed piece has not been photographed yet.')}
+			{@render plate(work.digital, work.title, collection.caption ?? 'Digital file. The printed piece has not been photographed yet.')}
 		{/if}
 	</div>
 

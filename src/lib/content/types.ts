@@ -335,6 +335,13 @@ export interface StudioPlusWork {
 export interface StudioPlusCollection {
 	slug: string;
 	title: string;
+	lead?: string;
+	mural?: string;
+	video?: string;
+	poster?: string;
+	videoCaption?: string;
+	landscape?: boolean;
+	caption?: string;
 	works: StudioPlusWork[];
 }
 
