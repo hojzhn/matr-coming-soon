@@ -2,6 +2,7 @@
 	import Section from '$lib/components/ui/Section.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import LazyImage from '$lib/components/ui/LazyImage.svelte';
+	import LoopVideo from '$lib/components/ui/LoopVideo.svelte';
 	import { cn } from '$lib/cn';
 	import type { PageProps } from './$types';
 
@@ -40,6 +41,14 @@
 				<img src={collection.mural} alt="{collection.title}, all panels in sequence" loading="lazy" decoding="async" class="block h-40 w-auto max-w-none md:h-64" />
 			</div>
 			<Heading level={6} tag="p" size="xs" tone="muted" balance={false} class="mt-2">Scroll along the mural →</Heading>
+		{/if}
+		{#if collection.video && collection.poster}
+			<div class="mt-10 grid items-end gap-4 md:grid-cols-2 md:gap-8">
+				<LoopVideo src={collection.video} poster={collection.poster} label="{collection.title}, printing and installed at home" class="aspect-4/5 w-full bg-fill" />
+				{#if collection.videoCaption}
+					<Heading level={4} tag="p" weight="medium" tone="muted" class="max-w-md">{collection.videoCaption}</Heading>
+				{/if}
+			</div>
 		{/if}
 		<div class="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4">
 			{#each collection.works as work (work.slug)}
