@@ -4,6 +4,88 @@
 	"lead": "Paintings printed in oil at Matr Labs. Each piece is shown as the object on the bench, next to the digital file it was printed from.",
 	"collections": [
 		{
+			"slug": "invasive-species",
+			"title": "Invasive Species",
+			"lead": "Twelve panels, each 18 × 24 in., that join edge to edge into one continuous mural.",
+			"mural": "/images/studio-plus/madbutter/invasive-species-mural.webp",
+			"landscape": true,
+			"caption": "18 × 24 in. One of twelve panels in a continuous mural.",
+			"works": [
+				{
+					"slug": "invasive-species-01",
+					"title": "Invasive Species 01",
+					"digital": "/images/studio-plus/madbutter/invasive-species-01-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/invasive-species-01-digital-sm.webp"
+				},
+				{
+					"slug": "invasive-species-02",
+					"title": "Invasive Species 02",
+					"digital": "/images/studio-plus/madbutter/invasive-species-02-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/invasive-species-02-digital-sm.webp"
+				},
+				{
+					"slug": "invasive-species-03",
+					"title": "Invasive Species 03",
+					"digital": "/images/studio-plus/madbutter/invasive-species-03-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/invasive-species-03-digital-sm.webp"
+				},
+				{
+					"slug": "invasive-species-04",
+					"title": "Invasive Species 04",
+					"digital": "/images/studio-plus/madbutter/invasive-species-04-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/invasive-species-04-digital-sm.webp"
+				},
+				{
+					"slug": "invasive-species-05",
+					"title": "Invasive Species 05",
+					"digital": "/images/studio-plus/madbutter/invasive-species-05-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/invasive-species-05-digital-sm.webp"
+				},
+				{
+					"slug": "invasive-species-06",
+					"title": "Invasive Species 06",
+					"digital": "/images/studio-plus/madbutter/invasive-species-06-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/invasive-species-06-digital-sm.webp"
+				},
+				{
+					"slug": "invasive-species-07",
+					"title": "Invasive Species 07",
+					"digital": "/images/studio-plus/madbutter/invasive-species-07-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/invasive-species-07-digital-sm.webp"
+				},
+				{
+					"slug": "invasive-species-08",
+					"title": "Invasive Species 08",
+					"digital": "/images/studio-plus/madbutter/invasive-species-08-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/invasive-species-08-digital-sm.webp"
+				},
+				{
+					"slug": "invasive-species-09",
+					"title": "Invasive Species 09",
+					"digital": "/images/studio-plus/madbutter/invasive-species-09-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/invasive-species-09-digital-sm.webp"
+				},
+				{
+					"slug": "invasive-species-10",
+					"title": "Invasive Species 10",
+					"digital": "/images/studio-plus/madbutter/invasive-species-10-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/invasive-species-10-digital-sm.webp"
+				},
+				{
+					"slug": "invasive-species-11",
+					"title": "Invasive Species 11",
+					"digital": "/images/studio-plus/madbutter/invasive-species-11-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/invasive-species-11-digital-sm.webp"
+				},
+				{
+					"slug": "invasive-species-12",
+					"title": "Invasive Species 12",
+					"digital": "/images/studio-plus/madbutter/invasive-species-12-digital.webp",
+					"digitalSm": "/images/studio-plus/madbutter/invasive-species-12-digital-sm.webp"
+				}
+			]
+		},
+		{
 			"slug": "weshouldtalk",
 			"title": "weshouldtalk",
 			"works": [

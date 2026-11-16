@@ -2,6 +2,7 @@
 	import Section from '$lib/components/ui/Section.svelte';
 	import Heading from '$lib/components/ui/Heading.svelte';
 	import LazyImage from '$lib/components/ui/LazyImage.svelte';
+	import { cn } from '$lib/cn';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -29,12 +30,21 @@
 	<Section id={collection.slug} tone="surface" class="border-t-2 border-ink">
 		<div class="flex items-baseline justify-between gap-4">
 			<Heading level={2} size="xl">{collection.title}</Heading>
-			<Heading level={5} tag="p" size="sm" tone="muted" balance={false}>{collection.works.length} works</Heading>
+			<Heading level={5} tag="p" size="sm" tone="muted" balance={false} class="whitespace-nowrap">{collection.works.length} works</Heading>
 		</div>
+		{#if collection.lead}
+			<Heading level={4} tag="p" weight="medium" tone="muted" class="mt-3 max-w-2xl">{collection.lead}</Heading>
+		{/if}
+		{#if collection.mural}
+			<div class="mt-8 overflow-x-auto bg-fill" data-lenis-prevent>
+				<img src={collection.mural} alt="{collection.title}, all panels in sequence" loading="lazy" decoding="async" class="block h-40 w-auto max-w-none md:h-64" />
+			</div>
+			<Heading level={6} tag="p" size="xs" tone="muted" balance={false} class="mt-2">Scroll along the mural →</Heading>
+		{/if}
 		<div class="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4">
 			{#each collection.works as work (work.slug)}
 				<a href="{data.base}/{work.slug}" class="group flex flex-col">
-					<div class="relative aspect-square w-full overflow-hidden bg-fill">
+					<div class={cn('relative w-full overflow-hidden bg-fill', collection.landscape ? 'aspect-4/3' : 'aspect-square')}>
 						<LazyImage src={work.photoSm ?? work.digitalSm} alt={work.title} class="absolute inset-0 h-full w-full object-cover" />
 						{#if work.photoSm}
 							<img
